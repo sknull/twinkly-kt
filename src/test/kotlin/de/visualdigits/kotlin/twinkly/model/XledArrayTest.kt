@@ -32,6 +32,13 @@ class XledArrayTest {
     }
 
     @Test
+    fun testShowRealtimeFrame() {
+        xledArray.mode(DeviceMode.rt)
+        val frame = XledFrame.fromImage(20, 21, File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
+        xledArray.showRealTimeFrame(frame)
+    }
+
+    @Test
     fun testShowSequence() {
         xledArray.mode(DeviceMode.rt)
         val sequence = XledSequence.fromDirectory(20, 21, 4,  File(ClassLoader.getSystemResource("images/glitter").toURI()))

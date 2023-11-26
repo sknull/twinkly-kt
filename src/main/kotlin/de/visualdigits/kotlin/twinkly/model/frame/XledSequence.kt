@@ -34,7 +34,7 @@ class XledSequence(
             directory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
                 ?.take(maxFrames)
                 ?.forEach { file ->
-                    sequence.add(XledFrame.fromImage(columns, rows, bytesPerLed, file, initialColor))
+                    sequence.add(XledFrame.fromImage(columns, rows, file, initialColor))
                 }
             return sequence
         }
@@ -63,7 +63,7 @@ class XledSequence(
             gifDecoder.read(ins)
             for (f in 0 until min(gifDecoder.frameCount, maxFrames)) {
                 sequence.add(
-                    XledFrame.fromImage(columns, rows, bytesPerLed, gifDecoder.getFrame(f), initialColor)
+                    XledFrame.fromImage(columns, rows, gifDecoder.getFrame(f), initialColor)
                 )
             }
             return sequence

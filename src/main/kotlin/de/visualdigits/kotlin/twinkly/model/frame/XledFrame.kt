@@ -3,8 +3,6 @@ package de.visualdigits.kotlin.twinkly.model.frame
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import org.apache.commons.lang3.math.NumberUtils.max
-import org.apache.commons.lang3.math.NumberUtils.min
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -33,27 +31,24 @@ class XledFrame(
         fun fromImage(
             columns: Int,
             rows: Int,
-            bytesPerLed: Int,
             file: File,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
-            return fromImage(columns, rows, bytesPerLed, ImageIO.read(file), initialColor)
+            return fromImage(columns, rows, ImageIO.read(file), initialColor)
         }
 
         fun fromImage(
             columns: Int,
             rows: Int,
-            bytesPerLed: Int,
             ins: InputStream,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
-            return fromImage(columns, rows, bytesPerLed, ImageIO.read(ins), initialColor)
+            return fromImage(columns, rows, ImageIO.read(ins), initialColor)
         }
 
         fun fromImage(
             columns: Int,
             rows: Int,
-            bytesPerLed: Int,
             image: BufferedImage,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
@@ -70,11 +65,11 @@ class XledFrame(
         width: Int = columns,
         height: Int = rows
     ): XledFrame {
-        val subFrame = XledFrame(width, height, initialColor)
+        val subFrame = XledFrame(width - offsetX, height - offsetY, initialColor)
         for (y in offsetY until height) {
             for (x in offsetX until width) {
                 val current = frame[x][y]
-                subFrame[max(x - offsetX, 0)][max(y - offsetY, 0)] = when (current) {
+                subFrame[x - offsetX][y - offsetY] = when (current) {
                     is RGBColor -> RGBColor(current.red, current.green, current.blue)
                     is RGBWColor -> RGBWColor(current.red, current.green, current.blue, current.white)
                     else -> {
@@ -92,10 +87,10 @@ class XledFrame(
         offsetX: Int = 0,
         offsetY: Int = 0
     ): XledFrame {
-        for (y in 0 until subFrame.rows) {
-            for (x in 0 until subFrame.columns) {
+        for (y in 0 until subFrame.rows - offsetY) {
+            for (x in 0 until subFrame.columns - offsetY) {
                 val current = subFrame[x][y]
-                frame[min(x + offsetX, columns - 1)][min(y + offsetY, rows - 1)] = when (current) {
+                frame[x + offsetX][y + offsetY] = when (current) {
                     is RGBColor -> RGBColor(current.red, current.green, current.blue)
                     is RGBWColor -> RGBWColor(current.red, current.green, current.blue, current.white)
                     else -> {
