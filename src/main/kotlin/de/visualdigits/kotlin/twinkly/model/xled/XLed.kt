@@ -10,8 +10,8 @@ import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
 
 interface XLed {
 
-    val columns: Int
-    val rows: Int
+    val width: Int
+    val height: Int
     val bytesPerLed: Int
 
     fun logout()

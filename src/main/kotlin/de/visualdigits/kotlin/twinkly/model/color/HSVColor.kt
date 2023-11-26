@@ -21,6 +21,11 @@ class HSVColor(
         return "RGBColor(hex='${web()}', h=$h, s=$s , v=$v)"
     }
 
+    override fun toAwtColor(): java.awt.Color {
+        val rgbColor = toRGB()
+        return java.awt.Color(rgbColor.red, rgbColor.green, rgbColor.blue)
+    }
+
     override fun clone(): HSVColor = HSVColor(h, s, v)
 
     override fun parameterMap(): Map<String, Int> {

@@ -27,6 +27,11 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
         return "[" + StringUtils.join(listOf(red, green, blue), ", ") + "]"
     }
 
+    override fun toAwtColor(): java.awt.Color {
+        val rgbColor = toRGB()
+        return java.awt.Color(rgbColor.red, rgbColor.green, rgbColor.blue)
+    }
+
     open fun repr(): String {
         return "RGBColor(hex='${web()}', r=$red, g=$green , b=$blue)"
     }

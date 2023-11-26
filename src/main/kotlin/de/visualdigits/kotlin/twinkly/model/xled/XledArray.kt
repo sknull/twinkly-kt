@@ -3,7 +3,6 @@ package de.visualdigits.kotlin.twinkly.model.xled
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
-import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
 import de.visualdigits.kotlin.twinkly.model.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
@@ -12,8 +11,8 @@ class XledArray(
     val xLedDevices: List<XLedDevice>
 ) : XLed {
 
-    override val columns: Int = xLedDevices.sumOf { it.columns }
-    override val rows: Int = xLedDevices.firstOrNull()?.rows?:0
+    override val width: Int = xLedDevices.sumOf { it.width }
+    override val height: Int = xLedDevices.firstOrNull()?.height?:0
     override val bytesPerLed: Int = xLedDevices.firstOrNull()?.bytesPerLed?:0
 
     override fun logout() {
@@ -51,8 +50,8 @@ class XledArray(
     override fun showRealTimeFrame(frame: XledFrame) {
         var offsetX = 0
         xLedDevices.forEach { xled ->
-            xled.showRealTimeFrame(frame.subFrame(offsetX, 0))
-            offsetX += xled.columns
+            xled.showRealTimeFrame(frame.subFrame(offsetX, 0, xled.width, xled.height))
+            offsetX += xled.width
         }
     }
 }

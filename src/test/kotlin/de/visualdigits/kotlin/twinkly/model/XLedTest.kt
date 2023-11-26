@@ -105,9 +105,6 @@ class XLedTest {
     fun testAnimatedGif() {
         xled.showSequence(name = "Tetris",
             sequence = XledSequence.fromAnimatedGif(
-                xled.columns,
-                xled.rows,
-                xled.bytesPerLed,
                 File(ClassLoader.getSystemResource("images/tetris/Animation.gif").toURI()),
                 maxFrames = 200
             ),
@@ -119,9 +116,6 @@ class XLedTest {
     fun testDirectoryTetris() {
         xled.showSequence(
             "Tetris", XledSequence.fromDirectory(
-                xled.columns,
-                xled.rows,
-                xled.bytesPerLed,
                 File(ClassLoader.getSystemResource("images/tetris").toURI()),
                 200
             ), 2
@@ -132,9 +126,6 @@ class XLedTest {
     fun testDirectoryChristmas() {
         xled.showSequence(
             "Christmas", XledSequence.fromDirectory(
-                xled.columns,
-                xled.rows,
-                xled.bytesPerLed,
                 File(ClassLoader.getSystemResource("images/christmas").toURI()),
                 200
             ), 2
@@ -145,9 +136,6 @@ class XLedTest {
     fun testDirectoryChristmasTree() {
         xled.showSequence(
             "Christmas", XledSequence.fromDirectory(
-                xled.columns,
-                xled.rows,
-                xled.bytesPerLed,
                 File(ClassLoader.getSystemResource("images/christmas-tree").toURI()),
                 200
             ), 2
@@ -164,7 +152,7 @@ class XLedTest {
 
         val sequence = XledSequence()
 
-        var frame = XledFrame(xled.columns, xled.rows, RGBWColor(255, 255, 255, 128, normalize = false))
+        var frame = XledFrame(xled.width, xled.height, RGBWColor(255, 255, 255, 128, normalize = false))
 //        frame.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-0.jpg").toURI()))
         sequence.add(frame)
 //        frame = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))

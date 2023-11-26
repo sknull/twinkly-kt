@@ -22,9 +22,6 @@ class XledSequence(
 
     companion object {
         fun fromDirectory(
-            columns: Int,
-            rows: Int,
-            bytesPerLed: Int,
             directory: File,
             maxFrames: Int = Int.MAX_VALUE,
             initialColor: Color<*> = RGBColor(0, 0, 0)
@@ -40,20 +37,14 @@ class XledSequence(
         }
 
         fun fromAnimatedGif(
-            columns: Int,
-            rows: Int,
-            bytesPerLed: Int,
             file: File,
             maxFrames: Int = Int.MAX_VALUE,
             initialColor: Color<*> = RGBColor(0, 0, 0)
         ): XledSequence {
-            return fromAnimatedGif(columns, rows, bytesPerLed, FileInputStream(file), maxFrames, initialColor)
+            return fromAnimatedGif(FileInputStream(file), maxFrames, initialColor)
         }
 
         fun fromAnimatedGif(
-            columns: Int,
-            rows: Int,
-            bytesPerLed: Int,
             ins: InputStream,
             maxFrames: Int = Int.MAX_VALUE,
             initialColor: Color<*> = RGBColor(0, 0, 0)
@@ -67,6 +58,12 @@ class XledSequence(
                 )
             }
             return sequence
+        }
+
+        fun textScroll(
+
+        ) {
+
         }
     }
 }

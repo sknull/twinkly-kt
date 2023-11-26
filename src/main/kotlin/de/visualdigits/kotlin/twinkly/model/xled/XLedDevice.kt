@@ -44,16 +44,16 @@ class XLedDevice(host: String): XLed, Session(
     val deviceInfo: DeviceInfo
     val layout: LedLayout
 
-    override val columns: Int
-    override val rows: Int
+    override val width: Int
+    override val height: Int
     override val bytesPerLed: Int
 
     init {
         login()
         deviceInfo = deviceInfo()
         layout = layout()
-        columns = layout.columns
-        rows = layout.rows
+        width = layout.columns
+        height = layout.rows
         bytesPerLed = deviceInfo.bytesPerLed!!
     }
 

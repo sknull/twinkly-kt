@@ -3,6 +3,7 @@ package de.visualdigits.kotlin.twinkly.model.frame
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import org.apache.commons.lang3.math.NumberUtils.min
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -10,16 +11,16 @@ import java.io.InputStream
 import javax.imageio.ImageIO
 
 class XledFrame(
-    val columns: Int,
-    val rows: Int,
+    val width: Int,
+    val height: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     private val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
 ) : MutableList<MutableList<Color<*>>> by frame {
 
     init {
-        for (x in 0 until columns) {
+        for (x in 0 until width) {
             val row = mutableListOf<Color<*>>()
-            for (y in 0 until rows) {
+            for (y in 0 until height) {
                 row.add(initialColor.clone())
             }
             frame.add(row)
@@ -48,6 +49,15 @@ class XledFrame(
         ): XledFrame {
             return XledFrame(image.width, image.height, initialColor).setImage(image)
         }
+
+//        fun fromTest(
+//            text: String,
+//            size: Int,
+//            fontName: String,
+//            color: java.awt.Color,
+//        ): XledFrame {
+//
+//        }
     }
 
     /**
@@ -56,21 +66,13 @@ class XledFrame(
     fun subFrame(
         offsetX: Int = 0,
         offsetY: Int = 0,
-        width: Int = columns,
-        height: Int = rows
+        width: Int = this.width,
+        height: Int = this.height
     ): XledFrame {
-        val subFrame = XledFrame(width - offsetX, height - offsetY, initialColor)
-        for (y in offsetY until height) {
-            for (x in offsetX until width) {
-                val current = frame[x][y]
-                subFrame[x - offsetX][y - offsetY] = when (current) {
-                    is RGBColor -> RGBColor(current.red, current.green, current.blue)
-                    is RGBWColor -> RGBWColor(current.red, current.green, current.blue, current.white)
-                    else -> {
-                        val rgbCurrent = current.toRGB()
-                        RGBColor(rgbCurrent.red, rgbCurrent.green, rgbCurrent.blue)
-                    }
-                }
+        val subFrame = XledFrame(width, height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                subFrame[x][y] = frame[x + offsetX][y + offsetY].clone()
             }
         }
         return subFrame
@@ -81,17 +83,12 @@ class XledFrame(
         offsetX: Int = 0,
         offsetY: Int = 0
     ): XledFrame {
-        for (y in 0 until subFrame.rows - offsetY) {
-            for (x in 0 until subFrame.columns - offsetY) {
-                val current = subFrame[x][y]
-                frame[x + offsetX][y + offsetY] = when (current) {
-                    is RGBColor -> RGBColor(current.red, current.green, current.blue)
-                    is RGBWColor -> RGBWColor(current.red, current.green, current.blue, current.white)
-                    else -> {
-                        val rgbCurrent = current.toRGB()
-                        RGBColor(rgbCurrent.red, rgbCurrent.green, rgbCurrent.blue)
-                    }
-                }
+        val xStart = if (offsetX >= 0) 0 else -1 * offsetX
+        val yStart = if (offsetY >= 0) 0 else -1 * offsetY
+
+        for (y in yStart until min(subFrame.height, height - offsetY)) {
+            for (x in xStart until min(subFrame.width, width - offsetX)) {
+                frame[x + offsetX][y + offsetY] = subFrame[x][y].clone()
             }
         }
         return this
@@ -106,8 +103,8 @@ class XledFrame(
     }
 
     fun setImage(image: BufferedImage): XledFrame {
-        for (y in 0 until rows) {
-            for (x in 0 until columns) {
+        for (y in 0 until height) {
+            for (x in 0 until width) {
                 val colors = frame[x]
                 colors[y] = RGBColor(image.getRGB(x, y).toLong(), false)
             }
@@ -117,8 +114,8 @@ class XledFrame(
 
     fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()
-        for (x in 0 until columns) {
-            for (y in 0 until rows) {
+        for (x in 0 until width) {
+            for (y in 0 until height) {
                 baos.write(createPixel(frame[x][y], bytesPerLed))
             }
         }

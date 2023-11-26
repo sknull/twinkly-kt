@@ -13,10 +13,10 @@ class Conway(
 
     fun run() {
         val initialFrame = XledFrame.fromImage(preset)
-        var matrix = Matrix(xled.columns, xled.rows)
+        var matrix = Matrix(xled.width, xled.height)
         xled.mode(DeviceMode.rt)
-        for (y in 0 until xled.rows) {
-            for (x in 0 until xled.columns) {
+        for (y in 0 until xled.height) {
+            for (x in 0 until xled.width) {
                 if (!initialFrame[x][y].isBlack()) {
                     initialFrame[x][y] = RGBColor(0, 0, 255)
                     matrix[x][y] = 1
@@ -29,10 +29,10 @@ class Conway(
         while (result.changes > 0) {
             result = nextGeneration(matrix, result)
             matrix = result.matrix
-            val frame = XledFrame(xled.columns, xled.rows)
+            val frame = XledFrame(xled.width, xled.height)
             val color = determineColor(result)
-            for (y in 0 until xled.rows) {
-                for (x in 0 until xled.columns) {
+            for (y in 0 until xled.height) {
+                for (x in 0 until xled.width) {
                     if (matrix[x][y] != 0) {
                         frame[x][y] = color
                     }

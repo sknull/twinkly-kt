@@ -28,4 +28,6 @@ interface Color<T : Color<T>> {
     fun fade(other: Any, factor: Double): T
 
     fun isBlack(): Boolean
+
+    fun toAwtColor(): java.awt.Color
 }

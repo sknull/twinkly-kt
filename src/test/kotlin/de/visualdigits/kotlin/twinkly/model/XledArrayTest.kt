@@ -13,9 +13,10 @@ import java.io.File
 
 class XledArrayTest {
 
-    private val xled1 = XLedDevice("192.168.178.35")
-    private val xled2 = XLedDevice("192.168.178.52")
-    private val xledArray = XledArray(listOf(xled1, xled2))
+    private val xledArray = XledArray(listOf(
+        XLedDevice("192.168.178.35"),
+        XLedDevice("192.168.178.52")
+    ))
 
     @Test
     fun testMovingStripes() {
@@ -32,6 +33,25 @@ class XledArrayTest {
     }
 
     @Test
+    fun testSubFrame() {
+        val frameRed = XledFrame(xledArray.width, xledArray.height, RGBColor(255,0, 0))
+        val frameGreen = XledFrame(10, 10, RGBColor(0,255, 0))
+        val frameBlue = XledFrame(10, 10, RGBColor(0,0, 255))
+        val frameYellow = XledFrame(10, 10, RGBColor(255,255, 0))
+        val frameMagenta = XledFrame(10, 10, RGBColor(255,0, 255))
+        val frameCyan = XledFrame(10, 10, RGBColor(0,255, 255))
+
+        frameRed.replaceSubFrame(frameGreen, -5, -5)
+        frameRed.replaceSubFrame(frameBlue, 15, -5)
+        frameRed.replaceSubFrame(frameYellow, -5, 15)
+        frameRed.replaceSubFrame(frameMagenta, 15, 15)
+        frameRed.replaceSubFrame(frameCyan, 5, 5)
+
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(frameRed)
+    }
+
+    @Test
     fun testShowRealtimeFrame() {
         xledArray.mode(DeviceMode.rt)
         val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
@@ -41,7 +61,7 @@ class XledArrayTest {
     @Test
     fun testTwinklyChristmasTree() {
         xledArray.mode(DeviceMode.rt)
-        val sequence = XledSequence.fromDirectory(20, 21, 4,  File(ClassLoader.getSystemResource("images/glitter").toURI()))
+        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/glitter").toURI()))
         while(true) {
             xledArray.showRealTimeSequence(sequence, 100)
         }
