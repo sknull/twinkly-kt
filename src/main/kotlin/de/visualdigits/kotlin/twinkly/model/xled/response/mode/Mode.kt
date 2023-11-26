@@ -1,0 +1,17 @@
+package de.visualdigits.kotlin.twinkly.model.xled.response.mode
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import de.visualdigits.kotlin.twinkly.model.common.JsonObject
+
+@JsonIgnoreProperties("deviceMode")
+class Mode(
+    code: Int? = null,
+    val mode: String? = null,
+    @JsonProperty("detect_mode") val detectMode: Int? = null,
+    @JsonProperty("shop_mode") val shopMode: Int? = null,
+    val id: Int? = null,
+    @JsonProperty("unique_id") val uniqueId: String? = null,
+    val name: String? = null,
+    val deviceMode: DeviceMode = mode?.let { m -> DeviceMode.valueOf(m) }?: DeviceMode.off
+) : JsonObject(code)

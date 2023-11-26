@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.visualdigits</groupId>
+  <artifactId>twinkly-kt</artifactId>
+  <version>${revision}</version>
+
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.1.0</version>
+  </parent>
+
+  <properties>
+	<revision>1.0-SNAPSHOT</revision>
+    <java-version>17</java-version>
+    <compilerVersion>17</compilerVersion>
+    <project.build.source>17</project.build.source>
+    <project.build.target>17</project.build.target>
+    <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <kotlin.code.style>official</kotlin.code.style>
+
+    <version.jackson>2.15.2</version.jackson>
+    <version.kotlin.maven>1.9.10</version.kotlin.maven>
+    <version.kotlin.language>1.9</version.kotlin.language>
+    <version.log4j>1.2.17</version.log4j>
+    <version.slf4j>2.0.5</version.slf4j>
+    <version.junit.jupiter>5.10.0</version.junit.jupiter>
+    <version.acme4j-client>2.16</version.acme4j-client>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>mavenCentral</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- kotlin -->
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>${version.kotlin.maven}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>${version.kotlin.maven}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+      <version>1.7.2</version>
+    </dependency>
+
+    <!-- common stuff -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.imgscalr</groupId>
+      <artifactId>imgscalr-lib</artifactId>
+      <version>4.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.madgag</groupId>
+      <artifactId>animated-gif-lib</artifactId>
+      <version>1.4</version>
+    </dependency>
+
+    <!-- springboot -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <!--dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+
+    <!-- jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-kotlin</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+
+    <!-- exif and iptc data -->
+    <dependency> <!-- https://github.com/drewnoakes/metadata-extractor -->
+      <groupId>com.drewnoakes</groupId>
+      <artifactId>metadata-extractor</artifactId>
+      <version>2.18.0</version>
+    </dependency>
+
+    <!-- thumbnails -->
+    <dependency>
+      <groupId>net.coobird</groupId>
+      <artifactId>thumbnailator</artifactId>
+      <version>0.4.20</version>
+    </dependency>
+
+    <!-- markdown rocessing -->
+    <dependency>
+      <groupId>com.github.rjeschke</groupId>
+      <artifactId>txtmark</artifactId>
+      <version>0.13</version>
+    </dependency>
+
+    <!-- mime types -->
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+      <version>2.8.0</version>
+    </dependency>
+
+    <!-- Crypto stuff -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15to18</artifactId>
+      <version>1.72</version>
+    </dependency>
+    <dependency>
+      <groupId>org.shredzone.acme4j</groupId>
+      <artifactId>acme4j-client</artifactId>
+      <version>${version.acme4j-client}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.shredzone.acme4j</groupId>
+      <artifactId>acme4j-utils</artifactId>
+      <version>${version.acme4j-client}</version>
+    </dependency>
+
+    <!-- Ajax -->
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>jquery</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>5.2.3</version>
+    </dependency>
+
+    <!-- testing -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.10.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${version.kotlin.maven}</version>
+        <configuration>
+          <languageVersion>${version.kotlin.language}</languageVersion>
+          <jvmTarget>${project.build.target}</jvmTarget>
+        </configuration>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+      </plugin>
+	  
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.1.2</version>
+      </plugin>
+	  
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>${project.build.source}</source>
+          <target>${project.build.target}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <executable>true</executable>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

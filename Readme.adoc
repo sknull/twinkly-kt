@@ -1,0 +1,111 @@
+= twinkly-kt
+:doctype: article
+:description: Project Documentation for twinkly-kt
+:keywords: twinkly, kotlin
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 5
+
+== About
+
+This my attempt to bring control of twinkly devices to the kotlin world.
+
+It is based on these projects:
+
+- https://github.com/xled/xled-docs
+- https://github.com/scrool/xled (Pavol Babinčák)
+- https://github.com/Anders-Holst/xled_plus (Anders Holst)
+- https://xled-docs.readthedocs.io/en/latest/rest_api.html
+
+== Documentation
+
+=== Known Endpoints
+
+==== brightness
+get + post
+
+http://$host/xled/v1/led/out/brightness
+
+==== color
+get + post
+
+http://$host/xled/v1/led/color
+
+==== config
+get
+
+http://$host/xled/v1/led/config
+
+==== deviceInfo
+get
+
+http://$host/xled/v1/gestalt
+
+==== effects
+get
+
+http://$host/xled/v1/led/effects
+
+==== effectsCurrent
+get
+
+http://$host/xled/v1/led/effects/current
+
+==== layout
+get
+
+http://$host/xled/v1/led/layout/full
+
+==== ledReset
+return get("http://$host/xled/v1/led/reset")
+
+==== login
+post
+
+http://$host/xled/v1/login
+
+==== verify
+post
+
+http://$host/xled/v1/verify
+
+==== mode
+get + post
+
+http://$host/xled/v1/led/mode
+
+==== movie
+post
+
+http://$host/xled/v1/led/movie/full
+
+==== movieConfig
+get + post
+
+http://$host/xled/v1/led/movie/config
+
+==== movies
+get
+
+http://$host/xled/v1/movies
+
+==== moviesCurrent
+get
+
+http://$host/xled/v1/movies/current
+
+==== playlist
+get
+
+http://$host/xled/v1/playlist
+
+==== playlistCurrent
+get
+
+http://$host/xled/v1/playlist/current
+
+==== saturation
+get + post
+
+http://$host/xled/v1/led/out/saturation
