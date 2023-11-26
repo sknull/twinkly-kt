@@ -77,6 +77,11 @@
       <artifactId>animated-gif-lib</artifactId>
       <version>1.4</version>
     </dependency>
+    <dependency>
+      <groupId>net.compartmental.code</groupId>
+      <artifactId>minim</artifactId>
+      <version>2.2.2</version>
+    </dependency>
 
     <!-- springboot -->
     <dependency>
