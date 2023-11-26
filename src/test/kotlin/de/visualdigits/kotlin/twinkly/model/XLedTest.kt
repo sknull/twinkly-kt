@@ -74,7 +74,7 @@ class XLedTest {
             )
         )
         println(newMovie)
-        xled.uploadMovie(XledFrame(10, 21, 4, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
+        xled.uploadMovie(XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
         xled.movieConfig(
             MovieConfig(
                 frameDelay = 1000 / 1,
@@ -93,7 +93,7 @@ class XLedTest {
 
     @Test
     fun testRandomColorMovie() {
-        xled.showFrame("Blah", XledFrame(10, 21, 4, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
+        xled.showFrame("Blah", XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
     }
 
     @Test
@@ -164,7 +164,7 @@ class XLedTest {
 
         val sequence = XledSequence()
 
-        var frame = XledFrame(xled.columns, xled.rows, xled.bytesPerLed, RGBWColor(255, 255, 255, 128, normalize = false))
+        var frame = XledFrame(xled.columns, xled.rows, RGBWColor(255, 255, 255, 128, normalize = false))
 //        frame.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-0.jpg").toURI()))
         sequence.add(frame)
 //        frame = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))
@@ -199,7 +199,7 @@ class XLedTest {
                 fps = fps
             )
         )
-        xled.uploadMovie(sequence.toByteArray())
+        xled.uploadMovie(sequence.toByteArray(xled.bytesPerLed))
         xled.movieConfig(
             MovieConfig(
                 frameDelay = 1000 / fps,

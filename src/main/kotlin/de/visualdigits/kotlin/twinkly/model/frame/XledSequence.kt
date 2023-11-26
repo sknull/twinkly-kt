@@ -14,9 +14,9 @@ class XledSequence(
     val sequence: MutableList<XledFrame> = mutableListOf()
 ) : MutableList<XledFrame> by sequence {
 
-    fun toByteArray(): ByteArray {
+    fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()
-        forEach { baos.write(it.toByteArray()) }
+        forEach { baos.write(it.toByteArray(bytesPerLed)) }
         return baos.toByteArray()
     }
 

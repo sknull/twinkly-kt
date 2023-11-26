@@ -299,7 +299,7 @@ class XLedDevice(host: String): XLed, Session(
                 fps = fps
             )
         )
-        uploadMovie(sequence.toByteArray())
+        uploadMovie(sequence.toByteArray(bytesPerLed))
         movieConfig(
             MovieConfig(
                 frameDelay = 1000 / fps,
@@ -314,7 +314,7 @@ class XLedDevice(host: String): XLed, Session(
 
     override fun showRealTimeFrame(frame: XledFrame) {
         UdpClient(host, UDP_PORT_STREAMING).use { udpClient ->
-            frame.toByteArray()
+            frame.toByteArray(bytesPerLed)
                 .toList()
                 .chunked(900)
                 .mapIndexed { index, value ->
@@ -329,7 +329,7 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     fun uploadMovie(frame: XledFrame): Movie {
-        val bytes = frame.toByteArray()
+        val bytes = frame.toByteArray(bytesPerLed)
         return uploadMovie(bytes)
     }
 

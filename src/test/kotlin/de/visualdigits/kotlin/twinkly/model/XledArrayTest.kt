@@ -22,7 +22,7 @@ class XledArrayTest {
         xledArray.mode(DeviceMode.rt)
         val sequence = XledSequence()
         for (y in 0 until 21) {
-            val frame = XledFrame(20, 21, 4)
+            val frame = XledFrame(20, 21)
             for (x in 0 until 20) {
                 frame[x][y] = RGBColor(255, 255, 255)
             }

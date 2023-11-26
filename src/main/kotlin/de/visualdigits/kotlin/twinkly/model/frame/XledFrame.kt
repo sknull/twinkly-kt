@@ -14,7 +14,6 @@ import javax.imageio.ImageIO
 class XledFrame(
     val columns: Int,
     val rows: Int,
-    val bytesPerLed: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     private val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
 ) : MutableList<MutableList<Color<*>>> by frame {
@@ -58,7 +57,7 @@ class XledFrame(
             image: BufferedImage,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
-            return XledFrame(columns, rows, bytesPerLed, initialColor).setImage(image)
+            return XledFrame(columns, rows, initialColor).setImage(image)
         }
     }
 
@@ -71,7 +70,7 @@ class XledFrame(
         width: Int = columns,
         height: Int = rows
     ): XledFrame {
-        val subFrame = XledFrame(width, height, bytesPerLed, initialColor)
+        val subFrame = XledFrame(width, height, initialColor)
         for (y in offsetY until height) {
             for (x in offsetX until width) {
                 val current = frame[x][y]
@@ -127,17 +126,17 @@ class XledFrame(
         return this
     }
 
-    fun toByteArray(): ByteArray {
+    fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()
         for (x in 0 until columns) {
             for (y in 0 until rows) {
-                baos.write(createPixel(frame[x][y]))
+                baos.write(createPixel(frame[x][y], bytesPerLed))
             }
         }
         return baos.toByteArray()
     }
 
-    private fun createPixel(color: Color<*>): ByteArray {
+    private fun createPixel(color: Color<*>, bytesPerLed: Int): ByteArray {
         return when (color) {
             is RGBWColor -> {
                 if (bytesPerLed == 4) {

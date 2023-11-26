@@ -29,7 +29,7 @@ class Conway(
         while (result.changes > 0) {
             result = nextGeneration(matrix, result)
             matrix = result.matrix
-            val frame = XledFrame(xled.columns, xled.rows, xled.bytesPerLed)
+            val frame = XledFrame(xled.columns, xled.rows)
             val color = determineColor(result)
             for (y in 0 until xled.rows) {
                 for (x in 0 until xled.columns) {
