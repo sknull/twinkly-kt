@@ -52,7 +52,7 @@ class XLedTest {
         File(ClassLoader.getSystemResource("images/tetris").toURI())
             .listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
             ?.forEach { file ->
-                xled.showRealTimeFrame(XledFrame.fromImage(xled.columns, xled.rows, file))
+                xled.showRealTimeFrame(XledFrame.fromImage(file))
                 Thread.sleep(20)
             }
     }
@@ -98,7 +98,7 @@ class XLedTest {
 
     @Test
     fun testImage() {
-        xled.showFrame("Test", XledFrame.fromImage(xled.columns, xled.rows, File(ClassLoader.getSystemResource("images/test-image.png").toURI())))
+        xled.showFrame("Test", XledFrame.fromImage(File(ClassLoader.getSystemResource("images/test-image.png").toURI())))
     }
 
     @Test

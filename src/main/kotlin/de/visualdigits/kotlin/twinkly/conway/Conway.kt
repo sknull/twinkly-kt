@@ -12,7 +12,7 @@ class Conway(
 ) {
 
     fun run() {
-        val initialFrame = XledFrame.fromImage(xled.columns, xled.rows, preset)
+        val initialFrame = XledFrame.fromImage(preset)
         var matrix = Matrix(xled.columns, xled.rows)
         xled.mode(DeviceMode.rt)
         for (y in 0 until xled.rows) {

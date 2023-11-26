@@ -29,30 +29,24 @@ class XledFrame(
     companion object {
 
         fun fromImage(
-            columns: Int,
-            rows: Int,
             file: File,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
-            return fromImage(columns, rows, ImageIO.read(file), initialColor)
+            return fromImage(ImageIO.read(file), initialColor)
         }
 
         fun fromImage(
-            columns: Int,
-            rows: Int,
             ins: InputStream,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
-            return fromImage(columns, rows, ImageIO.read(ins), initialColor)
+            return fromImage(ImageIO.read(ins), initialColor)
         }
 
         fun fromImage(
-            columns: Int,
-            rows: Int,
             image: BufferedImage,
             initialColor: Color<*> = RGBColor(0, 0, 0, false)
         ): XledFrame {
-            return XledFrame(columns, rows, initialColor).setImage(image)
+            return XledFrame(image.width, image.height, initialColor).setImage(image)
         }
     }
 
