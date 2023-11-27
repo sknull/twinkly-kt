@@ -33,7 +33,7 @@ interface XLed {
     fun showRealTimeSequence(frameSequence: XledSequence, delay: Long) {
         frameSequence.forEach { frame ->
             showRealTimeFrame(frame)
-        Thread.sleep(delay)
+            Thread.sleep(delay)
         }
     }
 

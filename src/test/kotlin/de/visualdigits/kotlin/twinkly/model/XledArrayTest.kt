@@ -20,16 +20,26 @@ class XledArrayTest {
 
     @Test
     fun testMovingStripes() {
+        // vertical
         xledArray.mode(DeviceMode.rt)
-        val sequence = XledSequence()
         for (y in 0 until 21) {
             val frame = XledFrame(20, 21)
             for (x in 0 until 20) {
                 frame[x][y] = RGBColor(255, 255, 255)
             }
-            sequence.add(frame)
+            xledArray.showRealTimeFrame(frame)
+            Thread.sleep(100)
         }
-        xledArray.showRealTimeSequence(sequence, 300)
+
+        // horizontal
+        for (x in 0 until 20) {
+            val frame = XledFrame(20, 21)
+            for (y in 0 until 21) {
+                frame[x][y] = RGBColor(255, 255, 255)
+            }
+            xledArray.showRealTimeFrame(frame)
+            Thread.sleep(100)
+        }
     }
 
     @Test
@@ -64,6 +74,21 @@ class XledArrayTest {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/glitter").toURI()))
         while(true) {
             xledArray.showRealTimeSequence(sequence, 100)
+        }
+    }
+
+    @Test
+    fun testTwinklyPacmanFrame() {
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(XledFrame.fromImage(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI())))
+    }
+
+    @Test
+    fun testTwinklyPacman() {
+        xledArray.mode(DeviceMode.rt)
+        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/pacman").toURI()))
+        while(true) {
+            xledArray.showRealTimeSequence(sequence, 300)
         }
     }
 

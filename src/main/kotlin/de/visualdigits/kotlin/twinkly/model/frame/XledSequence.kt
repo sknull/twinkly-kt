@@ -28,8 +28,9 @@ class XledSequence(
         ): XledSequence {
             if (!directory.isDirectory) throw IllegalArgumentException("Given file is not a directory")
             val sequence = XledSequence()
-            directory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
-                ?.take(maxFrames)
+            val files = directory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
+            files?.sort()
+            files?.take(maxFrames)
                 ?.forEach { file ->
                     sequence.add(XledFrame.fromImage(file, initialColor))
                 }
