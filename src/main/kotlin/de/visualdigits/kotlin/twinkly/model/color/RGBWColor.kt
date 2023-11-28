@@ -13,14 +13,18 @@ class RGBWColor(
     normalize: Boolean = true /** Determines if the white is extracted from the other values or not. */
 ) : RGBBaseColor<RGBWColor>(red, green, blue, normalize) {
 
-    constructor(value: Long) : this(
-        red = min(a = 255, b = (value and 0xff000000L shr 24).toInt()),
-        green = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
-        blue = min(a = 255, b = (value and 0x0000ff00L shr 8).toInt()),
-        white = min(a = 255, b = (value and 0x000000ffL).toInt()),
+    constructor(rgb: Long, normalize: Boolean = false) : this(
+        red = min(a = 255, b = (rgb and 0xff000000L shr 24).toInt()),
+        green = min(a = 255, b = (rgb and 0x00ff0000L shr 16).toInt()),
+        blue = min(a = 255, b = (rgb and 0x0000ff00L shr 8).toInt()),
+        white = min(a = 255, b = (rgb and 0x000000ffL).toInt()),
+        normalize = normalize
     )
 
-    constructor(hex: String) : this(decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"))
+    constructor(hex: String, normalize: Boolean = false) : this(
+        rgb = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
+        normalize = normalize
+    )
 
     init {
         if (normalize && white == 0) {

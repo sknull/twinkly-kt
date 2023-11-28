@@ -11,7 +11,7 @@ class RGBColor(
    normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
 ) : RGBBaseColor<RGBColor>(red, green, blue, normalize) {
 
-    constructor(value: Long, normalize: Boolean = true) : this(
+    constructor(value: Long, normalize: Boolean = false) : this(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
         green = min(a = 255, b = (value and 0x0000ff00L shr 8).toInt()),
         blue = min(a = 255, b = (value and 0x000000ffL).toInt()),

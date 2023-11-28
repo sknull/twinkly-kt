@@ -12,16 +12,20 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     var red: Int = 0,
     var green: Int = 0,
     var blue: Int = 0,
-    val normalize: Boolean = true /** Determines if the white is extracted from the other values or not. */
+    val normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
 ) : Color<T> {
 
-    constructor(value: Long) : this(
+    constructor(value: Long, normalize: Boolean = false) : this(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
         green = min(a = 255, b = (value and 0x0000ff00L shr 8).toInt()),
-        blue = min(a = 255, b = (value and 0x000000ffL).toInt())
+        blue = min(a = 255, b = (value and 0x000000ffL).toInt()),
+        normalize = normalize
     )
 
-    constructor(hex: String) : this(decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"))
+    constructor(hex: String, normalize: Boolean = false) : this(
+        value = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
+        normalize = normalize
+    )
 
     override fun toString(): String {
         return "[" + StringUtils.join(listOf(red, green, blue), ", ") + "]"

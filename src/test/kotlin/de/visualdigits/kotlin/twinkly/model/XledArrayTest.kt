@@ -19,6 +19,17 @@ class XledArrayTest {
     ))
 
     @Test
+    fun testWhites() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(255, 255, 255)
+        )
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(frame)
+    }
+
+    @Test
     fun testMovingStripes() {
         // vertical
         xledArray.mode(DeviceMode.rt)
