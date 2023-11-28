@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.conway
+package de.visualdigits.kotlin.twinkly.games.conway
 
 class Matrix(
     val width: Int,

@@ -1,7 +1,8 @@
 package de.visualdigits.kotlin.twinkly.model
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.conway.Conway
+import de.visualdigits.kotlin.twinkly.games.conway.Conway
+import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
@@ -25,6 +26,51 @@ class XledArrayTest {
             height = xledArray.height,
             initialColor = RGBColor(255, 255, 255)
         )
+
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(frame)
+    }
+
+    @Test
+    fun testFade() {
+        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
+
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(frame)
+        Thread.sleep(1000)
+//        val oldFrame = frame.clone()
+//        val color = RGBColor(255, 0, 0)
+//
+//        val d = 1.0 / 10.0
+//
+//        for (y in 0 until frame.height) {
+//            for (x in 0 until frame.width) {
+//                frame[x][y] = oldFrame[x][y].fade(color, d, BlendMode.AVERAGE)
+//            }
+//        }
+//
+//        xledArray.showRealTimeFrame(frame)
+
+        frame.fade(RGBColor(255,255,0), 2000, xledArray)
+    }
+
+    @Test
+    fun testBlendModes() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height
+        )
+
+        val red = XledFrame(10, 10, RGBColor(255,0, 0))
+        frame.replaceSubFrame(red, 0, 0)
+
+        val green = XledFrame(10, 10, RGBColor(0,255, 0))
+
+        val transparent = XledFrame(2, 2, RGBColor(0,0, 0, 0))
+        green.replaceSubFrame(transparent, 1, 1)
+
+        frame.replaceSubFrame(green, 5, 5)
+
         xledArray.mode(DeviceMode.rt)
         xledArray.showRealTimeFrame(frame)
     }

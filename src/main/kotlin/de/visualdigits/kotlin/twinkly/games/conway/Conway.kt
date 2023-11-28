@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.conway
+package de.visualdigits.kotlin.twinkly.games.conway
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame

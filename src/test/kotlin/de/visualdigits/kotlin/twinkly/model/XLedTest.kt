@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.model
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.conway.Conway
+import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode

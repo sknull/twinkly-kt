@@ -12,6 +12,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     var red: Int = 0,
     var green: Int = 0,
     var blue: Int = 0,
+    var alpha: Int = 255,
     val normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
 ) : Color<T> {
 
@@ -53,7 +54,6 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     inline fun <reified T : Color<T>> convert(): T {
         return when (T::class) {
             RGBWColor::class -> toRGBW() as T
-            RGBAColor::class -> toRGBA() as T
             HSVColor::class -> toHSV() as T
             RGBBaseColor::class -> toRGB() as T
             else -> throw IllegalStateException("Unsupported color type")
@@ -130,27 +130,6 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                 )
             }
         }
-    }
-
-    override fun toRGBA(): RGBAColor {
-        val amber: Int
-        var r = 0
-        var g = 0
-        if (red > green) {
-            amber = green
-            g = 0
-            r -= (amber / RGBAColor.AMBER_FACTOR).roundToInt()
-        } else {
-            amber = red
-            r = 0
-            g -= (amber * RGBAColor.AMBER_FACTOR).roundToInt()
-        }
-        return RGBAColor(
-            red = r - amber,
-            green = g - amber,
-            blue = blue,
-            amber = amber
-        )
     }
 
     override fun equals(other: Any?): Boolean {

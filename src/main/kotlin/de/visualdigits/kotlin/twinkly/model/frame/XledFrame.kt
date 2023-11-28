@@ -1,20 +1,24 @@
 package de.visualdigits.kotlin.twinkly.model.frame
 
+import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import org.apache.commons.lang3.math.NumberUtils.min
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.lang.StringBuilder
 import javax.imageio.ImageIO
+import kotlin.math.max
 
-class XledFrame(
+open class XledFrame(
     val width: Int,
     val height: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
-    private val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
+    val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
 ) : MutableList<MutableList<Color<*>>> by frame {
 
     init {
@@ -31,33 +35,67 @@ class XledFrame(
 
         fun fromImage(
             file: File,
-            initialColor: Color<*> = RGBColor(0, 0, 0, false)
+            initialColor: Color<*> = RGBColor(0, 0, 0)
         ): XledFrame {
             return fromImage(ImageIO.read(file), initialColor)
         }
 
         fun fromImage(
             ins: InputStream,
-            initialColor: Color<*> = RGBColor(0, 0, 0, false)
+            initialColor: Color<*> = RGBColor(0, 0, 0)
         ): XledFrame {
             return fromImage(ImageIO.read(ins), initialColor)
         }
 
         fun fromImage(
             image: BufferedImage,
-            initialColor: Color<*> = RGBColor(0, 0, 0, false)
+            initialColor: Color<*> = RGBColor(0, 0, 0)
         ): XledFrame {
             return XledFrame(image.width, image.height, initialColor).setImage(image)
         }
+    }
 
-//        fun fromTest(
-//            text: String,
-//            size: Int,
-//            fontName: String,
-//            color: java.awt.Color,
-//        ): XledFrame {
-//
-//        }
+    override fun toString(): String {
+        val sb = StringBuilder()
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                sb.append(frame[x][y].ansiColor())
+            }
+            sb.append('\n')
+        }
+        return sb.toString()
+    }
+
+    fun clone(): XledFrame {
+        val clone = XledFrame(width, height, initialColor)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                clone[x][y] = frame[x][y].clone()
+            }
+        }
+        return clone
+    }
+
+    fun setColor(color: Color<*>) {
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                frame[x][y] = color.clone()
+            }
+        }
+    }
+
+    fun fade(color: Color<*>, millis: Long, xled: XLed) {
+        val delay = millis / 255
+        val oldFrame = clone()
+        for (f in 0 until 256) {
+            xled.showRealTimeFrame(this)
+            Thread.sleep(max(0, delay))
+            for (y in 0 until height) {
+                for (x in 0 until width) {
+                    frame[x][y] = oldFrame[x][y].fade(color, f / 256.0, BlendMode.AVERAGE)
+                }
+            }
+        }
     }
 
     /**
@@ -81,14 +119,15 @@ class XledFrame(
     fun replaceSubFrame(
         subFrame: XledFrame,
         offsetX: Int = 0,
-        offsetY: Int = 0
+        offsetY: Int = 0,
+        blendMode: BlendMode = BlendMode.AVERAGE
     ): XledFrame {
         val xStart = if (offsetX >= 0) 0 else -1 * offsetX
         val yStart = if (offsetY >= 0) 0 else -1 * offsetY
 
         for (y in yStart until min(subFrame.height, height - offsetY)) {
             for (x in xStart until min(subFrame.width, width - offsetX)) {
-                frame[x + offsetX][y + offsetY] = subFrame[x][y].clone()
+                frame[x + offsetX][y + offsetY] = frame[x + offsetX][y + offsetY].blend(subFrame[x][y], blendMode)
             }
         }
         return this
@@ -106,7 +145,7 @@ class XledFrame(
         for (y in 0 until height) {
             for (x in 0 until width) {
                 val colors = frame[x]
-                colors[y] = RGBColor(image.getRGB(x, y).toLong(), false)
+                colors[y] = RGBColor(image.getRGB(x, y).toLong())
             }
         }
         return this

@@ -10,7 +10,8 @@ class HSVColor(
     /** 0-100 */
     var s: Int = 0,
     /** 0 -100 */
-    var v: Int = 0
+    var v: Int = 0,
+    var alpha: Int = 255
 ) : Color<HSVColor> {
 
     override fun toString(): String {
@@ -26,7 +27,7 @@ class HSVColor(
         return java.awt.Color(rgbColor.red, rgbColor.green, rgbColor.blue)
     }
 
-    override fun clone(): HSVColor = HSVColor(h, s, v)
+    override fun clone(): HSVColor = HSVColor(h, s, v, alpha)
 
     override fun parameterMap(): Map<String, Int> {
         val rgbColor = toRGB()
@@ -39,9 +40,15 @@ class HSVColor(
 
     override fun isBlack(): Boolean = toRGB().isBlack()
 
-    override fun fade(other: Any, factor: Double): HSVColor {
+    override fun blend(other: Any, blendMode: BlendMode): HSVColor {
         return if (other is HSVColor) {
-            other.toRGB().fade(other.toRGB(), factor).toHSV()
+            fade(other, other.alpha / 255.0, blendMode)
+        } else throw IllegalArgumentException("Cannot not fade another type")
+    }
+
+    override fun fade(other: Any, factor: Double, blendMode: BlendMode): HSVColor {
+        return if (other is HSVColor) {
+            other.toRGB().fade(other.toRGB(), factor, blendMode).toHSV()
         } else throw IllegalArgumentException("Cannot not fade another type")
     }
 
@@ -97,9 +104,5 @@ class HSVColor(
 
     override fun toRGBW(): RGBWColor {
         return toRGB().toRGBW()
-    }
-
-    override fun toRGBA(): RGBAColor {
-        return toRGB().toRGBA()
     }
 }

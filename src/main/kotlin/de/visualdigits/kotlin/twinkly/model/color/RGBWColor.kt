@@ -2,6 +2,7 @@ package de.visualdigits.kotlin.twinkly.model.color
 
 import org.apache.commons.lang3.StringUtils
 import java.lang.Long.decode
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -10,8 +11,9 @@ class RGBWColor(
     green: Int = 0,
     blue: Int = 0,
     var white: Int = 0,
-    normalize: Boolean = true /** Determines if the white is extracted from the other values or not. */
-) : RGBBaseColor<RGBWColor>(red, green, blue, normalize) {
+    alpha: Int = 255,
+    normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
+) : RGBBaseColor<RGBWColor>(red, green, blue, alpha, normalize) {
 
     constructor(rgb: Long, normalize: Boolean = false) : this(
         red = min(a = 255, b = (rgb and 0xff000000L shr 24).toInt()),
@@ -43,7 +45,7 @@ class RGBWColor(
         return "RGBColor(hex='${web()}', r=$red, g=$green , b=$blue, w=$white)"
     }
 
-    override fun clone(): RGBWColor = RGBWColor(red, green, blue, white, normalize)
+    override fun clone(): RGBWColor = RGBWColor(red, green, blue, white, alpha, normalize)
 
     override fun parameterMap(): Map<String, Int> = mapOf(
         "Red" to red,
@@ -54,14 +56,44 @@ class RGBWColor(
 
     override fun isBlack(): Boolean = red == 0 && green == 0 && blue == 0 && white == 0
 
-    override fun fade(other: Any, factor: Double): RGBWColor {
+    override fun blend(other: Any, blendMode: BlendMode): RGBWColor {
         return if (other is RGBWColor) {
-            RGBWColor(
-                red = min(255, (red + factor * (other.red - red)).roundToInt()),
-                green =  min(255, (green + factor * (other.green - green)).roundToInt()),
-                blue =  min(255, (blue + factor * (other.blue - blue)).roundToInt()),
-                white =  min(255, (white + factor * (other.white - white)).roundToInt())
-            )
+            fade(other, other.alpha / 255.0, blendMode)
+        } else throw IllegalArgumentException("Cannot not fade another type")
+    }
+
+    override fun fade(other: Any, factor: Double, blendMode: BlendMode): RGBWColor {
+        return if (other is RGBWColor) {
+            when (blendMode) {
+                BlendMode.REPLACE -> {
+                    other
+                }
+                BlendMode.AVERAGE -> {
+                    RGBWColor(
+                        red = min(255, (red + factor * (other.red - red)).roundToInt()),
+                        green = min(255, (green + factor * (other.green - green)).roundToInt()),
+                        blue = min(255, (blue + factor * (other.blue - blue)).roundToInt()),
+                        white = min(255, (white + factor * (other.white - white)).roundToInt())
+                    )
+                }
+                BlendMode.ADD -> {
+                    RGBWColor(
+                        red = min(255, (red + factor * (other.red)).roundToInt()),
+                        green = min(255, (green + factor * (other.green)).roundToInt()),
+                        blue = min(255, (blue + factor * (other.blue)).roundToInt()),
+                        white = min(255, (white + factor * (other.white)).roundToInt())
+                    )
+                }
+                BlendMode.SUBTRACT -> {
+                    RGBWColor(
+                        red = max(0, (red- factor * (other.red)).roundToInt()),
+                        green = max(0, (green - factor * (other.green)).roundToInt()),
+                        blue = max(0, (blue - factor * (other.blue)).roundToInt()),
+                        white = max(0, (white - factor * (other.white)).roundToInt())
+                    )
+                }
+            }
+
         } else throw IllegalArgumentException("Cannot not fade another type")
     }
 
@@ -89,9 +121,5 @@ class RGBWColor(
 
     override fun toRGBW(): RGBWColor {
         return this
-    }
-
-    override fun toRGBA(): RGBAColor {
-        return toRGB().toRGBA()
     }
 }

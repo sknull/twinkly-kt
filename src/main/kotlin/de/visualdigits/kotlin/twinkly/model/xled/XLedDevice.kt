@@ -49,12 +49,20 @@ class XLedDevice(host: String): XLed, Session(
     override val bytesPerLed: Int
 
     init {
-        login()
-        deviceInfo = deviceInfo()
-        layout = layout()
-        width = layout.columns
-        height = layout.rows
-        bytesPerLed = deviceInfo.bytesPerLed!!
+        if (host.isNotEmpty()) {
+            login()
+            deviceInfo = deviceInfo()
+            layout = layout()
+            width = layout.columns
+            height = layout.rows
+            bytesPerLed = deviceInfo.bytesPerLed!!
+        } else {
+            deviceInfo = DeviceInfo()
+            layout = LedLayout()
+            width = 0
+            height = 0
+            bytesPerLed = 0
+        }
     }
 
     override fun powerOn() {

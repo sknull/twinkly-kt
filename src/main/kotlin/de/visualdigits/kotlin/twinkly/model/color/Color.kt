@@ -16,16 +16,19 @@ interface Color<T : Color<T>> {
 
     fun toRGBW(): RGBWColor
 
-    fun toRGBA(): RGBAColor
-
     fun parameterMap(): Map<String, Int>
 
     fun clone(): T
 
     /**
+     * Blends this color towards the given color according to its alpha value of the given color.
+     */
+    fun blend(other: Any, blendMode: BlendMode): T
+
+    /**
      * Fades this instance towards the given instance using the given factor 0.0 .. 1.0.
      */
-    fun fade(other: Any, factor: Double): T
+    fun fade(other: Any, factor: Double, blendMode: BlendMode): T
 
     fun isBlack(): Boolean
 
