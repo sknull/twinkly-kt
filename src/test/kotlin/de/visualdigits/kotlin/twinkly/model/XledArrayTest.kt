@@ -38,18 +38,6 @@ class XledArrayTest {
         xledArray.mode(DeviceMode.rt)
         xledArray.showRealTimeFrame(frame)
         Thread.sleep(1000)
-//        val oldFrame = frame.clone()
-//        val color = RGBColor(255, 0, 0)
-//
-//        val d = 1.0 / 10.0
-//
-//        for (y in 0 until frame.height) {
-//            for (x in 0 until frame.width) {
-//                frame[x][y] = oldFrame[x][y].fade(color, d, BlendMode.AVERAGE)
-//            }
-//        }
-//
-//        xledArray.showRealTimeFrame(frame)
 
         frame.fade(RGBColor(255,255,0), 2000, xledArray)
     }
