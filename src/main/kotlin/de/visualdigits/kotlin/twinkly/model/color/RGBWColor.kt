@@ -73,7 +73,8 @@ class RGBWColor(
                         red = min(255, (red + factor * (other.red - red)).roundToInt()),
                         green = min(255, (green + factor * (other.green - green)).roundToInt()),
                         blue = min(255, (blue + factor * (other.blue - blue)).roundToInt()),
-                        white = min(255, (white + factor * (other.white - white)).roundToInt())
+                        white = min(255, (white + factor * (other.white - white)).roundToInt()),
+                        alpha = alpha
                     )
                 }
                 BlendMode.ADD -> {
@@ -81,7 +82,8 @@ class RGBWColor(
                         red = min(255, (red + factor * (other.red)).roundToInt()),
                         green = min(255, (green + factor * (other.green)).roundToInt()),
                         blue = min(255, (blue + factor * (other.blue)).roundToInt()),
-                        white = min(255, (white + factor * (other.white)).roundToInt())
+                        white = min(255, (white + factor * (other.white)).roundToInt()),
+                        alpha = alpha
                     )
                 }
                 BlendMode.SUBTRACT -> {
@@ -89,7 +91,8 @@ class RGBWColor(
                         red = max(0, (red- factor * (other.red)).roundToInt()),
                         green = max(0, (green - factor * (other.green)).roundToInt()),
                         blue = max(0, (blue - factor * (other.blue)).roundToInt()),
-                        white = max(0, (white - factor * (other.white)).roundToInt())
+                        white = max(0, (white - factor * (other.white)).roundToInt()),
+                        alpha = alpha
                     )
                 }
             }
@@ -112,6 +115,7 @@ class RGBWColor(
             red = min(255, red + white),
             green = min(255, green + white),
             blue = min(255, blue + white),
+            alpha = alpha
         )
     }
 

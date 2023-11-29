@@ -44,21 +44,24 @@ class RGBColor(
                     RGBColor(
                         red = min(255, (red + factor * (other.red - red)).roundToInt()),
                         green = min(255, (green + factor * (other.green - green)).roundToInt()),
-                        blue = min(255, (blue + factor * (other.blue - blue)).roundToInt())
+                        blue = min(255, (blue + factor * (other.blue - blue)).roundToInt()),
+                        alpha = alpha
                     )
                 }
                 BlendMode.ADD -> {
                     RGBColor(
                         red = min(255, (red + factor * (other.red)).roundToInt()),
                         green = min(255, (green + factor * (other.green)).roundToInt()),
-                        blue = min(255, (blue + factor * (other.blue)).roundToInt())
+                        blue = min(255, (blue + factor * (other.blue)).roundToInt()),
+                        alpha = alpha
                     )
                 }
                 BlendMode.SUBTRACT -> {
                     RGBColor(
                         red = max(0, (red - factor * (other.red)).roundToInt()),
                         green = max(0, (green - factor * (other.green)).roundToInt()),
-                        blue = max(0, (blue - factor * (other.blue)).roundToInt())
+                        blue = max(0, (blue - factor * (other.blue)).roundToInt()),
+                        alpha = alpha
                     )
                 }
             }

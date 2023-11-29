@@ -54,18 +54,14 @@ class TetrisTest {
     }
 
     fun blockFountain() {
-        runBlocking<Unit> {
-            var count = 0
+        runBlocking {
             while (true) {
                 val b = Random(System.currentTimeMillis()).nextInt(0, n)
                 val block = blocks[b].createInstance()
                 println("starting block '${block::class.simpleName}'")
                 async(Dispatchers.Default) {
-                    count++
                     block.start(xledArray, board)
-                    count--
                 }
-                println("### count: $count")
                 delay(2000)
             }
         }

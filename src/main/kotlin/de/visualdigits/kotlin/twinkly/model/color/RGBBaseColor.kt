@@ -64,7 +64,8 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
         return RGBColor(
             red = red,
             green = green,
-            blue = blue
+            blue = blue,
+            alpha = alpha
         )
     }
 
@@ -97,7 +98,12 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                 h = 0.0
             }
         }
-        return HSVColor(h.toInt(), (100 * s).toInt(), (100 * max).toInt())
+        return HSVColor(
+            h = h.toInt(),
+            s = (100 * s).toInt(),
+            v = (100 * max).toInt(),
+            alpha = alpha
+        )
     }
 
     override fun toRGBW(): RGBWColor {
@@ -108,6 +114,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                 green = green - white,
                 blue = blue - white,
                 white = white,
+                alpha = alpha,
                 normalize = normalize
             )
         } else {
@@ -118,6 +125,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                     green = green,
                     blue = blue,
                     white = min(red, min(green, blue)) / 2,
+                    alpha = alpha,
                     normalize = normalize
                 )
             } else {
@@ -126,6 +134,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                     green = green,
                     blue = blue,
                     white = 0,
+                    alpha = alpha,
                     normalize = normalize
                 )
             }

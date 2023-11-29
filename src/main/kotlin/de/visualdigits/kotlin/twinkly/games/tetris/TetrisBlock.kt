@@ -5,14 +5,15 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import org.apache.commons.lang3.math.NumberUtils.min
 import kotlin.random.Random
 
-open class TetrisBlock(width: Int, height: Int, initialColor: Color<*>) : XledFrame(width, height, initialColor) {
+open class TetrisBlock(
+    width: Int,
+    height: Int,
+    initialColor: Color<*>,
+    val pixelsToCheck: List<Pair<Int, Int>>
+) : XledFrame(width, height, initialColor) {
 
     private var xled: XLed = XLedDevice("")
     private var board: XledFrame = XledFrame(0, 0)
@@ -43,8 +44,8 @@ open class TetrisBlock(width: Int, height: Int, initialColor: Color<*>) : XledFr
 
     suspend fun move() {
         while (running) {
-            val lineAhead = board.subFrame(posX, posY + height, width, 1)
-            if (lineAhead.frame.any { row -> row.any { color ->!color.isBlack() } }) {
+            val collision = pixelsToCheck.any { p -> !board[posX + p.first][posY + p.second].isBlack() }
+            if (collision) {
                 println("collision - stopping block '${this::class.simpleName}'")
                 running = false
                 break

@@ -78,7 +78,8 @@ class HSVColor(
         return RGBColor(
             red = components[0],
             green = components[1],
-            blue = components[2]
+            blue = components[2],
+            alpha = alpha
         )
     }
 
