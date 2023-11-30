@@ -1,17 +1,13 @@
 package de.visualdigits.kotlin.twinkly.apps
 
-import ddf.minim.Minim
-import ddf.minim.analysis.BeatDetect
-import ddf.minim.analysis.FFT
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
-import java.io.File
-import java.io.InputStream
+import de.visualdigits.minim.Minim
+import de.visualdigits.minim.analysis.BeatDetect
+import de.visualdigits.minim.analysis.FFT
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -34,7 +30,7 @@ class SpectrumAnalyzer(
 ) {
 
     fun run() {
-        val minim = Minim(this)
+        val minim = Minim()
         val player = minim.lineIn
         val beat = BeatDetect()
         val fft = FFT(player.bufferSize(), player.sampleRate())
@@ -77,13 +73,5 @@ class SpectrumAnalyzer(
             xled.showRealTimeFrame(frame)
             Thread.sleep(20)
         }
-    }
-
-    fun sketchPath(foo: String): String {
-        return ""
-    }
-
-    fun createInput(fileName: String): InputStream? {
-        return File(fileName).inputStream()
     }
 }
