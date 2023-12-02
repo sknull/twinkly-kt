@@ -29,7 +29,7 @@ class Oscilloscope(
 
     fun run() {
         val minim = Minim()
-        val player = minim.getLineIn(AudioInputType.MONO)
+        val player = minim.getLineIn(AudioInputType.MONO)!!
         val beat = BeatDetect()
         player.disableMonitoring()
         xled.mode(DeviceMode.rt)

@@ -1,13 +1,13 @@
 package de.visualdigits.kotlin.twinkly.apps
 
+import de.visualdigits.kotlin.minim.BeatDetect
+import de.visualdigits.kotlin.minim.FFT
+import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
-import de.visualdigits.minim.Minim
-import de.visualdigits.minim.analysis.BeatDetect
-import de.visualdigits.minim.analysis.FFT
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -21,7 +21,7 @@ import kotlin.math.min
  * @param colorMaxBeat The color used for the max values of the bands when on a beat (moving down over time)
  * @param xled The xled device to use.
  */
-class SpectrumAnalyzer(
+class SpectrumAnalyzerNew(
     val colorMeter: Color<*> = RGBColor(0, 255, 0),
     val colorMax: Color<*> = RGBColor(255, 0, 0),
     val colorMeterBeat: Color<*> = RGBColor(255, 255, 255),
