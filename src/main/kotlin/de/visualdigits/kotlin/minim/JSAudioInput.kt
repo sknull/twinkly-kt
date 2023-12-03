@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.minim
 
+import de.visualdigits.minim.javasound.DoubleSampleBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
@@ -12,7 +13,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
 
     // line reading variables
     private var line: TargetDataLine?
-    private val buffer: de.visualdigits.minim.javasound.FloatSampleBuffer
+    private val buffer: DoubleSampleBuffer
     private val bufferSize: Int
     private var finished: Boolean
     private val rawBytes: ByteArray
@@ -20,10 +21,10 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
     init {
         line = tdl
         this.bufferSize = bufferSize
-        buffer = de.visualdigits.minim.javasound.FloatSampleBuffer(
+        buffer = DoubleSampleBuffer(
             tdl.format.channels,
             bufferSize,
-            tdl.format.sampleRate
+            tdl.format.sampleRate.toDouble()
         )
         finished = false
         val byteBufferSize = buffer.getByteArrayBufferSize(line!!.format)
@@ -76,18 +77,18 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
         return line!!.controls
     }
 
-    override fun read(): FloatArray {
+    override fun read(): DoubleArray {
         // TODO: this is sort of terrible, but will do for now. would be much better
-        // to dig the conversion stuff out of de.visualdigits.minim.javasound.FloatSampleBuffer and do this more directly
+        // to dig the conversion stuff out of FloatSampleBuffer and do this more directly
         val numSamples = 1
         // allocate enough bytes for one sample frame
         val bytes = ByteArray(line!!.format.frameSize)
         line!!.read(bytes, 0, bytes.size)
         buffer.setSamplesFromBytes(bytes, 0, line!!.format, 0, numSamples)
         // allocate enough floats for the number of channels
-        val samples = FloatArray(buffer.channelCount)
+        val samples = DoubleArray(buffer.channelCount)
         for (i in samples.indices) {
-            samples[i] = buffer.getChannel(i)[0]
+            samples[i] = buffer.getChannel(i)?.get(0)?:0.0
         }
         return samples
     }
@@ -97,7 +98,11 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
         val numChannels = line!!.format.channels
         val numSamples = buffer.bufferSize
         val sampleRate = line!!.format.sampleRate
-        val convert = de.visualdigits.minim.javasound.FloatSampleBuffer(numChannels, numSamples, sampleRate)
+        val convert = DoubleSampleBuffer(
+            numChannels,
+            numSamples,
+            sampleRate.toDouble()
+        )
         // allocate enough bytes for the size of this buffer
         val bytes = ByteArray(convert.getByteArrayBufferSize(line!!.format))
         // read the bytes

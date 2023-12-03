@@ -11,7 +11,7 @@ import kotlin.math.sqrt
 
 class BeatDetect(
     private val algorithm: DetectMode = DetectMode.SOUND_ENERGY,
-    private val sampleRate: Float = 44100.0F,
+    private val sampleRate: Double = 44100.0,
     private val timeSize: Int = 1024,
     private var sensitivity: Int = 10,
     /**
@@ -34,8 +34,8 @@ class BeatDetect(
      */
     // vars for sEnergy
     var isOnset = false
-    private var eBuffer: FloatArray = floatArrayOf()
-    private var dBuffer: FloatArray = floatArrayOf()
+    private var eBuffer: DoubleArray = doubleArrayOf()
+    private var dBuffer: DoubleArray = doubleArrayOf()
 
     // a millisecond timer used to prevent reporting onsets until the sensitivity threshold has been reached
     // see the sEnergy method
@@ -44,29 +44,30 @@ class BeatDetect(
     // vars for fEnergy
     private var fIsOnset: BooleanArray = booleanArrayOf()
     private var spect: FFT = FFT(timeSize, sampleRate)
-    private var feBuffer: Array<FloatArray> = arrayOf()
-    private var fdBuffer: Array<FloatArray> = arrayOf()
+    private var feBuffer: Array<DoubleArray> = arrayOf()
+    private var fdBuffer: Array<DoubleArray> = arrayOf()
     private var fTimer: LongArray = longArrayOf()
 
     init {
         initSEResources()
+        initFEResources()
     }
 
     private fun initSEResources() {
         isOnset = false
-        eBuffer = FloatArray((sampleRate / timeSize).roundToInt()) { 0.0F }
-        dBuffer = FloatArray((sampleRate / timeSize).roundToInt()) { 0.0F }
+        eBuffer = DoubleArray((sampleRate / timeSize).roundToInt()) { 0.0 }
+        dBuffer = DoubleArray((sampleRate / timeSize).roundToInt()) { 0.0 }
         sensitivityTimer = 0
         insertAt = 0
     }
 
     private fun initFEResources() {
-        spect = FFT(timeSize, sampleRate.toFloat())
+        spect = FFT(timeSize, sampleRate)
         spect.logAverages(60, 3)
         val numAvg = spect.avgSize()
         fIsOnset = BooleanArray(numAvg)
-        feBuffer = Array(numAvg) { FloatArray((sampleRate / timeSize).roundToInt()) { 0.0F } }
-        fdBuffer = Array(numAvg) { FloatArray((sampleRate / timeSize).roundToInt()) { 0.0F } }
+        feBuffer = Array(numAvg) { DoubleArray((sampleRate / timeSize).roundToInt()) { 0.0 } }
+        fdBuffer = Array(numAvg) { DoubleArray((sampleRate / timeSize).roundToInt()) { 0.0 } }
         fTimer = LongArray(numAvg)
         IntStream.range(0, fTimer.size).forEach { i: Int -> fTimer[i] = 0 }
         insertAt = 0
@@ -86,9 +87,9 @@ class BeatDetect(
      * Analyze the samples in `buffer`. This is a cumulative
      * process, so you must call this function every frame.
      *
-     * @param buffer float[]: the buffer to analyze
+     * @param buffer Double[]: the buffer to analyze
      */
-    fun detect(buffer: FloatArray) {
+    fun detect(buffer: DoubleArray) {
         when (algorithm) {
             DetectMode.SOUND_ENERGY -> sEnergy(buffer)
             DetectMode.FREQ_ENERGY -> fEnergy(buffer)
@@ -113,13 +114,13 @@ class BeatDetect(
      * In sound energy mode this always returns 0.
      *
      * @param i int: which detect band you want the center frequency of.
-     * @return float: the center frequency of the i<sup>th</sup> frequency band
+     * @return Double: the center frequency of the i<sup>th</sup> frequency band
      */
-    fun getDetectCenterFrequency(i: Int): Float {
+    fun getDetectCenterFrequency(i: Int): Double {
         return if (algorithm == DetectMode.FREQ_ENERGY) {
             spect.getAverageCenterFrequency(i)
         }
-        else 0.0F
+        else 0.0
     }
 
     /**
@@ -149,7 +150,7 @@ class BeatDetect(
         if (algorithm == DetectMode.SOUND_ENERGY) {
             return false
         }
-        val upper = min(6.0, spect.avgSize().toDouble()).toInt()
+        val upper = min(6, spect.avgSize())
         return isRange(1, upper, 2)
     }
 
@@ -165,7 +166,7 @@ class BeatDetect(
         if (algorithm == DetectMode.SOUND_ENERGY) {
             return false
         }
-        val lower = min(8.0, spect.avgSize().toDouble()).toInt()
+        val lower = min(8, spect.avgSize())
         val upper = spect.avgSize() - 1
         val thresh = (upper - lower) / 3 + 1
         return isRange(lower, upper, thresh)
@@ -179,11 +180,11 @@ class BeatDetect(
      *
      * @return boolean: true if a hi hat beat has been detected
      */
-    fun isHat(): Boolean {
+    fun isHiHat(): Boolean {
         if (algorithm == DetectMode.SOUND_ENERGY) {
             return false
         }
-        val lower = max((spect.avgSize() - 7).toDouble(), 0.0).toInt()
+        val lower = max((spect.avgSize() - 7), 0)
         val upper = spect.avgSize() - 1
         return isRange(lower, upper, 1)
     }
@@ -216,27 +217,28 @@ class BeatDetect(
         return num >= threshold
     }
 
-    private fun sEnergy(samples: FloatArray) {
+    private fun sEnergy(samples: DoubleArray) {
         // compute the energy level
-        var level = 0f
+        var level = 0.0
         for (i in samples.indices) {
-            level += samples[i] * samples[i]
+            val fl = samples[i]
+            level += fl * fl
         }
-        level /= samples.size.toFloat()
-        level = sqrt(level.toDouble()).toFloat()
+        level /= samples.size
+        level = sqrt(level)
         val instant = level * 100
         // compute the average local energy
         val e = average(eBuffer)
         // compute the variance of the energies in eBuffer
         val v = variance(eBuffer, e)
         // compute C using a linear digression of C with V
-        val c = -0.0025714f * v + 1.5142857f
+        val c = -0.0025714 * v + 1.5142857
         // filter negative values
-        val diff = max((instant - c * e).toDouble(), 0.0).toFloat()
+        val diff = max((instant - c * e), 0.0)
         // find the average of only the positive values in dBuffer
         val dAvg = specAverage(dBuffer)
         // filter negative values
-        val diff2 = max((diff - dAvg).toDouble(), 0.0).toFloat()
+        val diff2 = max((diff - dAvg), 0.0)
         // report false if it's been less than 'sensitivity'
         // milliseconds since the last true value
         if (detectTimeMillis - sensitivityTimer < sensitivity) {
@@ -256,26 +258,26 @@ class BeatDetect(
             insertAt = 0
         }
         // advance the current time by the number of milliseconds this buffer represents
-        detectTimeMillis += (samples.size.toFloat() / sampleRate * 1000).toLong()
+        detectTimeMillis += (samples.size / sampleRate * 1000).toLong()
     }
 
-    private fun fEnergy(sample: FloatArray) {
+    private fun fEnergy(sample: DoubleArray) {
         spect.forward(sample)
-        var instant: Float
-        var e: Float
-        var v: Float
-        var c: Float
-        var diff: Float
-        var dAvg: Float
-        var diff2: Float
+        var instant: Double
+        var e: Double
+        var v: Double
+        var c: Double
+        var diff: Double
+        var dAvg: Double
+        var diff2: Double
         for (i in feBuffer.indices) {
             instant = spect.getAvg(i)
             e = average(feBuffer[i])
             v = variance(feBuffer[i], e)
             c = -0.0025714f * v + 1.5142857f
-            diff = max((instant - c * e).toDouble(), 0.0).toFloat()
+            diff = max((instant - c * e), 0.0)
             dAvg = specAverage(fdBuffer[i])
-            diff2 = max((diff - dAvg).toDouble(), 0.0).toFloat()
+            diff2 = max((diff - dAvg), 0.0)
             if (detectTimeMillis - fTimer[i] < sensitivity) {
                 fIsOnset[i] = false
             }
@@ -294,21 +296,21 @@ class BeatDetect(
             insertAt = 0
         }
         // advance the current time by the number of milliseconds this buffer represents
-        detectTimeMillis += (sample.size.toFloat() / sampleRate * 1000).toLong()
+        detectTimeMillis += (sample.size / sampleRate * 1000).toLong()
     }
 
-    private fun average(arr: FloatArray): Float {
-        var avg = 0f
+    private fun average(arr: DoubleArray): Double {
+        var avg = 0.0
         for (v in arr) {
             avg += v
         }
-        avg /= arr.size.toFloat()
+        avg /= arr.size
         return avg
     }
 
-    private fun specAverage(arr: FloatArray): Float {
-        var avg = 0f
-        var num = 0f
+    private fun specAverage(arr: DoubleArray): Double {
+        var avg = 0.0
+        var num = 0.0
         for (i in arr.indices) {
             if (arr[i] > 0) {
                 avg += arr[i]
@@ -321,12 +323,12 @@ class BeatDetect(
         return avg
     }
 
-    private fun variance(arr: FloatArray, value: Float): Float {
-        var v = 0f
+    private fun variance(arr: DoubleArray, value: Double): Double {
+        var v = 0.0
         for (i in arr.indices) {
-            v += (arr[i] - value).pow(2.0F)
+            v += (arr[i] - value).pow(2.0)
         }
-        v /= arr.size.toFloat()
+        v /= arr.size
         return v
     }
 }

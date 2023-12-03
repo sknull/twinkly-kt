@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.minim
 
+import de.visualdigits.minim.javasound.DoubleSampleBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
@@ -15,14 +16,18 @@ class JSAudioOutput(sdl: SourceDataLine, private val bufferSize: Int) : Thread()
     private var line: SourceDataLine?
 
     private val audioFormat: AudioFormat
-    private val buffer: de.visualdigits.minim.javasound.FloatSampleBuffer
+    private val buffer: DoubleSampleBuffer
     private val mcBuffer: MultiChannelBuffer
     private var finished: Boolean
     private val outBytes: ByteArray
 
     init {
         audioFormat = sdl.format
-        buffer = de.visualdigits.minim.javasound.FloatSampleBuffer(audioFormat.channels, bufferSize, audioFormat.sampleRate)
+        buffer = DoubleSampleBuffer(
+            audioFormat.channels,
+            bufferSize,
+            audioFormat.sampleRate.toDouble()
+        )
         mcBuffer = MultiChannelBuffer(bufferSize, audioFormat.channels)
         outBytes = ByteArray(buffer.getByteArrayBufferSize(audioFormat))
         finished = false
@@ -48,6 +53,7 @@ class JSAudioOutput(sdl: SourceDataLine, private val bufferSize: Int) : Thread()
             try {
                 sleep(1)
             } catch (e: InterruptedException) {
+                // ignore
             }
         }
         line!!.drain()

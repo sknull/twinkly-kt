@@ -20,16 +20,14 @@ import kotlin.math.sqrt
  */
 class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
     // TODO: consider just wrapping a FloatSampleBuffer
-    private var channels: Array<FloatArray>
+    private var channels: Array<DoubleArray>
 
     /**
      * Construct a MultiChannelBuffer, providing a size and number of channels.
      *
-     * @param bufferSize  int: The length of the buffer in sample frames.
-     * @param numChannels int: The number of channels the buffer should contain.
      */
     init {
-        channels = Array(numChannels) { FloatArray(bufferSize) { 0.0F } }
+        channels = Array(numChannels) { DoubleArray(bufferSize) { 0.0 } }
     }
 
     /**
@@ -57,9 +55,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      */
     fun setChannelCount(numChannels: Int) {
         if (channels.size != numChannels) {
-            val newChannels = Array(numChannels) {
-                FloatArray(bufferSize) { 0.0F }
-            }
+            val newChannels = Array(numChannels) {DoubleArray(bufferSize) { 0.0 } }
             var c = 0
             while (c < channels.size && c < numChannels) {
                 newChannels[c] = channels[c]
@@ -83,7 +79,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @shortdesc Returns the value of a sample in the given channel,
      * at the given offset from the beginning of the buffer.
      */
-    fun getSample(channelNumber: Int, sampleIndex: Int): Float {
+    fun getSample(channelNumber: Int, sampleIndex: Int): Double {
         return channels[channelNumber][sampleIndex]
     }
 
@@ -98,7 +94,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @param sampleIndex   float: the offset from the beginning of the buffer, in samples.
      * @return float: the value of the sample
      */
-    fun getSample(channelNumber: Int, sampleIndex: Float): Float {
+    fun getSample(channelNumber: Int, sampleIndex: Float): Double {
         val lowSamp = sampleIndex.toInt()
         val hiSamp = lowSamp + 1
         if (hiSamp == bufferSize) {
@@ -116,7 +112,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @param sampleIndex   int: the sample offset from the beginning of the buffer
      * @param value         float: the sample value to set
      */
-    fun setSample(channelNumber: Int, sampleIndex: Int, value: Float) {
+    fun setSample(channelNumber: Int, sampleIndex: Int, value: Double) {
         channels[channelNumber][sampleIndex] = value
     }
 
@@ -127,14 +123,15 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @return float: the RMS amplitude of the channel
      * @example Advanced/OfflineRendering
      */
-    fun getLevel(channelNumber: Int): Float {
+    fun getLevel(channelNumber: Int): Double {
         val samples = channels[channelNumber]
-        var level = 0f
+        var level = 0.0
         for (i in samples.indices) {
-            level += samples[i] * samples[i]
+            val value = samples[i]
+            level += value * value
         }
-        level /= samples.size.toFloat()
-        level = sqrt(level.toDouble()).toFloat()
+        level /= samples.size
+        level = sqrt(level)
         return level
     }
 
@@ -148,7 +145,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @return float[]: the channel represented as a float array
      * @shortdesc Returns the requested channel as a float array.
      */
-    fun getChannel(channelNumber: Int): FloatArray {
+    fun getChannel(channelNumber: Int): DoubleArray {
         return channels[channelNumber]
     }
 
@@ -164,7 +161,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @shortdesc Sets all of the values in a particular channel using
      * the values of the provided float array.
      */
-    fun setChannel(channelNumber: Int, samples: FloatArray?) {
+    fun setChannel(channelNumber: Int, samples: DoubleArray) {
         System.arraycopy(samples, 0, channels[channelNumber], 0, bufferSize)
     }
 
@@ -180,7 +177,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
         if (this.bufferSize != bufferSize) {
             this.bufferSize = bufferSize
             for (i in channels.indices) {
-                val newChannel = FloatArray(bufferSize) { 0.0F }
+                val newChannel = DoubleArray(bufferSize) { 0.0 }
                 // copy existing data into the new channel array
                 System.arraycopy(
                     channels[i], 0, newChannel, 0,

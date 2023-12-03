@@ -18,7 +18,7 @@ interface AudioStream : AudioResource {
      * The size of the returned array will be the same size as getFormat().getChannels().
      */
     @Deprecated("")
-    fun read(): FloatArray
+    fun read(): DoubleArray
 
     /**
      * Reads buffer.getBufferSize() sample frames and puts them into buffer's channels.

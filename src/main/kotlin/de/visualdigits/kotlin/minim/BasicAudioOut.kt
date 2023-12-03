@@ -7,7 +7,10 @@ import javax.sound.sampled.Control
 //             : that is used when creating an AudioInput
 //             : in the event that getLineOut does not return
 //             : a usable audio out.
-class BasicAudioOut(val audioFormat: AudioFormat, bufferSize: Int) : Thread(), AudioOut {
+class BasicAudioOut(
+    private val audioFormat: AudioFormat,
+    bufferSize: Int
+) : Thread(), AudioOut {
 
     private val buffer: MultiChannelBuffer
     private var listener: AudioListener? = null
@@ -31,12 +34,12 @@ class BasicAudioOut(val audioFormat: AudioFormat, bufferSize: Int) : Thread(), A
             if (samplesRead != buffer.bufferSize) {
                 for (i in samplesRead until buffer.bufferSize) {
                     for (c in 0 until buffer.getChannelCount()) {
-                        buffer.setSample(c, i, 0.0F)
-                        buffer.setSample(c, i, 0.0F)
+                        buffer.setSample(c, i, 0.0)
+                        buffer.setSample(c, i, 0.0)
                     }
                 }
             }
-            if (buffer.getChannelCount() === 1) {
+            if (buffer.getChannelCount() == 1) {
                 listener!!.samples(buffer.getChannel(0))
             }
             else {
@@ -45,6 +48,7 @@ class BasicAudioOut(val audioFormat: AudioFormat, bufferSize: Int) : Thread(), A
             try {
                 sleep(1)
             } catch (e: InterruptedException) {
+                // ignore
             }
         }
     }
@@ -71,8 +75,8 @@ class BasicAudioOut(val audioFormat: AudioFormat, bufferSize: Int) : Thread(), A
         this.stream = stream
     }
 
-    override fun setAudioListener(listen: AudioListener) {
-        listener = listen
+    override fun setAudioListener(listener: AudioListener) {
+        this.listener = listener
     }
 }
 

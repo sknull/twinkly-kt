@@ -32,6 +32,29 @@ class XledArrayTest {
     }
 
     @Test
+    fun testColorMix() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height
+        )
+        val red = XledFrame(
+            width = 10,
+            height = 10,
+            initialColor = RGBColor(255, 0, 0)
+        )
+        val green = XledFrame(
+            width = 10,
+            height = 10,
+            initialColor = RGBColor(0, 255, 0)
+        )
+        frame.replaceSubFrame(red, 5, 5, BlendMode.ADD)
+        frame.replaceSubFrame(green, 10, 10, BlendMode.ADD)
+
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(frame)
+    }
+
+    @Test
     fun testFade() {
         val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
 

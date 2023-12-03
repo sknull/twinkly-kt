@@ -25,13 +25,13 @@ class StereoBuffer(channels: Int, bufferSize: Int, c: Controller) : AudioListene
         parent = c
     }
 
-    override fun samples(samp: FloatArray) {
+    override fun samples(samp: DoubleArray) {
         // log.debug("Got samples!");
         left.set(samp)
         parent.update()
     }
 
-    override fun samples(sampL: FloatArray, sampR: FloatArray) {
+    override fun samples(sampL: DoubleArray, sampR: DoubleArray) {
         left.set(sampL)
         right.set(sampR)
         mix.mix(sampL, sampR)

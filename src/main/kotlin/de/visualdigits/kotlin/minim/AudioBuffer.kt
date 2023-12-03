@@ -30,7 +30,7 @@ interface AudioBuffer {
      * @example Basics/DrawWaveformAndLevel
      * @related AudioBuffer
      */
-    operator fun get(i: Int): Float
+    operator fun get(i: Int): Double
 
     /**
      * Gets the current level of the buffer. It is calculated as the
@@ -40,7 +40,7 @@ interface AudioBuffer {
      * @example Basics/DrawWaveformAndLevel
      * @related AudioBuffer
      */
-    fun level(): Float
+    fun level(): Double
 
     /**
      * Returns the samples in the buffer in a new float array.
@@ -50,5 +50,5 @@ interface AudioBuffer {
      * @return float[]: a new float array containing the buffer's samples
      * @related AudioBuffer
      */
-    fun toArray(): FloatArray
+    fun toArray(): DoubleArray
 }

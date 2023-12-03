@@ -28,7 +28,7 @@ interface AudioListener {
      * @example Advanced/AddAndRemoveAudioListener
      * @related AudioListener
      */
-    fun samples(samp: FloatArray)
+    fun samples(samp: DoubleArray)
 
     /**
      * Called by the `Recordable` object this is attached to
@@ -39,8 +39,8 @@ interface AudioListener {
      * @related AudioListener
      */
     fun samples(
-        sampL: FloatArray,
-        sampR: FloatArray
+        sampL: DoubleArray,
+        sampR: DoubleArray
     ) // TODO: consider replacing above two methods with this single one
     // void samples( MultiChannelBuffer buffer );
 }

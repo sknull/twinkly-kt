@@ -29,22 +29,7 @@ class SignalSplitter(
     private val bs: Int
 ) : Recordable, AudioListener {
     
-    private val listeners: Vector<AudioListener>
-
-    /**
-     * Construct a `SignalSplitter` that will receive
-     * audio in the given format and in buffers the size of
-     * `bufferSize`. Strictly speaking, a `SignalSplitter`
-     * doesn't care about either of these things because it does nothing with
-     * the samples it receives other than pass them on. But both things are
-     * required to fulfill the `Recordable` contract.
-     *
-     * @param format     the `AudioFormat` of samples that this will receive
-     * @param bufferSize the size of the float arrays this will receive
-     */
-    init {
-        listeners = Vector(5)
-    }
+    private val listeners: Vector<AudioListener> = Vector(5)
 
     /**
      * The buffer size this was constructed with. Arrays passed to generate should be the same length.
@@ -102,10 +87,10 @@ class SignalSplitter(
      * @related AudioListener
      */
     @Synchronized
-    override fun samples(samp: FloatArray) {
+    override fun samples(samp: DoubleArray) {
         for (i in listeners.indices) {
             val al = listeners[i]
-            val copy = FloatArray(samp.size) { 0.0F }
+            val copy = DoubleArray(samp.size) { 0.0 }
             System.arraycopy(samp, 0, copy, 0, copy.size)
             al.samples(copy)
         }
@@ -121,11 +106,11 @@ class SignalSplitter(
      * @related AudioListener
      */
     @Synchronized
-    override fun samples(sampL: FloatArray, sampR: FloatArray) {
+    override fun samples(sampL: DoubleArray, sampR: DoubleArray) {
         for (i in listeners.indices) {
             val al = listeners[i]
-            val copyL = FloatArray(sampL.size) { 0.0F }
-            val copyR = FloatArray(sampR.size) { 0.0F }
+            val copyL = DoubleArray(sampL.size) { 0.0 }
+            val copyR = DoubleArray(sampR.size) { 0.0 }
             System.arraycopy(sampL, 0, copyL, 0, copyL.size)
             System.arraycopy(sampR, 0, copyR, 0, copyR.size)
             al.samples(copyL, copyR)
