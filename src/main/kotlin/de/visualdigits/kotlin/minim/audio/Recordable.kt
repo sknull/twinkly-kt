@@ -1,10 +1,11 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
+import de.visualdigits.kotlin.minim.audio.AudioListener
 import javax.sound.sampled.AudioFormat
 
 /**
  * @author Damien Di Fede
- * @invisible A `Recordable` object is one that can provide a program with
+ * A `Recordable` object is one that can provide a program with
  * floating point samples of the audio passing through it. It does this using
  * `AudioListener`s. You add listeners to the `Recordable` and
  * then the `Recordable` will call the appropriate `samples`
@@ -19,16 +20,14 @@ interface Recordable {
      * been added, it will not be added again.
      *
      * @param listener the listener to add
-     * @example Advanced/AddAndRemoveAudioListener
-     */
+     *      */
     fun addListener(listener: AudioListener)
 
     /**
      * Removes the listener from the list of listeners.
      *
      * @param listener the listener to remove
-     * @example Advanced/AddAndRemoveAudioListener
-     */
+     *      */
     fun removeListener(listener: AudioListener)
 
     /**

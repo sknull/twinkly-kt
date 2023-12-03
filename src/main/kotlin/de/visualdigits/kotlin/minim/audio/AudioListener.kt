@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
 /**
  * An `AudioListener` can be used to monitor `Recordable`
@@ -13,22 +13,8 @@ package de.visualdigits.kotlin.minim
  * removeListener method.
  *
  * @author Damien Di Fede
- * @example Advanced/AddAndRemoveAudioListener
- * @related AudioPlayer
- * @related AudioInput
- * @related AudioOutput
- * @related SignalSplitter
- */
+ *  *  *  *  *  */
 interface AudioListener {
-    /**
-     * Called by the audio object this AudioListener is attached to
-     * when that object has new samples.
-     *
-     * @param samp a float[] buffer of samples from a MONO sound stream
-     * @example Advanced/AddAndRemoveAudioListener
-     * @related AudioListener
-     */
-    fun samples(samp: DoubleArray)
 
     /**
      * Called by the `Recordable` object this is attached to
@@ -36,12 +22,10 @@ interface AudioListener {
      *
      * @param sampL a float[] buffer containing the left channel of a STEREO sound stream
      * @param sampR a float[] buffer containing the right channel of a STEREO sound stream
-     * @related AudioListener
-     */
+     *      */
     fun samples(
         sampL: DoubleArray,
-        sampR: DoubleArray
-    ) // TODO: consider replacing above two methods with this single one
-    // void samples( MultiChannelBuffer buffer );
+        sampR: DoubleArray? = null
+    )
 }
 

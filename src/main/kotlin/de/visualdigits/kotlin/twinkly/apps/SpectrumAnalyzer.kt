@@ -1,11 +1,10 @@
 package de.visualdigits.kotlin.twinkly.apps
 
-import de.visualdigits.kotlin.minim.BeatDetect
-import de.visualdigits.kotlin.minim.DetectMode
-import de.visualdigits.kotlin.minim.FFT
+import de.visualdigits.kotlin.minim.analysis.BeatDetect
+import de.visualdigits.kotlin.minim.analysis.DetectMode
+import de.visualdigits.kotlin.minim.analysis.FFT
 import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.twinkly.model.color.Color
-import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
@@ -82,7 +81,7 @@ class SpectrumAnalyzer(
                 val max = max(maxAmplitudes[x], amplitude)
                 maxAmplitudes[x] = if (max != maxAmplitudes[x]) {
                     max
-                } else if (t++ == 10) {
+                } else if (t++ == 3) {
                     t = 0
                     max(0, maxAmplitudes[x] - 1)
                 } else {

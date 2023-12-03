@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
 import java.util.Vector
 import javax.sound.sampled.AudioFormat
@@ -17,8 +17,7 @@ import javax.sound.sampled.AudioFormat
  * This class is also useful for performing offline rendering of audio.
  *
  * @author Damien Di Fede
- * @example Advanced/OfflineRendering
- */
+ *  */
 class SignalSplitter(
     /**
      * Returns the format of this recordable audio.
@@ -55,8 +54,7 @@ class SignalSplitter(
      * been added, it will not be added again.
      *
      * @param listener the listener to add
-     * @example Advanced/AddAndRemoveAudioListener
-     */
+     *      */
     @Synchronized
     override fun addListener(listener: AudioListener) {
         if (!listeners.contains(listener)) {
@@ -68,8 +66,7 @@ class SignalSplitter(
      * Removes the listener from the list of listeners.
      *
      * @param listener the listener to remove
-     * @example Advanced/AddAndRemoveAudioListener
-     */
+     *      */
     @Synchronized
     override fun removeListener(listener: AudioListener) {
         listeners.remove(listener)
@@ -78,42 +75,25 @@ class SignalSplitter(
     override fun getFormat(): AudioFormat = f
 
     /**
-     * Called by the audio object this AudioListener is attached to
-     * when that object has new samples, but can also be called directly
-     * when doing offline rendering.
-     *
-     * @param samp a float[] buffer of samples from a MONO sound stream
-     * @example Advanced/OfflineRendering
-     * @related AudioListener
-     */
-    @Synchronized
-    override fun samples(samp: DoubleArray) {
-        for (i in listeners.indices) {
-            val al = listeners[i]
-            val copy = DoubleArray(samp.size) { 0.0 }
-            System.arraycopy(samp, 0, copy, 0, copy.size)
-            al.samples(copy)
-        }
-    }
-
-    /**
      * Called by the audio object this is attached to when that object has new samples,
      * but can also be called directly when doing offline rendering.
      *
      * @param sampL a float[] buffer containing the left channel of a STEREO sound stream
      * @param sampR a float[] buffer containing the right channel of a STEREO sound stream
-     * @example Advanced/OfflineRendering
-     * @related AudioListener
-     */
+     *      *      */
     @Synchronized
-    override fun samples(sampL: DoubleArray, sampR: DoubleArray) {
+    override fun samples(sampL: DoubleArray, sampR: DoubleArray?) {
         for (i in listeners.indices) {
             val al = listeners[i]
             val copyL = DoubleArray(sampL.size) { 0.0 }
-            val copyR = DoubleArray(sampR.size) { 0.0 }
             System.arraycopy(sampL, 0, copyL, 0, copyL.size)
-            System.arraycopy(sampR, 0, copyR, 0, copyR.size)
-            al.samples(copyL, copyR)
+            if (sampR != null) {
+                val copyR = DoubleArray(sampR.size) { 0.0 }
+                System.arraycopy(sampR, 0, copyR, 0, copyR.size)
+                al.samples(copyL, copyR)
+            } else {
+                al.samples(copyL)
+            }
         }
     }
 

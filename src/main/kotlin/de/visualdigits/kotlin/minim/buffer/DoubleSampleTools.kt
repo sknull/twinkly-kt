@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.buffer
 
 import java.lang.Math.pow
 import java.util.Random

@@ -1,5 +1,6 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
+import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
 
@@ -7,19 +8,15 @@ import javax.sound.sampled.Control
 //             : that is used when creating an AudioInput
 //             : in the event that getLineOut does not return
 //             : a usable audio out.
-class BasicAudioOut(
+class BasicAudioOutput(
     private val audioFormat: AudioFormat,
     bufferSize: Int
-) : Thread(), AudioOut {
+) : Thread(), AudioOutput {
 
-    private val buffer: MultiChannelBuffer
+    private val buffer: MultiChannelBuffer = MultiChannelBuffer(bufferSize, getFormat().channels)
     private var listener: AudioListener? = null
     private var stream: AudioStream? = null
     private var running = false
-
-    init {
-        buffer = MultiChannelBuffer(bufferSize, getFormat().channels)
-    }
 
     override fun run() {
         running = true

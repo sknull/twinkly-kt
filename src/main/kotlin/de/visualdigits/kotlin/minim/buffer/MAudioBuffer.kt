@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.buffer
 
 import org.slf4j.LoggerFactory
 import kotlin.math.sqrt

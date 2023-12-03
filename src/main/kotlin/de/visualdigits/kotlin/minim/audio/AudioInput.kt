@@ -1,6 +1,7 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
 import org.slf4j.LoggerFactory
+import javax.sound.sampled.FloatControl
 
 /**
  * An AudioInput is a connection to the current record source of the computer.
@@ -32,12 +33,10 @@ import org.slf4j.LoggerFactory
  * you will want to use the first two methods listed above.
  *
  * @author Damien Di Fede
- * @example Basics/MonitorInput
- * @related Minim
- */
-class AudioInput(stream: AudioStream, out: AudioOut) : AudioSource(out) {
+ *  *  */
+class AudioInput(stream: AudioStream, out: AudioOutput) : AudioSource(out) {
 
-    private val log = LoggerFactory.getLogger(MinimServiceProvider::class.java)
+    private val log = LoggerFactory.getLogger(AudioInput::class.java)
 
     /**
      * Returns whether or not this AudioInput is monitoring.
@@ -45,18 +44,12 @@ class AudioInput(stream: AudioStream, out: AudioOut) : AudioSource(out) {
      * the audio coming into the input.
      *
      * @return boolean: true if monitoring is on
-     * @example Basics/MonitorInput
-     * @related enableMonitoring ( )
-     * @related disableMonitoring ( )
-     * @related AudioInput
-     */
-    var isMonitoring = false
-    var m_stream: AudioStream
+     *      *      *      *      */
+    private var isMonitoring = false
+    private var mStream: AudioStream
 
     /**
-     * @param stream the `AudioStream` that provides the samples
-     * @param out    the `AudioOut` that will read from `stream`
-     * @invisible Constructs an `AudioInput` that uses `out` to read
+     * Constructs an `AudioInput` that uses `out` to read
      * samples from `stream`. The samples from `stream`
      * can be accessed by through the interface provided by `AudioSource`.
      */
@@ -64,31 +57,26 @@ class AudioInput(stream: AudioStream, out: AudioOut) : AudioSource(out) {
         out.setAudioStream(stream)
         stream.open()
         disableMonitoring()
-        m_stream = stream
+        mStream = stream
     }
 
     override fun close() {
         super.close()
-        m_stream.close()
+        mStream.close()
     }
 
     /**
      * When monitoring is enabled, you will be able to hear
      * the audio that is coming through the input.
      *
-     * @example Basics/MonitorInput
-     * @related disableMonitoring ( )
-     * @related isMonitoring ( )
-     * @related AudioInput
-     */
-    @Suppress("deprecation")
-    fun enableMonitoring() {
+     *      *      *      *      */
+        fun enableMonitoring() {
         // make sure we don't make sound
-        if (hasControl(VOLUME)) {
+        if (hasControl(FloatControl.Type.VOLUME)) {
             setVolume(1.0F)
             isMonitoring = true
         }
-        else if (hasControl(GAIN)) {
+        else if (hasControl(FloatControl.Type.MASTER_GAIN)) {
             setGain(0.0F)
             isMonitoring = true
         }
@@ -108,18 +96,13 @@ class AudioInput(stream: AudioStream, out: AudioOut) : AudioSource(out) {
      *
      * @shortdesc When monitoring is disabled, you will not hear
      * the audio that is coming through the input.
-     * @example Basics/MonitorInput
-     * @related enableMonitoring ( )
-     * @related isMonitoring ( )
-     * @related AudioInput
-     */
-    @Suppress("deprecation")
-    fun disableMonitoring() {
+     *      *      *      *      */
+        fun disableMonitoring() {
         // make sure we don't make sound
-        if (hasControl(VOLUME)) {
+        if (hasControl(FloatControl.Type.VOLUME)) {
             setVolume(0.0F)
         }
-        else if (hasControl(GAIN)) {
+        else if (hasControl(FloatControl.Type.MASTER_GAIN)) {
             setGain(-64.0F)
         }
         isMonitoring = false

@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
 
 /**
@@ -8,7 +8,7 @@ package de.visualdigits.kotlin.minim
  *
  * @author Damien Di Fede
  */
-interface AudioOut : AudioResource {
+interface AudioOutput : AudioResource {
     /**
      * @return the size of the buffer used by this output.
      */

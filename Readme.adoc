@@ -18,6 +18,14 @@ It is based on these projects:
 - https://github.com/Anders-Holst/xled_plus (Anders Holst)
 - https://xled-docs.readthedocs.io/en/latest/rest_api.html
 
+Also contained is a stripped down and kotlinized version of minim
+by Damien Quartz which only supports line in currently.
+The original implementation which was meant to be used within the
+processing framework can be found here: https://github.com/ddf/Minim/tree/main
+
+
+
+
 == Documentation
 
 === Known Endpoints

@@ -1,5 +1,6 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.analysis
 
+import de.visualdigits.kotlin.minim.buffer.AudioBuffer
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -560,15 +561,15 @@ class FFT(
             spectrum[i] = a
         }
         else {
-            spectrum[i] = spectrum[i]!! / spectrum[i]!!
-            spectrum[i] = spectrum[i]!! / spectrum[i]!!
+            spectrum[i] = spectrum[i] / spectrum[i]
+            spectrum[i] = spectrum[i] / spectrum[i]
             spectrum[i] = a
-            spectrum[i] = spectrum[i]!! * spectrum[i]!!
-            spectrum[i] = spectrum[i]!! * spectrum[i]!!
+            spectrum[i] = spectrum[i] * spectrum[i]
+            spectrum[i] = spectrum[i] * spectrum[i]
         }
         if (i != 0 && i != timeSize / 2) {
             real[timeSize - i] = real[i]
-            imag[timeSize - i] = -imag[i]!!
+            imag[timeSize - i] = -imag[i]
         }
     }
 
@@ -650,7 +651,7 @@ class FFT(
     private fun fillSpectrum() {
         for (i in spectrum.indices) {
             spectrum[i] =
-                sqrt((real[i]!! * real[i]!! + imag[i]!! * imag[i]!!))
+                sqrt((real[i] * real[i] + imag[i] * imag[i]))
                     
         }
         if (whichAverage == LINAVG) {
@@ -661,7 +662,7 @@ class FFT(
                 while (j < avgWidth) {
                     val offset = j + i * avgWidth
                     avg += if (offset < spectrum.size) {
-                        spectrum[offset]!!
+                        spectrum[offset]
                     }
                     else {
                         break
@@ -706,7 +707,7 @@ class FFT(
         val hiBound = freqToIndex(hiFreq)
         var avg = 0.0
         for (i in lowBound..hiBound) {
-            avg += spectrum[i]!!
+            avg += spectrum[i]
         }
         avg /= (hiBound - lowBound + 1)
         return avg

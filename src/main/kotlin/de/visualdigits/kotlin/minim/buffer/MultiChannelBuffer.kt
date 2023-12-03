@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.buffer
 
 import kotlin.math.sqrt
 
@@ -15,9 +15,7 @@ import kotlin.math.sqrt
  * it is required to indicate which channel should be operated upon.
  *
  * @author Damien Di Fede
- * @example Advanced/loadFileIntoBuffer
- * @related Minim
- */
+ *  *  */
 class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
     // TODO: consider just wrapping a FloatSampleBuffer
     private var channels: Array<DoubleArray>
@@ -121,8 +119,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      *
      * @param channelNumber int: the channel to use
      * @return float: the RMS amplitude of the channel
-     * @example Advanced/OfflineRendering
-     */
+     *      */
     fun getLevel(channelNumber: Int): Double {
         val samples = channels[channelNumber]
         var level = 0.0

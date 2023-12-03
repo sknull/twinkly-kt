@@ -1,10 +1,10 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.buffer
 
+import de.visualdigits.kotlin.minim.audio.AudioListener
+import de.visualdigits.kotlin.minim.audio.Controller
 import org.slf4j.LoggerFactory
 
 class StereoBuffer(channels: Int, bufferSize: Int, c: Controller) : AudioListener {
-
-    private val log = LoggerFactory.getLogger(StereoBuffer::class.java)
 
     var left: MAudioBuffer
     var right: MAudioBuffer
@@ -25,16 +25,12 @@ class StereoBuffer(channels: Int, bufferSize: Int, c: Controller) : AudioListene
         parent = c
     }
 
-    override fun samples(samp: DoubleArray) {
-        // log.debug("Got samples!");
-        left.set(samp)
-        parent.update()
-    }
-
-    override fun samples(sampL: DoubleArray, sampR: DoubleArray) {
+    override fun samples(sampL: DoubleArray, sampR: DoubleArray?) {
         left.set(sampL)
-        right.set(sampR)
-        mix.mix(sampL, sampR)
+        if (sampR != null) {
+            right.set(sampR)
+            mix.mix(sampL, sampR)
+        }
         parent.update()
     }
 }

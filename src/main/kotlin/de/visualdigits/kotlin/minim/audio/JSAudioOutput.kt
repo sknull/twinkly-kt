@@ -1,50 +1,47 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
+import de.visualdigits.kotlin.minim.buffer.DoubleSampleBuffer
+import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
 import javax.sound.sampled.SourceDataLine
 
 
-class JSAudioOutput(sdl: SourceDataLine, private val bufferSize: Int) : Thread(), AudioOut {
+class JSAudioOutput(
+    sdl: SourceDataLine,
+    private val bufferSize: Int
+) : Thread(), AudioOutput {
 
     private val log = LoggerFactory.getLogger(JSAudioOutput::class.java)
 
+    private val audioFormat: AudioFormat= sdl.format
+    private val buffer: MultiChannelBuffer = MultiChannelBuffer(bufferSize, audioFormat.channels)
     private var listener: AudioListener? = null
     private var stream: AudioStream? = null
-    private var line: SourceDataLine?
+    private var running: Boolean = false
 
-    private val audioFormat: AudioFormat
-    private val buffer: DoubleSampleBuffer
-    private val mcBuffer: MultiChannelBuffer
-    private var finished: Boolean
-    private val outBytes: ByteArray
-
-    init {
-        audioFormat = sdl.format
-        buffer = DoubleSampleBuffer(
-            sampleCount = bufferSize,
-            channelCount = audioFormat.channels,
-            sampleRate = audioFormat.sampleRate.toDouble()
-        )
-        mcBuffer = MultiChannelBuffer(bufferSize, audioFormat.channels)
-        outBytes = ByteArray(buffer.getByteArrayBufferSize(audioFormat))
-        finished = false
-        line = sdl
-    }
+    private val doubleSampleBuffer: DoubleSampleBuffer = DoubleSampleBuffer(
+        sampleCount = bufferSize,
+        channelCount = audioFormat.channels,
+        sampleRate = audioFormat.sampleRate.toDouble()
+    )
+    private var line: SourceDataLine? = sdl
+    private val outBytes: ByteArray = ByteArray(doubleSampleBuffer.getByteArrayBufferSize(audioFormat))
 
     override fun run() {
+        running = true
         line!!.start()
-        while (!finished) {
-            buffer.makeSilence()
+        while (running) {
+            doubleSampleBuffer.makeSilence()
             readStream()
             if (line!!.format.channels == 1) {
-                listener!!.samples(buffer.getChannel(0))
+                listener!!.samples(doubleSampleBuffer.getChannel(0))
             }
             else {
-                listener!!.samples(buffer.getChannel(0), buffer.getChannel(1))
+                listener!!.samples(doubleSampleBuffer.getChannel(0), doubleSampleBuffer.getChannel(1))
             }
-            buffer.convertToByteArray(outBytes, 0, audioFormat)
+            doubleSampleBuffer.convertToByteArray(outBytes, 0, audioFormat)
             if (line!!.available() == line!!.bufferSize) {
                 log.debug("Likely buffer underrun in AudioOutput.")
             }
@@ -62,9 +59,9 @@ class JSAudioOutput(sdl: SourceDataLine, private val bufferSize: Int) : Thread()
     }
 
     private fun readStream() {
-        stream!!.read(mcBuffer)
-        for (i in 0 until mcBuffer.getChannelCount()) {
-            System.arraycopy(mcBuffer.getChannel(i), 0, buffer.getChannel(i), 0, buffer.sampleCount)
+        stream!!.read(buffer)
+        for (i in 0 until buffer.getChannelCount()) {
+            System.arraycopy(buffer.getChannel(i), 0, doubleSampleBuffer.getChannel(i), 0, doubleSampleBuffer.sampleCount)
         }
     }
 
@@ -73,7 +70,7 @@ class JSAudioOutput(sdl: SourceDataLine, private val bufferSize: Int) : Thread()
     }
 
     override fun close() {
-        finished = true
+        running = false
     }
 
     override fun bufferSize(): Int {

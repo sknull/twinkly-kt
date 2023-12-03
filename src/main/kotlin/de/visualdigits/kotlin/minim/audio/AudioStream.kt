@@ -1,4 +1,6 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
+
+import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 
 
 /**

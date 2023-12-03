@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.buffer
 
 /**
  * An `AudioBuffer` is a buffer of floating point samples
@@ -17,8 +17,7 @@ interface AudioBuffer {
      * Returns the length of the buffer.
      *
      * @return int: the number of samples in the buffer
-     * @related AudioBuffer
-     */
+     *      */
     fun size(): Int
 
     /**
@@ -27,9 +26,7 @@ interface AudioBuffer {
      *
      * @param i int: the index of the sample you want to get
      * @return float: the `i<sup>th</sup>` sample
-     * @example Basics/DrawWaveformAndLevel
-     * @related AudioBuffer
-     */
+     *      *      */
     operator fun get(i: Int): Double
 
     /**
@@ -37,9 +34,7 @@ interface AudioBuffer {
      * root-mean-square of all the samples in the buffer.
      *
      * @return float: the RMS amplitude of the buffer
-     * @example Basics/DrawWaveformAndLevel
-     * @related AudioBuffer
-     */
+     *      *      */
     fun level(): Double
 
     /**
@@ -48,7 +43,6 @@ interface AudioBuffer {
      * the samples in the buffer.
      *
      * @return float[]: a new float array containing the buffer's samples
-     * @related AudioBuffer
-     */
+     *      */
     fun toArray(): DoubleArray
 }

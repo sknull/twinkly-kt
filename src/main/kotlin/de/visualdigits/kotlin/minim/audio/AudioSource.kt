@@ -1,12 +1,15 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
+import de.visualdigits.kotlin.minim.Minim
+import de.visualdigits.kotlin.minim.buffer.AudioBuffer
+import de.visualdigits.kotlin.minim.buffer.StereoBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 
 
-open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()), Recordable {
+open class AudioSource(val stream: AudioOutput) : Controller(stream.getControls()), Recordable {
 
-    private val log = LoggerFactory.getLogger(MinimServiceProvider::class.java)
+    private val log = LoggerFactory.getLogger(AudioSource::class.java)
 
     // the instance of Minim that created us, if one did.
     var parent: Minim? = null
@@ -22,9 +25,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      * The AudioBuffer containing the left channel samples. If this is a mono
      * sound, it contains the single channel of audio.
      *
-     * @example Basics/PlayAFile
-     * @related AudioBuffer
-     */
+     *      *      */
     val left: AudioBuffer
 
     /**
@@ -32,9 +33,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      * sound, `right` contains the same samples as
      * `left`.
      *
-     * @example Basics/PlayAFile
-     * @related AudioBuffer
-     */
+     *      *      */
     val right: AudioBuffer
 
     /**
@@ -42,9 +41,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      * a mono sound, `mix` contains the same
      * samples as `left`.
      *
-     * @example Basics/PlayAFile
-     * @related AudioBuffer
-     */
+     *      *      */
     val mix: AudioBuffer
 
     /**
@@ -55,7 +52,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      * `NullPointerException`.
      *
      * @param istream the `AudioStream` to subscribe to and wrap
-     * @invisible
+     * 
      */
     init {
 
@@ -82,7 +79,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
     /**
      * Closes this source, making it unavailable.
      *
-     * @invisible
+     * 
      */
     open fun close() {
         log.debug("Closing $this")
@@ -100,9 +97,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      *
      * @param listener the AudioListener that will listen to this
      * @shortdesc Add an AudioListener to this sound generating object.
-     * @example Advanced/AddAndRemoveAudioListener
-     * @related AudioListener
-     */
+     *      *      */
     override fun addListener(listener: AudioListener) {
         splitter.addListener(listener)
     }
@@ -115,8 +110,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      *
      * @return int: the internal buffer size of this sound object, in sample frames.
      * @shortdesc The internal buffer size of this sound object.
-     * @example Basics/PlayAFile
-     */
+     *      */
     override fun bufferSize(): Int {
         return stream.bufferSize()
     }
@@ -130,8 +124,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      * @return an AudioFormat describing this sound object.
      * @shortdesc Returns AudioFormat object that describes the audio properties
      * of this sound generating object.
-     * @example Advanced/GetAudioFormat
-     */
+     *      */
     override fun getFormat(): AudioFormat {
         return stream.getFormat()
     }
@@ -141,9 +134,7 @@ open class AudioSource(val stream: AudioOut) : Controller(stream.getControls()),
      * added to this sound object.
      *
      * @param listener the AudioListener that should stop listening to this
-     * @example Advanced/AddAndRemoveAudioListener
-     * @related AudioListener
-     */
+     *      *      */
     override fun removeListener(listener: AudioListener) {
         splitter.removeListener(listener)
     }

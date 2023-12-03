@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.BooleanControl
@@ -34,12 +34,11 @@ import javax.sound.sampled.FloatControl
  * are trying to manipulate is not available.
  *
  * @author Damien Di Fede
- * @invisible
  */
 open class Controller(
     /**
      * @return an array of all available controls
-     * @invisible Returns an array of all the available `Control`s for the
+     * Returns an array of all the available `Control`s for the
      * `DataLine` being controlled. You can use this if you want to
      * access the controls directly, rather than using the convenience methods
      * provided by this class.
@@ -60,54 +59,38 @@ open class Controller(
      * If no volume control is available this method returns false.
      *
      * @return true if shifting, false otherwise
-     * @related getVolume ( )
-     * @related setVolume ( )
-     * @related shiftVolume ( )
-     */
-    var isShiftingVolume: Boolean
-        private set
+     *      *      *      */
+    private var isShiftingVolume: Boolean
 
     /**
      * Returns true if the gain is currently shifting.
      * If no gain control is available this method returns false.
      *
      * @return true if shifting, false otherwise
-     * @related getGain ( )
-     * @related setGain ( )
-     * @related shiftGain ( )
-     */
-    var isShiftingGain: Boolean
-        private set
+     *      *      *      */
+    private var isShiftingGain: Boolean
 
     /**
      * Returns true if the balance is currently shifting.
      * If no gain control is available this method returns false.
      *
      * @return true if shifting, false otherwise
-     * @related getBalance ( )
-     * @related setBalance ( )
-     * @related shiftBalance ( )
-     */
-    var isShiftingBalance: Boolean
-        private set
+     *      *      *      */
+    private var isShiftingBalance: Boolean
 
     /**
      * Returns true if the pan is currently shifting.
      * If no gain control is available this method returns false.
      *
      * @return true if shifting, false otherwise
-     * @related getPan ( )
-     * @related setPan ( )
-     * @related shiftPan ( )
-     */
-    var isShiftingPan = false
-        private set
+     *      *      *      */
+    private var isShiftingPan = false
 
     /**
      * Constructs a `Controller` for the given `Line`.
      *
      * @param cntrls an array of Controls that this Controller will manipulate
-     * @invisible
+     * 
      */
     init {
         isShiftingBalance = isShiftingPan
@@ -167,7 +150,7 @@ open class Controller(
     }
 
     /**
-     * @invisible Prints the available controls and their ranges to the console. Not all
+     * Prints the available controls and their ranges to the console. Not all
      * Controllers have all of the controls available on them so this is a way to find
      * out what is available.
      */
@@ -177,7 +160,7 @@ open class Controller(
             for (i in controls.indices) {
                 val type = controls[i].type
                 print("  $type")
-                if (type === VOLUME || type === GAIN || type === BALANCE || type === PAN) {
+                if (type === FloatControl.Type.VOLUME || type === FloatControl.Type.MASTER_GAIN || type === FloatControl.Type.BALANCE || type === FloatControl.Type.PAN) {
                     val fc = controls[i] as FloatControl
                     var shiftSupported = "does"
                     if (fc.updatePeriod == -1) {
@@ -202,7 +185,7 @@ open class Controller(
     /**
      * @param type the Control.Type to query for
      * @return true if the control is available
-     * @invisible Returns whether or not the particular control type is supported by this Controller
+     * Returns whether or not the particular control type is supported by this Controller
      * @see .VOLUME
      *
      * @see .GAIN
@@ -215,7 +198,6 @@ open class Controller(
      *
      * @see .MUTE
      */
-    @Deprecated("")
     fun hasControl(type: Control.Type): Boolean {
         for (i in controls.indices) {
             if (controls[i].type == type) {
@@ -225,7 +207,6 @@ open class Controller(
         return false
     }
 
-    @Deprecated("")
     fun getControl(type: Control.Type): Control? {
         for (i in controls.indices) {
             if (controls[i].type == type) {
@@ -237,87 +218,87 @@ open class Controller(
 
     /**
      * @return the volume control
-     * @invisible Gets the volume control for the `Line`, if it exists. You
+     * Gets the volume control for the `Line`, if it exists. You
      * should check for the availability of a volume control by using
      * [.hasControl] before calling this
      * method.
      */
-    @Deprecated("")
     fun volume(): FloatControl? {
-        return getControl(VOLUME) as FloatControl?
+        return getControl(FloatControl.Type.VOLUME) as FloatControl?
     }
 
     /**
      * @return the gain control
-     * @invisible Gets the gain control for the `Line`, if it exists. You
+     * Gets the gain control for the `Line`, if it exists. You
      * should check for the availability of a gain control by using
      * [.hasControl] before calling this
      * method.
      */
-    @Deprecated("")
     fun gain(): FloatControl? {
-        return getControl(GAIN) as FloatControl?
+        return getControl(FloatControl.Type.MASTER_GAIN) as FloatControl?
     }
 
     /**
      * @return the balance control
-     * @invisible Gets the balance control for the `Line`, if it exists. You
+     * Gets the balance control for the `Line`, if it exists. You
      * should check for the availability of a balance control by using
      * [.hasControl] before calling this
      * method.
      */
-    @Deprecated("")
     fun balance(): FloatControl? {
-        return getControl(BALANCE) as FloatControl?
+        return getControl(FloatControl.Type.BALANCE) as FloatControl?
     }
 
     /**
      * @return the pan control
-     * @invisible Gets the pan control for the `Line`, if it exists. You should
+     * Gets the pan control for the `Line`, if it exists. You should
      * check for the availability of a pan control by using
      * [.hasControl] before calling this
      * method.
      */
-    @Deprecated("")
     fun pan(): FloatControl? {
-        return getControl(PAN) as FloatControl?
+        return getControl(FloatControl.Type.PAN) as FloatControl?
     }
 
     /**
      * Mutes the sound.
-     *
-     * @related unmute ( )
-     * @related isMuted ( )
      */
     fun mute() {
-        setValue(MUTE, true)
+        setValue(BooleanControl.Type.MUTE, true)
     }
 
     /**
      * Unmutes the sound.
-     *
-     * @related mute ( )
-     * @related isMuted ( )
      */
     fun unmute() {
-        setValue(MUTE, false)
+        setValue(BooleanControl.Type.MUTE, false)
     }
 
     /**
      * Returns true if the sound is muted.
      *
      * @return the current mute state
-     * @related mute ( )
-     * @related unmute ( )
      */
     fun isMuted(): Boolean {
-        return getValue(Controller.MUTE)
+        return getValue(BooleanControl.Type.MUTE)
     }
 
     private fun getValue(type: BooleanControl.Type): Boolean {
         var v = false
         if (hasControl(type)) {
             val c = getControl(type) as BooleanControl?
+            v = c!!.value
+        }
+        else {
+            log.error("$type is not supported.")
+        }
+        return v
+    }
+
+    private fun getValue(type: FloatControl.Type): Float {
+        var v = 0f
+        if (hasControl(type)) {
+            val c = getControl(type) as FloatControl?
             v = c!!.value
         }
         else {
@@ -334,18 +315,6 @@ open class Controller(
         else {
             log.error("$type is not supported.")
         }
-    }
-
-    private fun getValue(type: FloatControl.Type): Float {
-        var v = 0f
-        if (hasControl(type)) {
-            val c = getControl(type) as FloatControl?
-            v = c!!.value
-        }
-        else {
-            log.error("$type is not supported.")
-        }
-        return v
     }
 
     private fun setValue(type: FloatControl.Type, v: Float) {
@@ -372,11 +341,9 @@ open class Controller(
      *
      * @return the current volume or zero if a volume control is unavailable
      * @shortdesc Returns the current volume.
-     * @related setVolume ( )
-     * @related shiftVolume ( )
-     */
+     *      *      */
     fun getVolume(): Float {
-        return getValue(Controller.VOLUME)
+        return getValue(FloatControl.Type.VOLUME)
     }
 
     /**
@@ -385,12 +352,9 @@ open class Controller(
      *
      * @param value float: the new value for the volume, usually in the range [0,1].
      * @shortdesc Sets the volume.
-     * @related getVolume ( )
-     * @related shiftVolume ( )
-     * @related isShiftingVolume ( )
-     */
+     *      *      *      */
     fun setVolume(value: Float) {
-        setValue(Controller.VOLUME, value)
+        setValue(FloatControl.Type.VOLUME, value)
     }
 
     /**
@@ -399,12 +363,9 @@ open class Controller(
      * @param from   float: the starting volume
      * @param to     float: the ending volume
      * @param millis int: the length of the transition in milliseconds
-     * @related getVolume ( )
-     * @related setVolume ( )
-     * @related isShiftingVolume ( )
-     */
+     *      *      *      */
     fun shiftVolume(from: Float, to: Float, millis: Int) {
-        if (hasControl(VOLUME)) {
+        if (hasControl(FloatControl.Type.VOLUME)) {
             setVolume(from)
             vshifter = ValueShifter(from, to, millis)
             isShiftingVolume = true
@@ -426,12 +387,9 @@ open class Controller(
      * @return float: the current gain or zero if a gain control is unavailable.
      * the gain is expressed in decibels.
      * @shortdesc Returns the current gain.
-     * @related setGain ( )
-     * @related shiftGain ( )
-     * @related isShiftingGain ( )
-     */
+     *      *      *      */
     fun getGain(): Float {
-        return getValue(Controller.GAIN)
+        return getValue(FloatControl.Type.MASTER_GAIN)
     }
 
     /**
@@ -440,12 +398,9 @@ open class Controller(
      *
      * @param value float: the new value for the gain, expressed in decibels.
      * @shortdesc Sets the gain.
-     * @related getGain ( )
-     * @related shiftGain ( )
-     * @related isShiftingGain ( )
-     */
+     *      *      *      */
     fun setGain(value: Float) {
-        setValue(Controller.GAIN, value)
+        setValue(FloatControl.Type.MASTER_GAIN, value)
     }
 
     /**
@@ -454,12 +409,9 @@ open class Controller(
      * @param from   float: the starting gain
      * @param to     float: the ending gain
      * @param millis int: the length of the transition in milliseconds
-     * @related getGain ( )
-     * @related setGain ( )
-     * @related isShiftingGain ( )
-     */
+     *      *      *      */
     fun shiftGain(from: Float, to: Float, millis: Int) {
-        if (hasControl(GAIN)) {
+        if (hasControl(FloatControl.Type.MASTER_GAIN)) {
             setGain(from)
             gshifter = ValueShifter(from, to, millis)
             isShiftingGain = true
@@ -475,12 +427,9 @@ open class Controller(
      *
      * @return float: the current balance or zero if a balance control is unavailable
      * @shortdesc Returns the current balance.
-     * @related setBalance ( )
-     * @related shiftBalance ( )
-     * @related isShiftingBalance ( )
-     */
+     *      *      *      */
     fun getBalance(): Float {
-        return getValue(Controller.BALANCE)
+        return getValue(FloatControl.Type.BALANCE)
     }
 
     /**
@@ -490,12 +439,9 @@ open class Controller(
      *
      * @param value float: the new value for the balance
      * @shortdesc Sets the balance.
-     * @related getBalance ( )
-     * @related shiftBalance ( )
-     * @related isShiftingBalance ( )
-     */
+     *      *      *      */
     fun setBalance(value: Float) {
-        setValue(Controller.BALANCE, value)
+        setValue(FloatControl.Type.BALANCE, value)
     }
 
     /**
@@ -504,12 +450,9 @@ open class Controller(
      * @param from   float: the starting balance
      * @param to     float: the ending balance
      * @param millis int: the length of the transition in milliseconds
-     * @related getBalance ( )
-     * @related setBalance ( )
-     * @related isShiftingBalance ( )
-     */
+     *      *      *      */
     fun shiftBalance(from: Float, to: Float, millis: Int) {
-        if (hasControl(BALANCE)) {
+        if (hasControl(FloatControl.Type.BALANCE)) {
             setBalance(from)
             bshifter = ValueShifter(from, to, millis)
             isShiftingBalance = true
@@ -525,12 +468,9 @@ open class Controller(
      *
      * @return float: the current pan or zero if a pan control is unavailable
      * @shortdesc Returns the current pan.
-     * @related setPan ( )
-     * @related shiftPan ( )
-     * @related isShiftingPan ( )
-     */
+     *      *      *      */
     fun getPan(): Float {
-        return getValue(Controller.PAN)
+        return getValue(FloatControl.Type.PAN)
     }
 
     /**
@@ -540,12 +480,9 @@ open class Controller(
      *
      * @param value float: the new value for the pan
      * @shortdesc Sets the pan.
-     * @related getPan ( )
-     * @related shiftPan ( )
-     * @related isShiftingPan ( )
-     */
+     *      *      *      */
     fun setPan(value: Float) {
-        setValue(Controller.PAN, value)
+        setValue(FloatControl.Type.PAN, value)
     }
 
     /**
@@ -554,54 +491,13 @@ open class Controller(
      * @param from   float: the starting pan
      * @param to     float: the ending pan
      * @param millis int: the length of the transition in milliseconds
-     * @related getPan ( )
-     * @related setPan ( )
-     * @related isShiftingPan ( )
-     */
+     *      *      *      */
     fun shiftPan(from: Float, to: Float, millis: Int) {
-        if (hasControl(PAN)) {
+        if (hasControl(FloatControl.Type.PAN)) {
             setPan(from)
             pshifter = ValueShifter(from, to, millis)
             isShiftingPan = true
         }
-    }
-
-    companion object {
-        /**
-         * @invisible The volume control type.
-         */
-        @Deprecated("")
-        var VOLUME = FloatControl.Type.VOLUME
-
-        /**
-         * @invisible The gain control type.
-         */
-        @Deprecated("")
-        var GAIN = FloatControl.Type.MASTER_GAIN
-
-        /**
-         * @invisible The balance control type.
-         */
-        @Deprecated("")
-        var BALANCE = FloatControl.Type.BALANCE
-
-        /**
-         * @invisible The pan control type.
-         */
-        @Deprecated("")
-        var PAN = FloatControl.Type.PAN
-
-        /**
-         * @invisible The sample rate control type.
-         */
-        @Deprecated("")
-        var SAMPLE_RATE = FloatControl.Type.SAMPLE_RATE
-
-        /**
-         * @invisible The mute control type.
-         */
-        @Deprecated("")
-        var MUTE = BooleanControl.Type.MUTE
     }
 }
 

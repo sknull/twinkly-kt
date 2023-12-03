@@ -1,5 +1,7 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
+import de.visualdigits.kotlin.minim.buffer.DoubleSampleBuffer
+import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control

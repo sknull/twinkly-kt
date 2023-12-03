@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.audio
 
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control

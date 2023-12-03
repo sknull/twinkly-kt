@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.apps
 
-import de.visualdigits.kotlin.minim.AudioInputType
-import de.visualdigits.kotlin.minim.BeatDetect
+import de.visualdigits.kotlin.minim.audio.AudioInputType
+import de.visualdigits.kotlin.minim.analysis.BeatDetect
 import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor

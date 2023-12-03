@@ -1,5 +1,6 @@
-package de.visualdigits.kotlin.minim
+package de.visualdigits.kotlin.minim.analysis
 
+import de.visualdigits.kotlin.minim.buffer.AudioBuffer
 import org.slf4j.LoggerFactory
 import java.util.stream.IntStream
 import kotlin.math.max
@@ -20,7 +21,7 @@ class BeatDetect(
      */
     private var detectTimeMillis: Long = 0L
 ) {
-    
+
     private val log = LoggerFactory.getLogger(BeatDetect::class.java)
 
     // for circular buffer support
@@ -80,19 +81,10 @@ class BeatDetect(
      * @param buffer AudioBuffer: the buffer to analyze.
      */
     fun detect(buffer: AudioBuffer) {
-        detect(buffer.toArray())
-    }
-
-    /**
-     * Analyze the samples in `buffer`. This is a cumulative
-     * process, so you must call this function every frame.
-     *
-     * @param buffer Double[]: the buffer to analyze
-     */
-    fun detect(buffer: DoubleArray) {
+        val buffer1 = buffer.toArray()
         when (algorithm) {
-            DetectMode.SOUND_ENERGY -> sEnergy(buffer)
-            DetectMode.FREQ_ENERGY -> fEnergy(buffer)
+            DetectMode.SOUND_ENERGY -> sEnergy(buffer1)
+            DetectMode.FREQ_ENERGY -> fEnergy(buffer1)
         }
     }
 
