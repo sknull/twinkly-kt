@@ -146,6 +146,16 @@ class XledArrayTest {
     }
 
     @Test
+    fun testTwinklyChristmasPictures() {
+        xledArray.mode(DeviceMode.rt)
+        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-pictures").toURI()))
+        while(true) {
+            xledArray.showRealTimeFrame(sequence.random())
+            Thread.sleep(5000)
+        }
+    }
+
+    @Test
     fun testTwinklyPacmanFrame() {
         xledArray.mode(DeviceMode.rt)
         xledArray.showRealTimeFrame(XledFrame.fromImage(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI())))
