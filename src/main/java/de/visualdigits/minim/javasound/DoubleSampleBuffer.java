@@ -29,6 +29,8 @@
 package de.visualdigits.minim.javasound;
 
 import javax.sound.sampled.AudioFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class for small buffers of samples in linear, 32-bit doubleing point format.
@@ -175,12 +177,12 @@ public class DoubleSampleBuffer {
      * Constant for setDitherMode: dithering will not be done
      */
     public static final int DITHER_MODE_OFF = 2;
-    /**
-     * Whether the functions without lazy parameter are lazy or not.
-     */
-    private static final boolean LAZY_DEFAULT = true;
+
+    public static final int INITIAL_CHANNELS = 2;
+    public static final double DEFAULT_DITHER_BITS = 0.7f;
+
     // one double array for each channel
-    private Object[] channels = new Object[2];
+    private final List<double[]> channels = new ArrayList<>();
     private int sampleCount = 0;
     private int channelCount = 0;
     private double sampleRate = 0;
@@ -194,7 +196,8 @@ public class DoubleSampleBuffer {
      * samples, and the specified sample rate.
      */
     public DoubleSampleBuffer(int channelCount, int sampleCount, double sampleRate) {
-        init(channelCount, sampleCount, sampleRate, LAZY_DEFAULT);
+        init(channelCount, sampleCount, sampleRate);
+        System.out.println("");
     }
 
     /**
@@ -205,59 +208,44 @@ public class DoubleSampleBuffer {
      * @param newChannelCount
      * @param newSampleCount
      * @param newSampleRate
-     * @param lazy
      * @throws IllegalArgumentException if newChannelCount or newSampleCount are
      *                                  negative, or newSampleRate is not positive.
      */
-    public void init(int newChannelCount, int newSampleCount,
-                     double newSampleRate, boolean lazy) {
+    public void init(int newChannelCount, int newSampleCount, double newSampleRate) {
         if (newChannelCount < 0 || newSampleCount < 0 || newSampleRate <= 0.0f) {
             throw new IllegalArgumentException(
                     "invalid parameters in initialization of FloatSampleBuffer.");
         }
+        grow(INITIAL_CHANNELS);
         setSampleRate(newSampleRate);
         if (this.sampleCount != newSampleCount
                 || this.channelCount != newChannelCount) {
-            createChannels(newChannelCount, newSampleCount, lazy);
+            createChannels(newChannelCount, newSampleCount);
         }
     }
-
-    private void createChannels(int newChannelCount, int newSampleCount,
-                                      boolean lazy) {
-        // shortcut
-        if (lazy && newChannelCount <= channelCount
-                && newSampleCount <= this.sampleCount) {
-            setSampleCountImpl(newSampleCount);
-            setChannelCountImpl(newChannelCount);
-            return;
-        }
-        setSampleCountImpl(newSampleCount);
-        // grow the array, if necessary. Intentionally lazy here!
-        grow(newChannelCount, true);
-        // lazy delete of all channels. Intentionally lazy !
-        setChannelCountImpl(0);
-        for (int ch = 0; ch < newChannelCount; ch++) {
-            insertChannel(ch, false, lazy);
-        }
-        // if not lazy, remove hidden channels
-        grow(newChannelCount, lazy);
-    }
-
     /**
      * Grow the channels array to allow at least channelCount elements. If
      * !lazy, then channels will be resized to be exactly channelCount elements.
      * The new elements will be null.
      *
      * @param newChannelCount
-     * @param lazy
      */
-    private void grow(int newChannelCount, boolean lazy) {
-        if (channels.length < newChannelCount || !lazy) {
-            Object[] newChannels = new Object[newChannelCount];
-            System.arraycopy(channels, 0, newChannels, 0,
-                    (channelCount < newChannelCount) ? channelCount
-                            : newChannelCount);
-            this.channels = newChannels;
+    private void grow(int newChannelCount) {
+        if (channels.size() < newChannelCount) {
+            for (int i = 0; i < newChannelCount - channels.size(); i++) {
+                channels.add(null);
+            }
+        }
+    }
+
+    private void createChannels(int newChannelCount, int newSampleCount) {
+        setSampleCountImpl(newSampleCount);
+        // grow the array, if necessary. Intentionally lazy here!
+        grow(newChannelCount);
+        // lazy delete of all channels. Intentionally lazy !
+        setChannelCountImpl(0);
+        for (int ch = 0; ch < newChannelCount; ch++) {
+            insertChannel(ch, false);
         }
     }
 
@@ -274,21 +262,19 @@ public class DoubleSampleBuffer {
      * is assured that the inserted channel has exactly sampleCount
      * elements, thus not wasting memory.
      */
-    public void insertChannel(int index, boolean silent, boolean lazy) {
-        // first grow the array of channels, if necessary. Intentionally lazy
-        grow(this.channelCount + 1, true);
-        int physSize = channels.length;
+    public void insertChannel(int index, boolean silent) {
+        grow(this.channelCount + 1);
+        int physSize = channels.size();
         int virtSize = this.channelCount;
         double[] newChannel = null;
         if (physSize > virtSize) {
             // there are hidden channels. Try to use one.
             for (int ch = virtSize; ch < physSize; ch++) {
-                double[] thisChannel = (double[]) channels[ch];
-                if (thisChannel != null
-                        && ((lazy && thisChannel.length >= sampleCount) || (!lazy && thisChannel.length == sampleCount))) {
+                double[] thisChannel = channels.get(ch);
+                if (thisChannel != null) {
                     // we found a matching channel. Use it !
                     newChannel = thisChannel;
-                    channels[ch] = null;
+                    channels.set(ch,  null);
                     break;
                 }
             }
@@ -298,15 +284,15 @@ public class DoubleSampleBuffer {
         }
         // move channels after index
         for (int i = index; i < virtSize; i++) {
-            channels[i + 1] = channels[i];
+            channels.set(i + 1, channels.get(i));
         }
-        channels[index] = newChannel;
+        channels.set(index, newChannel);
         setChannelCountImpl(this.channelCount + 1);
         if (silent) {
             makeSilence(index);
         }
         // if not lazy, remove old channels
-        grow(this.channelCount, lazy);
+        grow(this.channelCount);
     }
 
     /**
@@ -348,7 +334,7 @@ public class DoubleSampleBuffer {
             throw new IllegalArgumentException(
                     "FloatSampleBuffer: invalid channel number.");
         }
-        return (double[]) channels[channel];
+        return (double[]) channels.get(channel);
     }
 
     /**
@@ -388,22 +374,6 @@ public class DoubleSampleBuffer {
             // remove cache
             lastConvertToByteArrayFormat = null;
         }
-    }
-
-    /**
-     * Initialize this sample buffer to have the specified channels, sample
-     * count, and sample rate. If LAZY_DEFAULT is true, as much as possible will
-     * existing arrays be reused. Otherwise, any hidden channels are freed.
-     *
-     * @param newChannelCount
-     * @param newSampleCount
-     * @param newSampleRate
-     * @throws IllegalArgumentException if newChannelCount or newSampleCount are
-     *                                  negative, or newSampleRate is not positive.
-     */
-    public void init(int newChannelCount, int newSampleCount,
-                     double newSampleRate) {
-        init(newChannelCount, newSampleCount, newSampleRate, LAZY_DEFAULT);
     }
 
     /**
@@ -505,7 +475,7 @@ public class DoubleSampleBuffer {
             case DITHER_MODE_OFF:
                 break;
         }
-        return doDither ? DoubleSampleTools.DEFAULT_DITHER_BITS : 0.0f;
+        return doDither ? DEFAULT_DITHER_BITS : 0.0f;
     }
 
     /**

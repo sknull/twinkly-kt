@@ -29,6 +29,7 @@
 package de.visualdigits.minim.javasound;
 
 import javax.sound.sampled.AudioFormat;
+import java.util.List;
 import java.util.Random;
 
 
@@ -327,12 +328,9 @@ public class DoubleSampleTools {
      * @param output an array of double[] arrays
      * @throws ArrayIndexOutOfBoundsException if output does not
      *                                        format.getChannels() elements
-     * @see #byte2double(byte[] input, int inByteOffset, Object[] output, int
-     * outOffset, int frameCount, AudioFormat format, boolean
-     * allowAddChannel)
      */
     public static void byte2double(byte[] input, int inByteOffset,
-                                  Object[] output, int outOffset, int frameCount, AudioFormat format) {
+                                  List<double[]> output, int outOffset, int frameCount, AudioFormat format) {
 
         byte2double(input, inByteOffset, output, outOffset, frameCount, format,
                 true);
@@ -344,27 +342,24 @@ public class DoubleSampleTools {
      *                        format, then only output.length channels are filled
      * @throws ArrayIndexOutOfBoundsException if output does not
      *                                        format.getChannels() elements
-     * @see #byte2double(byte[] input, int inByteOffset, Object[] output, int
-     * outOffset, int frameCount, AudioFormat format, boolean
-     * allowAddChannel)
      */
     public static void byte2double(byte[] input, int inByteOffset,
-                                  Object[] output, int outOffset, int frameCount, AudioFormat format,
+                                  List<double[]> output, int outOffset, int frameCount, AudioFormat format,
                                   boolean allowAddChannel) {
 
         int channels = format.getChannels();
-        if (!allowAddChannel && channels > output.length) {
-            channels = output.length;
+        if (!allowAddChannel && channels > output.size()) {
+            channels = output.size();
         }
-        if (output.length < channels) {
+        if (output.size() < channels) {
             throw new ArrayIndexOutOfBoundsException(
                     "too few channel output array");
         }
         for (int channel = 0; channel < channels; channel++) {
-            double[] data = (double[]) output[channel];
+            double[] data = output.get(channel);
             if (data.length < frameCount + outOffset) {
                 data = new double[frameCount + outOffset];
-                output[channel] = data;
+                output.set(channel, data);
             }
 
             byte2doubleGeneric(input, inByteOffset, format.getFrameSize(), data,
@@ -560,12 +555,12 @@ public class DoubleSampleTools {
      * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of
      *                                        bounds
      */
-    static void double2byte(Object[] input, int inOffset, byte[] output,
-                           int outByteOffset, int frameCount, int formatCode, int channels,
-                           int frameSize, double ditherBits) {
+    static void double2byte(List<double[]> input, int inOffset, byte[] output,
+                            int outByteOffset, int frameCount, int formatCode, int channels,
+                            int frameSize, double ditherBits) {
         int sampleSize = frameSize / channels;
         for (int channel = 0; channel < channels; channel++) {
-            double[] data = (double[]) input[channel];
+            double[] data = (double[]) input.get(channel);
             double2byteGeneric(data, inOffset, output, outByteOffset, frameSize,
                     frameCount, formatCode, ditherBits);
             outByteOffset += sampleSize;
