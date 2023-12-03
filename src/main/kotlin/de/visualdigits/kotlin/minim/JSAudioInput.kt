@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.minim
 
-import de.visualdigits.minim.javasound.DoubleSampleBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
@@ -22,9 +21,9 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
         line = tdl
         this.bufferSize = bufferSize
         buffer = DoubleSampleBuffer(
-            tdl.format.channels,
-            bufferSize,
-            tdl.format.sampleRate.toDouble()
+            sampleCount = bufferSize,
+            channelCount = tdl.format.channels,
+            sampleRate = tdl.format.sampleRate.toDouble()
         )
         finished = false
         val byteBufferSize = buffer.getByteArrayBufferSize(line!!.format)
@@ -99,9 +98,9 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
         val numSamples = buffer.bufferSize
         val sampleRate = line!!.format.sampleRate
         val convert = DoubleSampleBuffer(
-            numChannels,
-            numSamples,
-            sampleRate.toDouble()
+            sampleCount = numSamples,
+            channelCount = numChannels,
+            sampleRate = sampleRate.toDouble()
         )
         // allocate enough bytes for the size of this buffer
         val bytes = ByteArray(convert.getByteArrayBufferSize(line!!.format))
