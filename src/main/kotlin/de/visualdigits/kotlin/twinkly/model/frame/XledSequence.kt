@@ -5,7 +5,13 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -17,6 +23,8 @@ class XledSequence(
     private val sequence: MutableList<XledFrame> = mutableListOf()
 ) : MutableList<XledFrame> by sequence {
 
+    private val log = LoggerFactory.getLogger(XledSequence::class.java)
+
     protected var running: Boolean = false
 
     suspend fun play(
@@ -27,11 +35,18 @@ class XledSequence(
     ) {
         val currentMode = xled.mode()
         xled.mode(DeviceMode.rt)
+
+        val n = frameDelay / 5000
+
         running = true
         while (running) {
             if (random) {
-                xled.showRealTimeFrame(sequence.random())
-                delay(frameDelay)
+                val frame = sequence.random()
+                log.info("\n$frame")
+                for (i in 0 until n) {
+                    xled.showRealTimeFrame(frame)
+                    delay(5000)
+                }
             } else {
                 sequence.forEach { frame ->
                     xled.showRealTimeFrame(frame)

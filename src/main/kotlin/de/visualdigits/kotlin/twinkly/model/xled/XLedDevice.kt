@@ -33,6 +33,10 @@ import de.visualdigits.kotlin.twinkly.model.xled.response.musicdriverssets.Music
 import de.visualdigits.kotlin.twinkly.model.xled.response.musicenabled.MusicEnabled
 import de.visualdigits.kotlin.twinkly.model.xled.response.ResponseCode
 import de.visualdigits.kotlin.udp.UdpClient
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Base64
 import kotlin.math.min
 
@@ -53,6 +57,7 @@ class XLedDevice(host: String): XLed, Session(
     init {
         if (host.isNotEmpty()) {
             tokenExpires = System.currentTimeMillis() + login() - 5000
+            log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
             deviceInfo = deviceInfo()
             layout = layout()
             width = layout.columns
@@ -70,8 +75,18 @@ class XLedDevice(host: String): XLed, Session(
     fun refreshTokenIfNeeded() {
         if (System.currentTimeMillis() > tokenExpires) {
             log.info("Refreshing token for device '$host'...")
-            tokenExpires = System.currentTimeMillis() + login()
+            tokenExpires = System.currentTimeMillis() + login() - 5000
+            log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
         }
+    }
+
+    private fun formatEpoch(epoch: Long): String {
+        return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
+            OffsetDateTime.ofInstant(
+                Instant.ofEpochMilli(epoch),
+                ZoneId.systemDefault()
+            )
+        )
     }
 
     override fun powerOn() {

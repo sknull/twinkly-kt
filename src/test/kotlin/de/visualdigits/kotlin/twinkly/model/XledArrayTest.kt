@@ -23,13 +23,11 @@ class XledArrayTest {
 
     @Test
     fun testPowerOn() {
-        Thread.sleep(10000)
         xledArray.powerOn()
     }
 
     @Test
     fun testPowerOff() {
-        Thread.sleep(10000)
         xledArray.powerOff()
     }
 
@@ -181,7 +179,7 @@ class XledArrayTest {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-pictures").toURI()))
 
         runBlocking {
-            sequence.play(xled = xledArray, frameDelay = 5000, random = true)
+            sequence.play(xled = xledArray, frameDelay = 60000, random = true)
         }
     }
 

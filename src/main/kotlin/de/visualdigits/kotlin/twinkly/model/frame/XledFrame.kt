@@ -63,7 +63,8 @@ open class XledFrame(
         val sb = StringBuilder()
         for (y in 0 until height) {
             for (x in 0 until width) {
-                sb.append(frame[x][y].ansiColor())
+                val pixel = frame[x][y].ansiColor()
+                sb.append(pixel).append(pixel)
             }
             sb.append('\n')
         }

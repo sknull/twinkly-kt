@@ -37,11 +37,11 @@ abstract class Session(
             )
         )
         authToken = responseChallenge["authentication_token"]!! as String
-        val experinInSeconds = responseChallenge["authentication_token_expires_in"]!! as Int
+        val expireInSeconds = responseChallenge["authentication_token_expires_in"]!! as Int
         val responseVerify = verify(responseChallenge["challenge-response"]!! as String)
         if (responseVerify.responseCode != ResponseCode.Ok) throw IllegalStateException("Could not login to device")
 
-        return experinInSeconds
+        return expireInSeconds * 1000
     }
 
     private fun verify(responseChallenge: String): JsonObject {
