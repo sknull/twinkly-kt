@@ -1,2 +1,7 @@
 server:
   port: 8024
+
+application:
+  devices:
+    - curtain1: 192.168.178.35
+    - curtain2: 192.168.178.52

@@ -5,6 +5,8 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import kotlinx.coroutines.delay
 import org.apache.commons.lang3.math.NumberUtils.min
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -20,6 +22,8 @@ open class XledFrame(
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
 ) : MutableList<MutableList<Color<*>>> by frame {
+
+    protected var running: Boolean = false
 
     init {
         for (x in 0 until width) {
@@ -84,12 +88,34 @@ open class XledFrame(
         }
     }
 
-    fun fade(color: Color<*>, millis: Long, xled: XLed) {
+    suspend fun play(
+        xled: XLed,
+        frameDelay: Long = 1000
+    ) {
+        val currentMode = xled.mode()
+        xled.mode(DeviceMode.rt)
+        running = true
+        while (running) {
+            xled.showRealTimeFrame(this)
+            delay(frameDelay)
+        }
+        xled.mode(currentMode)
+    }
+
+    fun stop() {
+        running = false
+    }
+
+    suspend fun fade(
+        xled: XLed,
+        color: Color<*>,
+        millis: Long
+    ) {
         val delay = millis / 255
         val oldFrame = clone()
         for (f in 0 until 256) {
             xled.showRealTimeFrame(this)
-            Thread.sleep(max(0, delay))
+            delay(max(0, delay))
             for (y in 0 until height) {
                 for (x in 0 until width) {
                     frame[x][y] = oldFrame[x][y].fade(color, f / 256.0, BlendMode.AVERAGE)

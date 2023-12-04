@@ -48,9 +48,11 @@ class XLedDevice(host: String): XLed, Session(
     override val height: Int
     override val bytesPerLed: Int
 
+    var tokenExpires: Long = 0
+
     init {
         if (host.isNotEmpty()) {
-            login()
+            tokenExpires = System.currentTimeMillis() + login() - 5000
             deviceInfo = deviceInfo()
             layout = layout()
             width = layout.columns
@@ -65,7 +67,15 @@ class XLedDevice(host: String): XLed, Session(
         }
     }
 
+    fun refreshTokenIfNeeded() {
+        if (System.currentTimeMillis() > tokenExpires) {
+            log.info("Refreshing token for device '$host'...")
+            tokenExpires = System.currentTimeMillis() + login()
+        }
+    }
+
     override fun powerOn() {
+        refreshTokenIfNeeded()
         listOf(DeviceMode.playlist, DeviceMode.movie, DeviceMode.effect)
             .forEach { mode ->
                 val responseCode = mode(mode)
@@ -76,10 +86,12 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     override fun powerOff() {
+        refreshTokenIfNeeded()
         mode(DeviceMode.off)
     }
 
-    fun mode(): DeviceMode {
+    override fun mode(): DeviceMode {
+        refreshTokenIfNeeded()
         val response = get<Mode>(
             url = "$baseUrl/led/mode",
         )
@@ -87,10 +99,12 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     override fun mode(mode: DeviceMode): JsonObject {
-        log.info("#### Setting mode to $mode...")
+        refreshTokenIfNeeded()
+        val body = "{\"mode\":\"${mode.name}\"}"
+        log.info("Setting mode for device '$host' to ${mode.name}...")
         return post<Mode>(
             url = "$baseUrl/led/mode",
-            body = "{\"mode\":\"$mode\"}".toByteArray(),
+            body = body.toByteArray(),
             headers = mapOf(
                 "Content-Type" to "application/json"
             )
@@ -98,46 +112,54 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     override fun ledReset() {
+        refreshTokenIfNeeded()
         return get("$baseUrl/led/reset")
     }
 
     fun musicStats(): MusicStats {
+        refreshTokenIfNeeded()
         return get<MusicStats>(
             url = "$baseUrl/music/stats",
         )
     }
 
     fun musicEnabled(): MusicEnabled {
+        refreshTokenIfNeeded()
         return get<MusicEnabled>(
             url = "$baseUrl/music/enabled",
         )
     }
 
     fun musicDriversCurrent(): MusicDriversCurrent {
+        refreshTokenIfNeeded()
         return get<MusicDriversCurrent>(
             url = "$baseUrl/music/drivers/current",
         )
     }
 
     fun musicDriversSets(): MusicDriversSets {
+        refreshTokenIfNeeded()
         return get<MusicDriversSets>(
             url = "$baseUrl/music/drivers/sets",
         )
     }
 
     fun currentMusicDriversSet(): CurrentMusicDriverSet {
+        refreshTokenIfNeeded()
         return get<CurrentMusicDriverSet>(
             url = "$baseUrl/music/drivers/sets/current",
         )
     }
 
     fun brightness(): Brightness {
+        refreshTokenIfNeeded()
         return get<Brightness>(
             url = "$baseUrl/led/out/brightness",
         )
     }
 
     override fun brightness(brightness: Brightness) {
+        refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/brightness",
             body = brightness.marshallToBytes(),
@@ -148,12 +170,14 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     fun saturation(): Saturation {
+        refreshTokenIfNeeded()
         return get<Saturation>(
             url = "$baseUrl/led/out/saturation",
         )
     }
 
     override fun saturation(saturation: Saturation) {
+        refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/saturation",
             body = saturation.marshallToBytes(),
@@ -164,6 +188,7 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     fun color(): Color<*> {
+        refreshTokenIfNeeded()
         val response = get<Map<String, Any>>(
             url = "$baseUrl/led/color",
         )
@@ -194,6 +219,7 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     override fun color(color: Color<*>) {
+        refreshTokenIfNeeded()
         val body = when (color) {
             is RGBColor -> "{\"red\":${color.red},\"green\":${color.green},\"blue\":${color.blue}}"
             is RGBWColor -> "{\"red\":${color.red},\"green\":${color.green},\"blue\":${color.blue},\"white\":${color.white}}"
@@ -214,6 +240,7 @@ class XLedDevice(host: String): XLed, Session(
     }
 
     fun config(): LedConfig {
+        refreshTokenIfNeeded()
         return get<LedConfig>(
             url = "$baseUrl/led/config",
         )

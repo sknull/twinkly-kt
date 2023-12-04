@@ -31,6 +31,10 @@ class XledArray(
         xLedDevices.forEach { it.ledReset() }
     }
 
+    override fun mode(): DeviceMode {
+        return xLedDevices.map { it.mode() }.first()
+    }
+
     override fun mode(mode: DeviceMode): JsonObject {
         return xLedDevices.map { it.mode(mode) }.first()
     }

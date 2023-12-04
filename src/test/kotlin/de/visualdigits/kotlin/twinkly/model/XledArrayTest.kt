@@ -9,6 +9,8 @@ import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
 import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -18,6 +20,18 @@ class XledArrayTest {
         XLedDevice("192.168.178.35"),
         XLedDevice("192.168.178.52")
     ))
+
+    @Test
+    fun testPowerOn() {
+        Thread.sleep(10000)
+        xledArray.powerOn()
+    }
+
+    @Test
+    fun testPowerOff() {
+        Thread.sleep(10000)
+        xledArray.powerOff()
+    }
 
     @Test
     fun testWhites() {
@@ -74,7 +88,9 @@ class XledArrayTest {
         xledArray.showRealTimeFrame(frame)
         Thread.sleep(1000)
 
-        frame.fade(RGBColor(255,255,0), 2000, xledArray)
+        runBlocking {
+            frame.fade(xledArray, RGBColor(255,255,0), 2000)
+        }
     }
 
     @Test
@@ -137,48 +153,62 @@ class XledArrayTest {
         frameRed.replaceSubFrame(frameMagenta, 15, 15)
         frameRed.replaceSubFrame(frameCyan, 5, 5)
 
-        xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(frameRed)
+        runBlocking {
+            frameRed.play(xled = xledArray)
+        }
     }
 
     @Test
     fun testShowRealtimeFrame() {
-        xledArray.mode(DeviceMode.rt)
         val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
-        xledArray.showRealTimeFrame(frame)
+
+        runBlocking {
+            frame.play(xled = xledArray)
+        }
     }
 
     @Test
     fun testTwinklyChristmasTree() {
-        xledArray.mode(DeviceMode.rt)
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/glitter").toURI()))
-        while(true) {
-            xledArray.showRealTimeSequence(sequence, 100)
+
+        runBlocking {
+            sequence.play(xled = xledArray, frameDelay = 100)
         }
     }
 
     @Test
     fun testTwinklyChristmasPictures() {
-        xledArray.mode(DeviceMode.rt)
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-pictures").toURI()))
-        while(true) {
-            xledArray.showRealTimeFrame(sequence.random())
-            Thread.sleep(5000)
+
+        runBlocking {
+            sequence.play(xled = xledArray, frameDelay = 5000, random = true)
+        }
+    }
+
+    @Test
+    fun testTwinklySanta() {
+        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-pictures/11_santa.png").toURI()))
+
+        runBlocking {
+            frame.play(xled = xledArray)
         }
     }
 
     @Test
     fun testTwinklyPacmanFrame() {
-        xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(XledFrame.fromImage(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI())))
+        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI()))
+
+        runBlocking {
+            frame.play(xled = xledArray)
+        }
     }
 
     @Test
     fun testTwinklyPacman() {
-        xledArray.mode(DeviceMode.rt)
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/pacman").toURI()))
-        while(true) {
-            xledArray.showRealTimeSequence(sequence, 300)
+
+        runBlocking {
+            sequence.play(xled = xledArray, frameDelay = 300, loop = false)
         }
     }
 

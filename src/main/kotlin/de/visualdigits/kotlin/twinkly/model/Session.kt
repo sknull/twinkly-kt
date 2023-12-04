@@ -26,7 +26,7 @@ abstract class Session(
 
     protected var authToken: String? = null
 
-    fun login() {
+    fun login(): Int {
         val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
         log.info("#### Logging into device at $host...")
         val responseChallenge = post<Map<String, Any>>(
@@ -37,8 +37,11 @@ abstract class Session(
             )
         )
         authToken = responseChallenge["authentication_token"]!! as String
+        val experinInSeconds = responseChallenge["authentication_token_expires_in"]!! as Int
         val responseVerify = verify(responseChallenge["challenge-response"]!! as String)
         if (responseVerify.responseCode != ResponseCode.Ok) throw IllegalStateException("Could not login to device")
+
+        return experinInSeconds
     }
 
     private fun verify(responseChallenge: String): JsonObject {

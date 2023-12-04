@@ -3,6 +3,9 @@ package de.visualdigits.kotlin.twinkly.model.frame
 import com.madgag.gif.fmsware.GifDecoder
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import kotlinx.coroutines.delay
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -11,8 +14,38 @@ import java.lang.IllegalArgumentException
 import kotlin.math.min
 
 class XledSequence(
-    val sequence: MutableList<XledFrame> = mutableListOf()
+    private val sequence: MutableList<XledFrame> = mutableListOf()
 ) : MutableList<XledFrame> by sequence {
+
+    protected var running: Boolean = false
+
+    suspend fun play(
+        xled: XLed,
+        frameDelay: Long,
+        loop: Boolean = true,
+        random: Boolean = false
+    ) {
+        val currentMode = xled.mode()
+        xled.mode(DeviceMode.rt)
+        running = true
+        while (running) {
+            if (random) {
+                xled.showRealTimeFrame(sequence.random())
+                delay(frameDelay)
+            } else {
+                sequence.forEach { frame ->
+                    xled.showRealTimeFrame(frame)
+                    delay(frameDelay)
+                }
+            }
+            running = loop
+        }
+        xled.mode(currentMode)
+    }
+
+    fun stop() {
+        running = false
+    }
 
     fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()
@@ -59,12 +92,6 @@ class XledSequence(
                 )
             }
             return sequence
-        }
-
-        fun textScroll(
-
-        ) {
-
         }
     }
 }

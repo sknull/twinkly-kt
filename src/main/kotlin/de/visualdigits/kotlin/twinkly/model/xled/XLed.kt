@@ -20,6 +20,8 @@ interface XLed {
 
     fun powerOff()
 
+    fun mode(): DeviceMode
+
     fun mode(mode: DeviceMode): JsonObject
 
     fun ledReset()

@@ -20,14 +20,13 @@ open class TetrisBlock(
     private var posX: Int = 0
     private var posY: Int = 0
     private var oldFrame: XledFrame = XledFrame(0, 0)
-    private var running: Boolean = true
 
     suspend fun start(xled: XLed, board: XledFrame) {
         this.xled = xled
         this.board = board
         posX = Random(System.currentTimeMillis()).nextInt(0, board.width - width)
         oldFrame = board.subFrame(posX, posY, width, height)
-        if (oldFrame.frame.any { row -> row.any { color ->!color.isBlack() } }) {
+        if (oldFrame.frame.any { row -> row.any { color -> !color.isBlack() } }) {
             println("#### all blocked - not starting block '${this::class.simpleName}'")
             return
         }
@@ -35,16 +34,9 @@ open class TetrisBlock(
 
         xled.showRealTimeFrame(board)
 
-        move()
-    }
-
-    fun stop() {
-        running = false
-    }
-
-    suspend fun move() {
+        running = true
         while (running) {
-            val collision = pixelsToCheck.any { p -> !board[posX + p.first][posY + p.second].isBlack() }
+            val collision = pixelsToCheck.any { p -> !this.board[posX + p.first][posY + p.second].isBlack() }
             if (collision) {
                 println("collision - stopping block '${this::class.simpleName}'")
                 running = false
@@ -52,11 +44,12 @@ open class TetrisBlock(
             }
             delay(300)
             println("moving block '${this::class.simpleName}'")
-            board.replaceSubFrame(oldFrame, posX, posY, BlendMode.REPLACE)
+            this.board.replaceSubFrame(oldFrame, posX, posY, BlendMode.REPLACE)
             posY++
-            oldFrame = board.subFrame(posX, posY, width, height)
-            board.replaceSubFrame(this, posX, posY)
-            xled.showRealTimeFrame(board)
+            oldFrame = this.board.subFrame(posX, posY, width, height)
+            this.board.replaceSubFrame(this, posX, posY)
+            this.xled.showRealTimeFrame(this.board)
         }
     }
+
 }
