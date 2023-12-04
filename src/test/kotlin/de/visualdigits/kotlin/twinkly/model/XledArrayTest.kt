@@ -32,6 +32,18 @@ class XledArrayTest {
     }
 
     @Test
+    fun testRGBColor() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(10, 0, 30)
+        )
+
+        xledArray.mode(DeviceMode.rt)
+        xledArray.showRealTimeFrame(frame)
+    }
+
+    @Test
     fun testColorMix() {
         val frame = XledFrame(
             width = xledArray.width,
