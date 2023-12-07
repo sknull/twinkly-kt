@@ -21,7 +21,7 @@ open class XledFrame(
     val height: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
-) : MutableList<MutableList<Color<*>>> by frame {
+) : Playable, MutableList<MutableList<Color<*>>> by frame {
 
     protected var running: Boolean = false
 
@@ -89,7 +89,7 @@ open class XledFrame(
         }
     }
 
-    suspend fun play(
+    suspend fun playAsync(
         xled: XLed,
         frameDelay: Long = 1000
     ) {
@@ -101,6 +101,18 @@ open class XledFrame(
             delay(frameDelay)
         }
         xled.mode(currentMode)
+    }
+
+    override fun play(
+        xled: XLed,
+        frameDelay: Long,
+        sequenceDelay: Long,
+        frameLoop: Int,
+        sequenceLoop: Int,
+        random: Boolean
+    ) {
+        xled.mode(DeviceMode.rt)
+        xled.showRealTimeFrame(this)
     }
 
     fun stop() {
@@ -178,7 +190,7 @@ open class XledFrame(
         return this
     }
 
-    fun toByteArray(bytesPerLed: Int): ByteArray {
+    override fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()
         for (x in 0 until width) {
             for (y in 0 until height) {
