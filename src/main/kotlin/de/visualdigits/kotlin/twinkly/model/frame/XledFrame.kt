@@ -39,23 +39,26 @@ open class XledFrame(
 
         fun fromImage(
             file: File,
-            initialColor: Color<*> = RGBColor(0, 0, 0)
+            initialColor: Color<*> = RGBColor(0, 0, 0),
+            gamma: Double = 1.0
         ): XledFrame {
-            return fromImage(ImageIO.read(file), initialColor)
+            return fromImage(ImageIO.read(file), initialColor, gamma)
         }
 
         fun fromImage(
             ins: InputStream,
-            initialColor: Color<*> = RGBColor(0, 0, 0)
+            initialColor: Color<*> = RGBColor(0, 0, 0),
+            gamma: Double = 1.0
         ): XledFrame {
-            return fromImage(ImageIO.read(ins), initialColor)
+            return fromImage(ImageIO.read(ins), initialColor, gamma)
         }
 
         fun fromImage(
             image: BufferedImage,
-            initialColor: Color<*> = RGBColor(0, 0, 0)
+            initialColor: Color<*> = RGBColor(0, 0, 0),
+            gamma: Double = 1.0
         ): XledFrame {
-            return XledFrame(image.width, image.height, initialColor).setImage(image)
+            return XledFrame(image.width, image.height, initialColor).setImage(image, gamma)
         }
     }
 
@@ -180,7 +183,11 @@ open class XledFrame(
         return setImage(ImageIO.read(ins))
     }
 
-    fun setImage(image: BufferedImage): XledFrame {
+    fun setImage(
+        image: BufferedImage,
+        gamma: Double = 1.0
+    ): XledFrame {
+
         for (y in 0 until height) {
             for (x in 0 until width) {
                 val colors = frame[x]
