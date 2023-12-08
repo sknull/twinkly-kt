@@ -1,18 +1,19 @@
-package de.visualdigits.kotlin.twinkly.controller
+package de.visualdigits.kotlin.twinkly.rest.controller
 
-import de.visualdigits.kotlin.twinkly.configuration.ApplicationProperties
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.frame.Playable
+import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
+import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
-import jakarta.annotation.PostConstruct
+import de.visualdigits.kotlin.twinkly.rest.configuration.DevicesHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -23,32 +24,22 @@ class XledArrayController {
     private val log = LoggerFactory.getLogger(XledArrayController::class.java)
 
     @Autowired
-    private lateinit var properties: ApplicationProperties
+    private lateinit var devicesHolder: DevicesHolder
 
-    private var xledArray: XledArray = XledArray(listOf())
-    private var devices: Map<String, XLedDevice> = mapOf()
+    private var playable: Playable? = null
 
-
-    @PostConstruct
-    fun initialize() {
-        log.info("XledArrayController TwinklyController...")
-        devices = properties.devices.map {
-            Pair(it.key.substringAfter('.'), XLedDevice(it.value))
-        }.toMap()
-        log.info("Using devices '${devices.keys}'")
-        xledArray = XledArray(devices.values.toList())
-    }
+    private var currentMode: DeviceMode = DeviceMode.off
 
     @PutMapping("/power/on")
     fun powerOn() {
         log.info("Powering on")
-        xledArray.powerOn()
+        devicesHolder.xledArray.powerOn()
     }
 
     @PutMapping("/power/off")
     fun powerOff() {
         log.info("Powering off")
-        xledArray.powerOff()
+        devicesHolder.xledArray.powerOff()
     }
 
     @PutMapping("/brightness/{brightness}")
@@ -56,7 +47,7 @@ class XledArrayController {
         @PathVariable brightness: Int,
     ) {
         log.info("Setting brightness to $brightness")
-        xledArray.brightness(Brightness(value = brightness))
+        devicesHolder.xledArray.brightness(Brightness(value = brightness))
     }
 
     @PutMapping("/saturation/{saturation}")
@@ -64,7 +55,7 @@ class XledArrayController {
         @PathVariable saturation: Int,
     ) {
         log.info("Setting saturation to $saturation")
-        xledArray.saturation(Saturation(value = saturation))
+        devicesHolder.xledArray.saturation(Saturation(value = saturation))
     }
 
     @PutMapping("/mode/{mode}")
@@ -72,7 +63,8 @@ class XledArrayController {
         @PathVariable mode: String,
     ) {
         log.info("Setting saturation to $mode")
-        xledArray.mode(DeviceMode.valueOf(mode))
+        currentMode = DeviceMode.valueOf(mode)
+        devicesHolder.xledArray.mode(currentMode)
     }
 
     @PutMapping("/color/{red}/{green}/{blue}/{white}")
@@ -84,7 +76,34 @@ class XledArrayController {
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
         log.info("Showing color ${rgbwColor.ansiColor()}")
-        xledArray.mode(DeviceMode.color)
-        xledArray.color(rgbwColor)
+        devicesHolder.xledArray.mode(DeviceMode.color)
+        devicesHolder.xledArray.color(rgbwColor)
+    }
+
+    @PostMapping("/image")
+    fun showImage(@RequestBody bytes: ByteArray) {
+        currentMode = devicesHolder.xledArray.mode()
+        devicesHolder.xledArray.mode(DeviceMode.rt)
+        playable = XledFrame.fromImage(bytes)
+        Thread(LoopRunner(
+            devicesHolder.xledArray,
+            playable!!
+        )).start()
+    }
+
+    @PutMapping("/loop/stop")
+    fun stopLoop() {
+        devicesHolder.xledArray.mode(currentMode)
+        playable?.stop()
+    }
+
+    class LoopRunner(
+        val xled: XLed,
+        val playable: Playable
+    ): Runnable {
+        override fun run() {
+            playable.play(xled, 5000)
+        }
+
     }
 }

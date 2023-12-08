@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly
+package de.visualdigits.kotlin.twinkly.rest
 
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.SpringApplication

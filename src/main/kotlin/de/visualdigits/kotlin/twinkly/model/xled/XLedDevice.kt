@@ -120,7 +120,7 @@ class XLedDevice(host: String): XLed, Session(
         return post<Mode>(
             url = "$baseUrl/led/mode",
             body = body.toByteArray(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -178,7 +178,7 @@ class XLedDevice(host: String): XLed, Session(
         post<JsonObject>(
             url = "$baseUrl/led/out/brightness",
             body = brightness.marshallToBytes(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -196,7 +196,7 @@ class XLedDevice(host: String): XLed, Session(
         post<JsonObject>(
             url = "$baseUrl/led/out/saturation",
             body = saturation.marshallToBytes(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -248,7 +248,7 @@ class XLedDevice(host: String): XLed, Session(
         post<JsonObject>(
             url = "$baseUrl/led/color",
             body = body.toByteArray(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -301,7 +301,7 @@ class XLedDevice(host: String): XLed, Session(
         return post<JsonObject>(
             url = "$baseUrl/movies/current",
             body = moviesCurrentRequest.marshallToBytes(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -387,7 +387,7 @@ class XLedDevice(host: String): XLed, Session(
         return post<Movie>(
             url = "$baseUrl/led/movie/full",
             body = bytes,
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/octet-stream"
             )
         )
@@ -403,7 +403,7 @@ class XLedDevice(host: String): XLed, Session(
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.marshallToBytes(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -413,7 +413,7 @@ class XLedDevice(host: String): XLed, Session(
         return post<NewMovieResponse>(
             url = "$baseUrl/movies/new",
             body = newMovie.marshallToBytes(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )

@@ -38,6 +38,14 @@ open class XledFrame(
     companion object {
 
         fun fromImage(
+            bytes: ByteArray,
+            initialColor: Color<*> = RGBColor(0, 0, 0),
+            gamma: Double = 1.0
+        ): XledFrame {
+            return fromImage(ImageIO.read(bytes.inputStream()), initialColor, gamma)
+        }
+
+        fun fromImage(
             file: File,
             initialColor: Color<*> = RGBColor(0, 0, 0),
             gamma: Double = 1.0
@@ -92,20 +100,6 @@ open class XledFrame(
         }
     }
 
-    suspend fun playAsync(
-        xled: XLed,
-        frameDelay: Long = 1000
-    ) {
-        val currentMode = xled.mode()
-        xled.mode(DeviceMode.rt)
-        running = true
-        while (running) {
-            xled.showRealTimeFrame(this)
-            delay(frameDelay)
-        }
-        xled.mode(currentMode)
-    }
-
     override fun play(
         xled: XLed,
         frameDelay: Long,
@@ -114,11 +108,17 @@ open class XledFrame(
         sequenceLoop: Int,
         random: Boolean
     ) {
-        xled.mode(DeviceMode.rt)
-        xled.showRealTimeFrame(this)
+
+        var frameLoopCount = frameLoop
+
+        while (frameLoopCount == -1 || frameLoopCount-- > 0) {
+            xled.mode(DeviceMode.rt)
+            xled.showRealTimeFrame(this)
+            Thread.sleep(5000)
+        }
     }
 
-    fun stop() {
+    override fun stop() {
         running = false
     }
 

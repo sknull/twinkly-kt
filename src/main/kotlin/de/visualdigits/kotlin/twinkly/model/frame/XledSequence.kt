@@ -5,7 +5,6 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
-import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -20,38 +19,7 @@ class XledSequence(
 
     private val log = LoggerFactory.getLogger(XledSequence::class.java)
 
-    protected var running: Boolean = false
-
-    suspend fun playAsync(
-        xled: XLed,
-        frameDelay: Long,
-        loop: Boolean = true,
-        random: Boolean = false
-    ) {
-        val currentMode = xled.mode()
-        xled.mode(DeviceMode.rt)
-
-        val n = frameDelay / 5000
-
-        running = true
-        while (running) {
-            if (random) {
-                val frame = sequence.random()
-                log.info("\n$frame")
-                for (i in 0 until n) {
-                    frame.play(xled)
-                    delay(5000)
-                }
-            } else {
-                sequence.forEach { frame ->
-                    frame.play(xled)
-                    delay(frameDelay)
-                }
-            }
-            running = loop
-        }
-        xled.mode(currentMode)
-    }
+    private var running: Boolean = false
 
     override fun play(
         xled: XLed,
@@ -90,7 +58,7 @@ class XledSequence(
         }
     }
 
-    fun stop() {
+    override fun stop() {
         running = false
     }
 

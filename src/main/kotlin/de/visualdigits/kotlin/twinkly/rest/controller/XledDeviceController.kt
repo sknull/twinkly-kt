@@ -1,13 +1,10 @@
-package de.visualdigits.kotlin.twinkly.controller
+package de.visualdigits.kotlin.twinkly.rest.controller
 
-import de.visualdigits.kotlin.twinkly.configuration.ApplicationProperties
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
-import jakarta.annotation.PostConstruct
+import de.visualdigits.kotlin.twinkly.rest.configuration.DevicesHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,26 +20,14 @@ class XledDeviceController {
     private val log = LoggerFactory.getLogger(XledDeviceController::class.java)
 
     @Autowired
-    private lateinit var properties: ApplicationProperties
-
-    private var devices: Map<String, XLedDevice> = mapOf()
-
-    @PostConstruct
-    fun initialize() {
-        log.info("Initializing XledDeviceController...")
-        log.info("Using devices '${properties.devices}'")
-        devices = properties.devices.map {
-            Pair(it.key.substringAfter('.'), XLedDevice(it.value))
-        }.toMap()
-        log.info("Using devices '${devices.keys}'")
-    }
+    private lateinit var devicesHolder: DevicesHolder
 
     @PutMapping("/{device}/power/on")
     fun powerOn(
         @PathVariable device: String
     ) {
         log.info("Powering on $device")
-        devices[device]?.powerOn()
+        devicesHolder.xledDevices[device]?.powerOn()
     }
 
     @PutMapping("/{device}/power/off")
@@ -50,7 +35,7 @@ class XledDeviceController {
         @PathVariable device: String
     ) {
         log.info("Powering off $device")
-        devices[device]?.powerOff()
+        devicesHolder.xledDevices[device]?.powerOff()
     }
 
     @GetMapping("/{device}/brightness", produces = ["application/json"])
@@ -58,7 +43,7 @@ class XledDeviceController {
         @PathVariable device: String
     ): Brightness? {
         log.info("Getting saturation")
-        return devices[device]?.brightness()
+        return devicesHolder.xledDevices[device]?.brightness()
     }
 
     @PutMapping("/{device}/brightness/{brightness}")
@@ -67,7 +52,7 @@ class XledDeviceController {
         @PathVariable brightness: Int,
     ) {
         log.info("Setting brightness to $brightness")
-        devices[device]?.brightness(Brightness(value = brightness))
+        devicesHolder.xledDevices[device]?.brightness(Brightness(value = brightness))
     }
 
     @GetMapping("/{device}/saturation", produces = ["application/json"])
@@ -75,7 +60,7 @@ class XledDeviceController {
         @PathVariable device: String
     ): Saturation? {
         log.info("Getting saturation")
-        return devices[device]?.saturation()
+        return devicesHolder.xledDevices[device]?.saturation()
     }
 
     @PutMapping("/{device}/saturation/{saturation}")
@@ -84,7 +69,7 @@ class XledDeviceController {
         @PathVariable saturation: Int,
     ) {
         log.info("Setting saturation to $saturation")
-        devices[device]?.saturation(Saturation(value = saturation))
+        devicesHolder.xledDevices[device]?.saturation(Saturation(value = saturation))
     }
 
     @PutMapping("/{device}/mode/{mode}")
@@ -93,7 +78,7 @@ class XledDeviceController {
         @PathVariable mode: String,
     ) {
         log.info("Setting saturation to $mode")
-        devices[device]?.mode(DeviceMode.valueOf(mode))
+        devicesHolder.xledDevices[device]?.mode(DeviceMode.valueOf(mode))
     }
 
     @PutMapping("/{device}/color/{red}/{green}/{blue}/{white}")
@@ -106,7 +91,7 @@ class XledDeviceController {
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
         log.info("Showing color ${rgbwColor.ansiColor()}")
-        devices[device]?.mode(DeviceMode.color)
-        devices[device]?.color(rgbwColor)
+        devicesHolder.xledDevices[device]?.mode(DeviceMode.color)
+        devicesHolder.xledDevices[device]?.color(rgbwColor)
     }
 }

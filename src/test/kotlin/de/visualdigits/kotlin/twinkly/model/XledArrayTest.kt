@@ -171,7 +171,7 @@ class XledArrayTest {
     fun testTwinklyChristmasPictures() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-pictures").toURI()))
 
-        sequence.play(xled = xledArray, frameDelay = 5000, 300, sequenceLoop = 3, random = true)
+        sequence.play(xled = xledArray, frameDelay = 30000, 300, sequenceLoop = 3, random = true)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.configuration
+package de.visualdigits.kotlin.twinkly.rest.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component

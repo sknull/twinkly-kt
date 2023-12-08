@@ -1,0 +1,651 @@
+{
+	"info": {
+		"_postman_id": "4cfb482f-1a40-443e-9268-3010e6dadd03",
+		"name": "Twinkly",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13666125"
+	},
+	"item": [
+		{
+			"name": "curtain 1",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"challenge\":\"8SAKoXurjhx1mJxbpRxExqpUFMWA0W30JlkA+xxr62c=\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/login",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "gb6xipyZorU=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"challenge\":\"56367bbbaa031c1f0ad77841ddd901d1aad7b083\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/verify",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "device info",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"challenge\":\"8SAKoXurjhx1mJxbpRxExqpUFMWA0W30JlkA+xxr62c=\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/gestalt",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"gestalt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "movie curremt",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "z7TXaPL9tVI=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":\"4\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/movies/current",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"movies",
+								"current"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete movies",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "gb6xipyZorU=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/movies",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"movies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "turn off",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mode\": \"off\",\r\n    \"code\": 1106\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/led/mode",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"led",
+								"mode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "Qmars6NpPq0=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"mode\":\"color\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.178.35/xled/v1/led/mode",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"178",
+								"35"
+							],
+							"path": [
+								"xled",
+								"v1",
+								"led",
+								"mode"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "spring boot",
+			"item": [
+				{
+					"name": "color red",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/color/255/0/0/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"color",
+								"255",
+								"0",
+								"0",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "color green",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/color/0/255/0/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"color",
+								"0",
+								"255",
+								"0",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "color blue",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/color/0/0/255/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"color",
+								"0",
+								"0",
+								"255",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "color white",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/color/0/0/0/255",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"color",
+								"0",
+								"0",
+								"0",
+								"255"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "color rgb white",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/color/255/255/255/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"color",
+								"255",
+								"255",
+								"255",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "color full white",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/color/255/255/255/128",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"color",
+								"255",
+								"255",
+								"255",
+								"128"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "smiley",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/E:/Programmierung/IntelliJ/twinkly-kt/src/test/resources/images/smiley.png"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/image",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stop loop",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/E:/Programmierung/IntelliJ/twinkly-kt/src/test/resources/images/smiley.png"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/loop/stop",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"loop",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mode movie",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/E:/Programmierung/IntelliJ/twinkly-kt/src/test/resources/images/smiley.png"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/mode/movie",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"mode",
+								"movie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "power on",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/E:/Programmierung/IntelliJ/twinkly-kt/src/test/resources/images/smiley.png"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/power/on",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"power",
+								"on"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "power off",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/E:/Programmierung/IntelliJ/twinkly-kt/src/test/resources/images/smiley.png"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/power/off",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"power",
+								"off"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -32,7 +32,7 @@ abstract class Session(
         val responseChallenge = post<Map<String, Any>>(
             url = "$baseUrl/login",
             body = "{\"challenge\":\"$challenge\"}".toByteArray(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -48,7 +48,7 @@ abstract class Session(
         return post<JsonObject>(
             url = "$baseUrl/verify",
             body = "{\"challenge_response\":\"${responseChallenge}\"}".toByteArray(),
-            headers = mapOf(
+            headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
         )
@@ -74,11 +74,12 @@ abstract class Session(
         )
     }
 
-    protected inline fun <reified T> post(url: String, body: ByteArray = byteArrayOf(), headers: Map<String, String> = mapOf()): T {
+    protected inline fun <reified T> post(url: String, body: ByteArray = byteArrayOf(), headers: MutableMap<String, String> = mutableMapOf()): T {
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "POST"
-        authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
+        authToken?.let { at -> headers["X-Auth-Token"] = at }
         headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
+        log.info("post '$url' body='${String(body)}' headers=$headers")
         connection.doOutput = true
         connection.outputStream.use { os ->
             os.write(body, 0, body.size)

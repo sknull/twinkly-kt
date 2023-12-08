@@ -10,6 +10,7 @@ class Mode(
     val mode: String? = null,
     @JsonProperty("detect_mode") val detectMode: Int? = null,
     @JsonProperty("shop_mode") val shopMode: Int? = null,
+    @JsonProperty("color_config") val colorConfig: ColorConfig? = null,
     val id: Int? = null,
     @JsonProperty("unique_id") val uniqueId: String? = null,
     val name: String? = null,

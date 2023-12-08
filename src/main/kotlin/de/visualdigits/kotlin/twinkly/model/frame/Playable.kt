@@ -13,5 +13,7 @@ interface Playable {
         random: Boolean = false
     )
 
+    fun stop()
+
     fun toByteArray(bytesPerLed: Int): ByteArray
 }
