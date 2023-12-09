@@ -23,8 +23,11 @@ by Damien Quartz which only supports line in currently.
 The original implementation which was meant to be used within the
 processing framework can be found here: https://github.com/ddf/Minim/tree/main
 
+Involved is also some reverse engineering from the official twinkly android app.
+Nevertheless I was not able up to now to figure out how the TwinkyMusic microphone
+which is very responsive and accurate from what I have seen with the factory presets in the app.
 
-
+This project is far from feature complete but I think it`s now good enough to see the light of the world :)
 
 == Documentation
 

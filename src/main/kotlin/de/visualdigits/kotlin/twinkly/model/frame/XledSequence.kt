@@ -60,14 +60,16 @@ class XledSequence(
 
                 lastPlayable
                     ?.let { lp ->
-                        transitionType?:TransitionType.random().transitionSequence(
+                        val transType =  transitionType?:TransitionType.random()
+                        val transitionSequence = transType.transitionSequence(
                             source = lp,
                             target = playable,
-                            transitionDirection = transitionDirection?:TransitionDirection.random(),
-                            blendMode = transitionBlendMode?:BlendMode.random(),
+                            transitionDirection = transitionDirection ?: transType.supportedTransitionDirections()
+                                .random(),
+                            blendMode = transitionBlendMode ?: BlendMode.random(),
                             duration = transitionDuration
-                        )?.let { ts -> xled.showRealTimeSequence(ts, loop = 1) }
-
+                        )
+                        xled.showRealTimeSequence(transitionSequence, loop = 1)
                     }
 
                 when (playable) {

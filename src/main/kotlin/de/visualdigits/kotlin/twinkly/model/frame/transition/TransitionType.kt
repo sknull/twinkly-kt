@@ -10,7 +10,9 @@ enum class TransitionType(
 
     STRAIGHT(TransitionStraight()),
     FADE(TransitionFade()),
-    WIPE(TransitionWipe())
+    WIPE(TransitionWipe()),
+    CURTAIN_OPEN(TransitionCurtainOpen()),
+    CURTAIN_CLOSE(TransitionCurtainClose())
     ;
 
     companion object {
@@ -21,6 +23,8 @@ enum class TransitionType(
         }
     }
 
+    fun supportedTransitionDirections(): List<TransitionDirection> = transitionHandler.supportedTransitionDirections()
+
     fun transitionSequence(
         source: Playable,
         target: Playable,
@@ -29,7 +33,7 @@ enum class TransitionType(
         frameDelay: Long = 100,
         duration: Long = 2000
     ): XledSequence {
-println("#### ${transitionHandler.javaClass.simpleName}: $transitionDirection, $transitionDirection, $blendMode")
+//println("#### ${transitionHandler.javaClass.simpleName}: $transitionDirection, $transitionDirection, $blendMode")
         return transitionHandler.transitionSequence(
             source = source,
             target = target,

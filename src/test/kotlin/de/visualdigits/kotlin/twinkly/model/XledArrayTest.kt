@@ -180,6 +180,27 @@ class XledArrayTest {
             xled = xledArray,
             loop = -1,
             random = true,
+//            transitionType = TransitionType.CURTAIN_CLOSE,
+//            transitionDirection = TransitionDirection.HORIZONTAL,
+            transitionBlendMode = BlendMode.REPLACE,
+            transitionDuration = 1000
+        )
+    }
+
+    @Test
+    fun testWipe() {
+        val sequence = XledSequence(frames = mutableListOf(
+            XledFrame(xledArray.width, xledArray.height, RGBColor(255,0, 0)),
+            XledFrame(xledArray.width, xledArray.height, RGBColor(0,255, 0))
+        ))
+        xledArray.mode(DeviceMode.rt)
+        sequence.play(
+            xled = xledArray,
+            loop = -1,
+            random = true,
+            transitionType = TransitionType.WIPE,
+            transitionDirection = TransitionDirection.DIAGONAL_FROM_TOP_LEFT,
+            transitionBlendMode = BlendMode.REPLACE,
             transitionDuration = 1000
         )
     }

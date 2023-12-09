@@ -17,9 +17,11 @@ abstract class Transition {
         frameDelay: Long = 100,
         duration: Long = 2000
     ): XledSequence {
-        val sequence = XledSequence(frameDelay = frameDelay)
+//println("#### ${javaClass.simpleName}: $transitionDirection, $transitionDirection, $blendMode")
+        val fd = frameDelay(frameDelay)
+        val sequence = XledSequence(frameDelay = fd)
         if (supportedTransitionDirections().contains(transitionDirection)) {
-            val steps = duration / frameDelay
+            val steps = duration / fd
             val s = (255 / steps).toInt()
             val sourceFrame = source.lastFrame()
             val targetFrame = target.firstFrame()
@@ -27,18 +29,26 @@ abstract class Transition {
                 ?.let { sf -> targetFrame
                     ?.let { tf ->
                         for (i in 0 .. 255 step s) {
-                            nextFrame(
+                            val nextFrame = nextFrame(
                                 sourceFrame = sf,
                                 targetFrame = tf,
                                 transitionDirection = transitionDirection,
                                 blendMode = blendMode,
                                 factor = i / 255.0
-                            )?.let { nf -> sequence.add(nf) }
+                            )
+                            if (nextFrame != null) {
+//                                println(nextFrame)
+                                sequence.add(nextFrame)
+                            }
                         }
                     }
                 }
         }
         return sequence
+    }
+
+    open fun frameDelay(frameDelay: Long): Long {
+        return frameDelay
     }
 
     abstract fun nextFrame(

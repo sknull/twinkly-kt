@@ -9,7 +9,11 @@ enum class TransitionDirection {
     DIAGONAL_FROM_TOP_LEFT,
     DIAGONAL_FROM_TOP_RIGHT,
     DIAGONAL_FROM_BOTTOM_LEFT,
-    DIAGONAL_FROM_BOTTOM_RIGHT
+    DIAGONAL_FROM_BOTTOM_RIGHT,
+    OUT_IN,
+    IN_OUT,
+    HORIZONTAL,
+    VERTICAL
     ;
 
     companion object {
