@@ -108,8 +108,9 @@ open class XledFrame(
         xled: XLed,
         loop: Int,
         random: Boolean,
-        transitionType: TransitionType,
-        transitionDirection: TransitionDirection,
+        transitionType: TransitionType?,
+        transitionDirection: TransitionDirection?,
+        transitionBlendMode: BlendMode?,
         transitionDuration: Long,
         verbose: Boolean
     ) {

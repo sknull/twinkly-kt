@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.frame
 
+import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
@@ -10,8 +11,9 @@ interface Playable {
         xled: XLed,
         loop: Int = -1, // no loop
         random: Boolean = false,
-        transitionType: TransitionType = TransitionType.STRAIGHT,
-        transitionDirection: TransitionDirection = TransitionDirection.LEFT_RIGHT,
+        transitionType: TransitionType? = null,
+        transitionDirection: TransitionDirection? = null,
+        transitionBlendMode: BlendMode? = null,
         transitionDuration: Long = 2550,
         verbose: Boolean = false
     )

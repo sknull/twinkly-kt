@@ -10,4 +10,11 @@ enum class TransitionDirection {
     DIAGONAL_FROM_TOP_RIGHT,
     DIAGONAL_FROM_BOTTOM_LEFT,
     DIAGONAL_FROM_BOTTOM_RIGHT
+    ;
+
+    companion object {
+        fun random(): TransitionDirection {
+            return listOf(LEFT_RIGHT, RIGHT_LEFT, UP_DOWN, DOWN_UP).random()
+        }
+    }
 }

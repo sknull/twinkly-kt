@@ -1,6 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.frame
 
 import com.madgag.gif.fmsware.GifDecoder
+import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionDirection
@@ -39,8 +40,9 @@ class XledSequence(
         xled: XLed,
         loop: Int,
         random: Boolean,
-        transitionType: TransitionType,
-        transitionDirection: TransitionDirection,
+        transitionType: TransitionType?,
+        transitionDirection: TransitionDirection?,
+        transitionBlendMode: BlendMode?,
         transitionDuration: Long,
         verbose: Boolean
     ) {
@@ -50,22 +52,23 @@ class XledSequence(
         while (frameLoopCount == -1 || frameLoopCount > 0) {
             for (j in 0 until frames.size) {
                 val playable = if (random) {
-                    frames.random()
+                    random(lastPlayable)
                 } else {
                     frames[j]
                 }
                 if (verbose) log.info("\n$playable")
 
                 lastPlayable
-                    ?.let {lp ->
-                        transitionType.transitionSequence(
+                    ?.let { lp ->
+                        transitionType?:TransitionType.random().transitionSequence(
                             source = lp,
                             target = playable,
-                            transitionDirection = transitionDirection,
+                            transitionDirection = transitionDirection?:TransitionDirection.random(),
+                            blendMode = transitionBlendMode?:BlendMode.random(),
                             duration = transitionDuration
-                        )
+                        )?.let { ts -> xled.showRealTimeSequence(ts, loop = 1) }
+
                     }
-                    ?.play(xled, loop = 1)
 
                 when (playable) {
                     is XledFrame -> {
@@ -86,6 +89,14 @@ class XledSequence(
             if (frameLoopCount != -1) frameLoopCount--
             if (frameLoopCount > 0) Thread.sleep(5000)
         }
+    }
+
+    private fun random(lastPlayable: Playable?): Playable {
+        var nextPlayable = frames.random()
+        while (nextPlayable == lastPlayable) {
+            nextPlayable = frames.random()
+        }
+        return nextPlayable
     }
 
     override fun stop() {

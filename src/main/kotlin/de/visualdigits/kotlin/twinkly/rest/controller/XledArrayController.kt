@@ -102,7 +102,7 @@ class XledArrayController {
         val playable: Playable
     ): Runnable {
         override fun run() {
-            playable.play(xled, 5000)
+            playable.play(xled, 5000,)
         }
 
     }
