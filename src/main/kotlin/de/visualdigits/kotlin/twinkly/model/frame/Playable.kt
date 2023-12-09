@@ -9,7 +9,6 @@ interface Playable {
         frameDelay: Long = 1000,
         sequenceDelay: Long = 1000,
         frameLoop: Int = -1, // endlesss
-        sequenceLoop: Int = 0, // no loop
         random: Boolean = false
     )
 

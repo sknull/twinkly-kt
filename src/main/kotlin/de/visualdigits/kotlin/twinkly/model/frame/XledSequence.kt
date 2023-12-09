@@ -4,13 +4,12 @@ import com.madgag.gif.fmsware.GifDecoder
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
-import java.lang.IllegalArgumentException
+import kotlin.math.max
 import kotlin.math.min
 
 class XledSequence(
@@ -26,36 +25,63 @@ class XledSequence(
         frameDelay: Long,
         sequenceDelay: Long,
         frameLoop: Int,
-        sequenceLoop: Int,
         random: Boolean
     ) {
-        xled.mode(DeviceMode.rt)
-
-        val n = frameDelay / 5000
-
+        val n = max(1, frameDelay / 5000)
         var frameLoopCount = frameLoop
-
         while (frameLoopCount == -1 || frameLoopCount-- > 0) {
             if (random) {
                 val playable = sequence.random()
                 log.info("\n$playable")
-                for (i in 0 until n) {
-                    when (playable) {
-                        is XledFrame -> xled.showRealTimeFrame(playable)
-                        is XledSequence -> xled.showRealTimeSequence(playable, sequenceDelay, loop = sequenceLoop)
+                when (playable) {
+                    is XledFrame -> {
+                        for (i in 0 until n) {
+                            xled.showRealTimeFrame(playable)
+                            Thread.sleep(min(5000, frameDelay))
+                        }
                     }
-                    Thread.sleep(5000)
+                    is XledSequence -> {
+                        xled.showRealTimeSequence(
+                            frameSequence = playable,
+                            frameDelay = sequenceDelay,
+                            loop = (frameDelay / sequenceDelay / playable.size).toInt()
+                        )
+                        if (frameLoopCount != -1) frameLoopCount--
+                    }
                 }
             } else {
                 sequence.forEach { playable ->
+                    log.info("\n$playable")
                     when (playable) {
-                        is XledFrame -> xled.showRealTimeFrame(playable)
-                        is XledSequence -> xled.showRealTimeSequence(playable, sequenceDelay, loop = sequenceLoop)
+                        is XledFrame -> {
+                            for (i in 0 until n) {
+                                xled.showRealTimeFrame(playable)
+                                Thread.sleep(min(5000, frameDelay))
+                            }
+                        }
+                        is XledSequence -> {
+                            xled.showRealTimeSequence(
+                                frameSequence = playable,
+                                frameDelay = sequenceDelay,
+                                loop = (frameDelay / sequenceDelay / playable.size).toInt()
+                            )
+                        }
                     }
-                    Thread.sleep(frameDelay)
                 }
             }
+            if (frameLoopCount != -1) frameLoopCount--
+            if (frameLoopCount > 0) Thread.sleep(5000)
         }
+    }
+
+    override fun toString(): String {
+        val frames =  sequence
+            .map { it.toString().split("\n") }
+        val sb = StringBuilder()
+        for (y in 0 until frames[0].size) {
+            sb.append(frames.map { it[y] }.joinToString(" ") + "\n")
+        }
+        return sb.toString()
     }
 
     override fun stop() {
@@ -77,7 +103,7 @@ class XledSequence(
             if (!directory.isDirectory) throw IllegalArgumentException("Given file is not a directory")
             val sequence = XledSequence()
             val files = directory.listFiles { file -> file.isDirectory || (file.isFile && file.name.lowercase().endsWith(".png")) }
-            files?.sort()
+            files?.sortBy { it.name.lowercase() }
             files?.take(maxFrames)
                 ?.forEach { file ->
                     if (file.isFile) {

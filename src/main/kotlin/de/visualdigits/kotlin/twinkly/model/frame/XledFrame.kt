@@ -5,7 +5,6 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
 import kotlinx.coroutines.delay
 import org.apache.commons.lang3.math.NumberUtils.min
 import java.awt.image.BufferedImage
@@ -105,16 +104,16 @@ open class XledFrame(
         frameDelay: Long,
         sequenceDelay: Long,
         frameLoop: Int,
-        sequenceLoop: Int,
         random: Boolean
     ) {
-
+        val n = max(1, frameDelay / 5000)
         var frameLoopCount = frameLoop
-
-        while (frameLoopCount == -1 || frameLoopCount-- > 0) {
-            xled.mode(DeviceMode.rt)
-            xled.showRealTimeFrame(this)
-            Thread.sleep(5000)
+        while (frameLoopCount == -1 || frameLoopCount > 0) {
+            for (j in 0 until n) {
+                xled.showRealTimeFrame(this)
+                if (frameLoopCount != -1) frameLoopCount--
+                if (frameLoopCount > 0) Thread.sleep(5000)
+            }
         }
     }
 

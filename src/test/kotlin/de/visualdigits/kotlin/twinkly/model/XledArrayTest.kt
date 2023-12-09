@@ -156,27 +156,27 @@ class XledArrayTest {
     @Test
     fun testShowRealtimeFrame() {
         val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
-
+        xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray)
     }
 
     @Test
     fun testTwinklyChristmasTree() {
-        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/glitter").toURI()))
-
+        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
+        xledArray.mode(DeviceMode.rt)
         sequence.play(xled = xledArray, frameDelay = 100)
     }
 
     @Test
-    fun testTwinklyChristmasPictures() {
-        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-pictures").toURI()))
-
-        sequence.play(xled = xledArray, frameDelay = 30000, 300, sequenceLoop = 3, random = true)
+    fun testTwinklyChristmasScenes() {
+        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()))
+        xledArray.mode(DeviceMode.rt)
+        sequence.play(xled = xledArray, frameDelay = 10000, 300, frameLoop = -1, random = true)
     }
 
     @Test
     fun testTwinklySanta() {
-        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-pictures/11_santa.png").toURI()))
+        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-scenes/11_santa.png").toURI()))
 
         frame.play(xled = xledArray)
     }

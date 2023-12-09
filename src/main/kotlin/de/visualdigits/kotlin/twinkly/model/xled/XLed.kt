@@ -7,6 +7,7 @@ import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
 import de.visualdigits.kotlin.twinkly.model.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import org.slf4j.LoggerFactory
 
 interface XLed {
 
@@ -32,17 +33,18 @@ interface XLed {
 
     fun color(color: Color<*>)
 
-    fun showRealTimeSequence(frameSequence: XledSequence, delay: Long, loop: Int = 0) {
+    fun showRealTimeSequence(frameSequence: XledSequence, frameDelay: Long, loop: Int = 1) {
         val frames = frameSequence
             .filter { it is XledFrame }
             .map { it as XledFrame }
 
         var loopCount = loop
-        while (loopCount == -1 || loopCount-- > 0) {
+        while (loopCount == -1 || loopCount > 0) {
             frames.forEach { frame ->
                 showRealTimeFrame(frame)
-                Thread.sleep(delay)
+                Thread.sleep(frameDelay)
             }
+            if (loopCount != -1) loopCount--
         }
     }
 
