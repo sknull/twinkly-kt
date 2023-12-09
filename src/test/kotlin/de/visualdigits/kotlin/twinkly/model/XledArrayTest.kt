@@ -164,14 +164,17 @@ class XledArrayTest {
     fun testTwinklyChristmasTree() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
         xledArray.mode(DeviceMode.rt)
-        sequence.play(xled = xledArray, frameDelay = 100)
+        sequence.play(xled = xledArray)
     }
 
     @Test
     fun testTwinklyChristmasScenes() {
-        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()))
+        val sequence = XledSequence.fromDirectory(
+            File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()),
+            frameDelay = 10000
+        )
         xledArray.mode(DeviceMode.rt)
-        sequence.play(xled = xledArray, frameDelay = 10000, 300, frameLoop = -1, random = true)
+        sequence.play(xled = xledArray, loop = -1, random = false)
     }
 
     @Test
@@ -192,7 +195,7 @@ class XledArrayTest {
     fun testTwinklyPacman() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/pacman").toURI()))
 
-        sequence.play(xled = xledArray, frameDelay = 300, frameLoop = 0)
+        sequence.play(xled = xledArray, loop = 0)
     }
 
     @Test

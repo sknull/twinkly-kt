@@ -33,7 +33,7 @@ interface XLed {
 
     fun color(color: Color<*>)
 
-    fun showRealTimeSequence(frameSequence: XledSequence, frameDelay: Long, loop: Int = 1) {
+    fun showRealTimeSequence(frameSequence: XledSequence, loop: Int = 1) {
         val frames = frameSequence
             .filter { it is XledFrame }
             .map { it as XledFrame }
@@ -42,7 +42,7 @@ interface XLed {
         while (loopCount == -1 || loopCount > 0) {
             frames.forEach { frame ->
                 showRealTimeFrame(frame)
-                Thread.sleep(frameDelay)
+                Thread.sleep(frameSequence.frameDelay)
             }
             if (loopCount != -1) loopCount--
         }

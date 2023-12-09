@@ -6,9 +6,7 @@ interface Playable {
 
     fun play(
         xled: XLed,
-        frameDelay: Long = 1000,
-        sequenceDelay: Long = 1000,
-        frameLoop: Int = -1, // endlesss
+        loop: Int = -1, // endlesss
         random: Boolean = false
     )
 

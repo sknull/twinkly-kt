@@ -19,7 +19,8 @@ open class XledFrame(
     val width: Int,
     val height: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
-    val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
+    val frame: MutableList<MutableList<Color<*>>> = mutableListOf(),
+    var frameDelay: Long = 1000
 ) : Playable, MutableList<MutableList<Color<*>>> by frame {
 
     protected var running: Boolean = false
@@ -101,18 +102,16 @@ open class XledFrame(
 
     override fun play(
         xled: XLed,
-        frameDelay: Long,
-        sequenceDelay: Long,
-        frameLoop: Int,
+        loop: Int,
         random: Boolean
     ) {
         val n = max(1, frameDelay / 5000)
-        var frameLoopCount = frameLoop
-        while (frameLoopCount == -1 || frameLoopCount > 0) {
+        var loopCount = loop
+        while (loopCount == -1 || loopCount > 0) {
             for (j in 0 until n) {
                 xled.showRealTimeFrame(this)
-                if (frameLoopCount != -1) frameLoopCount--
-                if (frameLoopCount > 0) Thread.sleep(5000)
+                if (loopCount != -1) loopCount--
+                if (loopCount > 0) Thread.sleep(kotlin.math.min(5000, frameDelay))
             }
         }
     }
