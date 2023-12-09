@@ -66,7 +66,7 @@ class RGBWColor(
         return if (other is RGBWColor) {
             when (blendMode) {
                 BlendMode.REPLACE -> {
-                    other
+                    other.clone()
                 }
                 BlendMode.AVERAGE -> {
                     RGBWColor(

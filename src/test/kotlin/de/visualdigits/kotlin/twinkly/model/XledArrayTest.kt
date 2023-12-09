@@ -4,6 +4,7 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
 import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
 import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
@@ -161,38 +162,44 @@ class XledArrayTest {
     }
 
     @Test
-    fun testTwinklyChristmasTree() {
+    fun testChristmasTree() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
         xledArray.mode(DeviceMode.rt)
         sequence.play(xled = xledArray)
     }
 
     @Test
-    fun testTwinklyChristmasScenes() {
+    fun testChristmasScenes() {
         val sequence = XledSequence.fromDirectory(
             File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()),
             frameDelay = 10000
         )
         xledArray.mode(DeviceMode.rt)
-        sequence.play(xled = xledArray, loop = -1, random = false)
+        sequence.play(
+            xled = xledArray,
+            loop = -1,
+            random = true,
+            transitionType = TransitionType.FADE,
+            transitionDuration = 1000
+        )
     }
 
     @Test
-    fun testTwinklySanta() {
+    fun testSanta() {
         val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-scenes/11_santa.png").toURI()))
-
+        xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray)
     }
 
     @Test
-    fun testTwinklyPacmanFrame() {
+    fun testPacmanFrame() {
         val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI()))
-
+        xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray)
     }
 
     @Test
-    fun testTwinklyPacman() {
+    fun testPacman() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/pacman").toURI()))
 
         sequence.play(xled = xledArray, loop = 0)

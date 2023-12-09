@@ -4,14 +4,16 @@ import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionDirection
+import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
 import kotlinx.coroutines.delay
 import org.apache.commons.lang3.math.NumberUtils.min
+import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
-import java.lang.StringBuilder
 import javax.imageio.ImageIO
 import kotlin.math.max
 
@@ -19,9 +21,11 @@ open class XledFrame(
     val width: Int,
     val height: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
-    val frame: MutableList<MutableList<Color<*>>> = mutableListOf(),
-    var frameDelay: Long = 1000
+    var frameDelay: Long = 1000,
+    val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
 ) : Playable, MutableList<MutableList<Color<*>>> by frame {
+
+    private val log = LoggerFactory.getLogger(XledFrame::class.java)
 
     protected var running: Boolean = false
 
@@ -103,8 +107,13 @@ open class XledFrame(
     override fun play(
         xled: XLed,
         loop: Int,
-        random: Boolean
+        random: Boolean,
+        transitionType: TransitionType,
+        transitionDirection: TransitionDirection,
+        transitionDuration: Long,
+        verbose: Boolean
     ) {
+        if (verbose) log.info("\n$this")
         val n = max(1, frameDelay / 5000)
         var loopCount = loop
         while (loopCount == -1 || loopCount > 0) {
@@ -160,7 +169,7 @@ open class XledFrame(
         subFrame: XledFrame,
         offsetX: Int = 0,
         offsetY: Int = 0,
-        blendMode: BlendMode = BlendMode.AVERAGE
+        blendMode: BlendMode = BlendMode.REPLACE
     ): XledFrame {
         val xStart = if (offsetX >= 0) 0 else -1 * offsetX
         val yStart = if (offsetY >= 0) 0 else -1 * offsetY
@@ -171,6 +180,16 @@ open class XledFrame(
             }
         }
         return this
+    }
+
+    fun fade(other: XledFrame, factor: Double, blendMode: BlendMode = BlendMode.AVERAGE): XledFrame {
+        val newFrame = XledFrame(width, height, initialColor, frameDelay)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[x][y] = frame[x][y].fade(other[x][y], factor, blendMode)
+            }
+        }
+        return newFrame
     }
 
     fun setImage(file: File): XledFrame {
@@ -246,4 +265,6 @@ open class XledFrame(
             else -> byteArrayOf()
         }
     }
+
+    override fun frames(): List<Playable> = listOf(this)
 }

@@ -3,6 +3,8 @@ package de.visualdigits.kotlin.twinkly.model.frame
 import com.madgag.gif.fmsware.GifDecoder
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionDirection
+import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.scene.Scene
 import de.visualdigits.kotlin.twinkly.model.scene.SceneType
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
@@ -15,25 +17,56 @@ import kotlin.math.max
 import kotlin.math.min
 
 class XledSequence(
-    private val sequence: MutableList<Playable> = mutableListOf(),
-    var frameDelay: Long = 100
-) : Playable, MutableList<Playable> by sequence {
+    var frameDelay: Long = 100,
+    private val frames: MutableList<Playable> = mutableListOf()
+) : Playable, MutableList<Playable> by frames {
 
     private val log = LoggerFactory.getLogger(XledSequence::class.java)
 
     private var running: Boolean = false
 
+    override fun toString(): String {
+        val frames =  frames
+            .map { it.toString().split("\n") }
+        val sb = StringBuilder()
+        for (y in 0 until frames[0].size) {
+            sb.append(frames.map { it[y] }.joinToString(" ") + "\n")
+        }
+        return sb.toString()
+    }
+
     override fun play(
         xled: XLed,
         loop: Int,
-        random: Boolean
+        random: Boolean,
+        transitionType: TransitionType,
+        transitionDirection: TransitionDirection,
+        transitionDuration: Long,
+        verbose: Boolean
     ) {
         val n = max(1, frameDelay / 5000)
         var frameLoopCount = loop
-        while (frameLoopCount == -1 || frameLoopCount-- > 0) {
-            for (j in 0 until sequence.size) {
-                val playable = if (random) sequence.random() else sequence[j]
-                log.info("\n$playable")
+        var lastPlayable: Playable? = null
+        while (frameLoopCount == -1 || frameLoopCount > 0) {
+            for (j in 0 until frames.size) {
+                val playable = if (random) {
+                    frames.random()
+                } else {
+                    frames[j]
+                }
+                if (verbose) log.info("\n$playable")
+
+                lastPlayable
+                    ?.let {lp ->
+                        transitionType.transitionSequence(
+                            source = lp,
+                            target = playable,
+                            transitionDirection = transitionDirection,
+                            duration = transitionDuration
+                        )
+                    }
+                    ?.play(xled, loop = 1)
+
                 when (playable) {
                     is XledFrame -> {
                         for (i in 0 until n) {
@@ -48,25 +81,23 @@ class XledSequence(
                         )
                     }
                 }
+                lastPlayable = playable
             }
             if (frameLoopCount != -1) frameLoopCount--
             if (frameLoopCount > 0) Thread.sleep(5000)
         }
     }
 
-    override fun toString(): String {
-        val frames =  sequence
-            .map { it.toString().split("\n") }
-        val sb = StringBuilder()
-        for (y in 0 until frames[0].size) {
-            sb.append(frames.map { it[y] }.joinToString(" ") + "\n")
-        }
-        return sb.toString()
-    }
-
     override fun stop() {
         running = false
     }
+
+    fun append(other: XledSequence): XledSequence {
+        other.frames.forEach { this.frames.add(it) }
+        return this
+    }
+
+    override fun frames(): List<Playable> = frames
 
     override fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()

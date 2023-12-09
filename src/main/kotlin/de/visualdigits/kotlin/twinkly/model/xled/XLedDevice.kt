@@ -323,7 +323,7 @@ class XLedDevice(host: String): XLed, Session(
         name: String,
         frame: XledFrame
     ) {
-        showSequence(name, XledSequence(mutableListOf(frame)), 1)
+        showSequence(name, XledSequence(frames = mutableListOf(frame)), 1)
     }
 
     fun showSequence(
