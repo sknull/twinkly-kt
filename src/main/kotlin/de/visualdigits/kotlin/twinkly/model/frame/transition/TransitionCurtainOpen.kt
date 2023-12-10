@@ -21,6 +21,7 @@ class TransitionCurtainOpen : Transition() {
         val newTargetFrame = sourceFrame.clone()
         val width = sourceFrame.width
         val height = sourceFrame.height
+
         when (transitionDirection) {
             TransitionDirection.HORIZONTAL -> {
                 val n = (width / 2 * factor).roundToInt()
@@ -42,6 +43,7 @@ class TransitionCurtainOpen : Transition() {
             }
             else -> {}
         }
+
         return newTargetFrame
     }
 

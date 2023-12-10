@@ -12,7 +12,8 @@ enum class TransitionType(
     FADE(TransitionFade()),
     WIPE(TransitionWipe()),
     CURTAIN_OPEN(TransitionCurtainOpen()),
-    CURTAIN_CLOSE(TransitionCurtainClose())
+    CURTAIN_CLOSE(TransitionCurtainClose()),
+    DISC(TransitionDisc())
     ;
 
     companion object {

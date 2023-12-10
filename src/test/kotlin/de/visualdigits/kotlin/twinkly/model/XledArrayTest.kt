@@ -14,6 +14,7 @@ import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.random.Random
 
 class XledArrayTest {
 
@@ -163,6 +164,13 @@ class XledArrayTest {
     }
 
     @Test
+    fun testSanta() {
+        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-scenes/09_santa/frame_001.png").toURI()))
+        xledArray.mode(DeviceMode.rt)
+        frame.play(xled = xledArray,)
+    }
+
+    @Test
     fun testChristmasTree() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
         xledArray.mode(DeviceMode.rt)
@@ -189,27 +197,44 @@ class XledArrayTest {
 
     @Test
     fun testWipe() {
-        val sequence = XledSequence(frames = mutableListOf(
-            XledFrame(xledArray.width, xledArray.height, RGBColor(255,0, 0)),
-            XledFrame(xledArray.width, xledArray.height, RGBColor(0,255, 0))
+        val sequence = XledSequence(frameDelay = 1000, frames = mutableListOf(
+            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,0, 0, 0)),
+            XledFrame(xledArray.width, xledArray.height, RGBWColor(0,255, 0, 0)),
+            XledFrame(xledArray.width, xledArray.height, RGBWColor(0,0, 255, 0)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,255, 0, 0)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(0,255, 255, 0)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,0, 255, 0)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,255, 255, 0)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,0, 0, 255)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(0,255, 0, 255)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(0,0, 255, 255)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,255, 0, 255)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(0,255, 255, 255)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,0, 255, 255)),
+//            XledFrame(xledArray.width, xledArray.height, RGBWColor(255,255, 255, 255)),
         ))
+
+//        val sequence = XledSequence(frameDelay = 1000)
+//        for (n in 0 until 256) {
+//            val random = Random(System.currentTimeMillis())
+//            sequence.add(XledFrame(xledArray.width, xledArray.height, RGBWColor(
+//                red = random.nextInt(0, 255),
+//                green = random.nextInt(0, 255),
+//                blue = random.nextInt(0, 255),
+//                white = random.nextInt(0, 255)
+//            )))
+//        }
+
         xledArray.mode(DeviceMode.rt)
         sequence.play(
             xled = xledArray,
             loop = -1,
             random = true,
-            transitionType = TransitionType.WIPE,
-            transitionDirection = TransitionDirection.DIAGONAL_FROM_TOP_LEFT,
+//            transitionType = TransitionType.STRAIGHT,
+//            transitionDirection = TransitionDirection.LEFT_RIGHT,
             transitionBlendMode = BlendMode.REPLACE,
             transitionDuration = 1000
         )
-    }
-
-    @Test
-    fun testSanta() {
-        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-scenes/11_santa.png").toURI()))
-        xledArray.mode(DeviceMode.rt)
-        frame.play(xled = xledArray,)
     }
 
     @Test

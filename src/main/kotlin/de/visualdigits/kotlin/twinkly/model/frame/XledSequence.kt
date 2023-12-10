@@ -46,51 +46,89 @@ class XledSequence(
         transitionDuration: Long,
         verbose: Boolean
     ) {
-        val n = max(1, frameDelay / 5000)
+        val repetitions = max(1, frameDelay / 5000)
         var frameLoopCount = loop
         var lastPlayable: Playable? = null
+
         while (frameLoopCount == -1 || frameLoopCount > 0) {
             for (j in 0 until frames.size) {
-                val playable = if (random) {
-                    random(lastPlayable)
-                } else {
-                    frames[j]
-                }
+                val playable = nextPlayable(j, lastPlayable, random)
                 if (verbose) log.info("\n$playable")
 
-                lastPlayable
-                    ?.let { lp ->
-                        val transType =  transitionType?:TransitionType.random()
-                        val transitionSequence = transType.transitionSequence(
-                            source = lp,
-                            target = playable,
-                            transitionDirection = transitionDirection ?: transType.supportedTransitionDirections()
-                                .random(),
-                            blendMode = transitionBlendMode ?: BlendMode.random(),
-                            duration = transitionDuration
-                        )
-                        xled.showRealTimeSequence(transitionSequence, loop = 1)
-                    }
-
-                when (playable) {
-                    is XledFrame -> {
-                        for (i in 0 until n) {
-                            xled.showRealTimeFrame(playable)
-                            Thread.sleep(min(5000, frameDelay))
-                        }
-                    }
-                    is XledSequence -> {
-                        xled.showRealTimeSequence(
-                            frameSequence = playable,
-                            loop = (frameDelay / playable.frameDelay / playable.size).toInt()
-                        )
-                    }
+                if (lastPlayable != null && transitionType != TransitionType.STRAIGHT) {
+                    showTransition(
+                        xled = xled,
+                        source = lastPlayable,
+                        target = playable,
+                        transitionType = transitionType,
+                        transitionDirection = transitionDirection,
+                        transitionBlendMode = transitionBlendMode,
+                        transitionDuration = transitionDuration
+                    )
                 }
+
+                showPlayable(xled, playable, repetitions)
+
                 lastPlayable = playable
             }
+
             if (frameLoopCount != -1) frameLoopCount--
-            if (frameLoopCount > 0) Thread.sleep(5000)
         }
+    }
+
+    private fun showTransition(
+        xled: XLed,
+        source: Playable,
+        target: Playable,
+        transitionType: TransitionType?,
+        transitionDirection: TransitionDirection?,
+        transitionBlendMode: BlendMode?,
+        transitionDuration: Long
+    ) {
+        val transType = transitionType ?: TransitionType.random()
+        val transitionSequence = transType.transitionSequence(
+            source = source,
+            target = target,
+            transitionDirection = transitionDirection ?: transType.supportedTransitionDirections().random(),
+            blendMode = transitionBlendMode ?: BlendMode.random(),
+            duration = transitionDuration
+        )
+        xled.showRealTimeSequence(transitionSequence, loop = 1)
+    }
+
+    private fun showPlayable(
+        xled: XLed,
+        playable: Playable,
+        repetitions: Long
+    ) {
+        when (playable) {
+            is XledFrame -> {
+                for (i in 0 until repetitions) {
+                    xled.showRealTimeFrame(playable)
+                    Thread.sleep(min(5000, frameDelay))
+                }
+            }
+            is XledSequence -> {
+                xled.showRealTimeSequence(
+                    frameSequence = playable,
+                    loop = (frameDelay / playable.frameDelay / playable.size).toInt()
+                )
+            }
+        }
+    }
+
+    private fun nextPlayable(
+        j: Int,
+        lastPlayable: Playable?,
+        random: Boolean
+    ): Playable {
+        val playable = if (random) {
+            random(lastPlayable)
+        }
+        else {
+            frames[j]
+        }
+        return playable
     }
 
     private fun random(lastPlayable: Playable?): Playable {
