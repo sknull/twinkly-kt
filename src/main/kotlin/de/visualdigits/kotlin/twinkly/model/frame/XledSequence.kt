@@ -217,5 +217,75 @@ class XledSequence(
             }
             return sequence
         }
+
+        fun fromText(
+            text: String,
+            fontName: String,
+            fontSize: Int,
+            backgroundColor: Color<*>,
+            textColor: Color<*>,
+            targetWidth: Int,
+            targetHeight: Int
+        ): XledSequence {
+            val banner = XledFrame.fromText(
+                text = text,
+                fontName = fontName,
+                fontSize = fontSize,
+                backgroundColor = backgroundColor,
+                textColor = textColor
+            )
+
+            return scrollingBanner(banner, targetWidth, targetHeight)
+        }
+
+        fun fromTexts(
+            fontName: String,
+            fontSize: Int,
+            targetWidth: Int,
+            targetHeight: Int,
+            vararg texts: Triple<String, Color<*>, Color<*>>
+        ): XledSequence {
+            val banner = XledFrame.fromTexts(
+                fontName = fontName,
+                fontSize = fontSize,
+                texts = texts
+            )
+
+            return scrollingBanner(banner, targetWidth, targetHeight)
+        }
+
+        fun scrollingBanner(
+            banner: XledFrame,
+            targetWidth: Int,
+            targetHeight: Int
+        ): XledSequence {
+            val sequence = XledSequence(frameDelay = 100)
+
+            // move in
+            for (x in 0 until targetWidth - 1) {
+                val frame = banner.subFrame(0, 0, x, min(banner.height, targetHeight))
+                val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+                canvas.replaceSubFrame(frame, targetWidth - 1 - x, 0)
+                sequence.add(canvas)
+            }
+
+            // scroll text
+            for (x in 0 until banner.width - targetWidth) {
+                val frame = banner.subFrame(x, 0, targetWidth, min(banner.height, targetHeight))
+                val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+                canvas.replaceSubFrame(frame, 0, 0)
+                sequence.add(canvas)
+            }
+
+            // move out
+            for (x in targetWidth - 1 downTo 0) {
+                val frame = banner.subFrame(banner.width - x, 0, x, min(banner.height, targetHeight))
+                val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+                canvas.replaceSubFrame(frame, 0, 0)
+                sequence.add(canvas)
+            }
+
+            return sequence
+        }
     }
 }

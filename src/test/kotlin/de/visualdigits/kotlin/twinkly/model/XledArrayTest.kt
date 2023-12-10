@@ -171,6 +171,33 @@ class XledArrayTest {
     }
 
     @Test
+    fun testExpand() {
+        val frame = XledFrame(8, 10, RGBColor(255, 0, 0))
+        println(frame)
+        frame.expandRight(5, RGBColor(0, 255, 0))
+        frame.expandLeft(4, RGBColor(0, 0, 255))
+        frame.expandTop(3, RGBColor(0, 255, 255))
+        frame.expandBottom(2, RGBColor(255, 0, 255))
+        println(frame)
+
+    }
+
+    @Test
+    fun testExpandFrame() {
+        val frame = XledFrame(8, 10, RGBColor(255, 0, 0))
+        val green = XledFrame(5, 12, RGBColor(0, 255, 0))
+        val blue = XledFrame(4, 8, RGBColor(0, 0, 255))
+        val cyan = XledFrame(10, 2, RGBColor(0, 255, 255))
+        val yellow = XledFrame(4, 3, RGBColor(255, 255, 0))
+        frame.expandRight(green)
+        frame.expandLeft(blue)
+        frame.expandTop(cyan)
+        frame.expandBottom(yellow)
+        println(frame)
+
+    }
+
+    @Test
     fun testChristmasTree() {
         val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
         xledArray.mode(DeviceMode.rt)

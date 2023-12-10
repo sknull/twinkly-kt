@@ -7,6 +7,7 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
+import de.visualdigits.kotlin.util.FontUtil
 import kotlinx.coroutines.delay
 import org.apache.commons.lang3.math.NumberUtils.min
 import org.slf4j.LoggerFactory
@@ -18,8 +19,8 @@ import javax.imageio.ImageIO
 import kotlin.math.max
 
 open class XledFrame(
-    val width: Int,
-    val height: Int,
+    var width: Int,
+    var height: Int,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     var frameDelay: Long = 1000,
     val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
@@ -31,11 +32,11 @@ open class XledFrame(
 
     init {
         for (x in 0 until width) {
-            val row = mutableListOf<Color<*>>()
+            val column = mutableListOf<Color<*>>()
             for (y in 0 until height) {
-                row.add(initialColor.clone())
+                column.add(initialColor.clone())
             }
-            frame.add(row)
+            frame.add(column)
         }
     }
 
@@ -71,6 +72,45 @@ open class XledFrame(
             gamma: Double = 1.0
         ): XledFrame {
             return XledFrame(image.width, image.height, initialColor).setImage(image, gamma)
+        }
+
+        fun fromText(
+            text: String,
+            fontName: String,
+            fontSize: Int,
+            backgroundColor: Color<*>,
+            textColor: Color<*>
+        ): XledFrame {
+            return fromImage(
+                FontUtil.drawText(
+                    text = text,
+                    fontName = fontName,
+                    fontSize = fontSize,
+                    backgroundColor = backgroundColor,
+                    textColor = textColor
+                )
+            )
+        }
+
+        fun fromTexts(
+            fontName: String,
+            fontSize: Int,
+            vararg texts: Triple<String, Color<*>, Color<*>>
+        ): XledFrame {
+            val frames = texts.map { entry ->
+                fromText(
+                    text = entry.first,
+                    fontName = fontName,
+                    fontSize = fontSize,
+                    backgroundColor = entry.second,
+                    textColor = entry.third
+                )
+            }
+
+            val first = frames.first()
+            frames.drop(1).forEach { frame -> first.expandRight(frame) }
+
+            return first
         }
     }
 
@@ -180,6 +220,106 @@ open class XledFrame(
                 frame[x + offsetX][y + offsetY] = frame[x + offsetX][y + offsetY].blend(subFrame[x][y], blendMode)
             }
         }
+        return this
+    }
+
+    fun expandRight(
+        numberOfColumns: Int,
+        initialColor: Color<*> = RGBColor(0, 0, 0)
+    ): XledFrame {
+        for (n in 0 until numberOfColumns) {
+            val column = mutableListOf<Color<*>>()
+            for (y in 0 until height) {
+                column.add(initialColor.clone())
+            }
+            frame.add(column)
+        }
+        width += numberOfColumns
+        return this
+    }
+
+    fun expandLeft(
+        numberOfColumns: Int,
+        initialColor: Color<*> = RGBColor(0, 0, 0)
+    ): XledFrame {
+        for (n in 0 until numberOfColumns) {
+            val column = mutableListOf<Color<*>>()
+            for (y in 0 until height) {
+                column.add(initialColor.clone())
+            }
+            frame.add(0, column)
+        }
+        width += numberOfColumns
+        return this
+    }
+
+    fun expandTop(
+        numberOfColumns: Int,
+        initialColor: Color<*> = RGBColor(0, 0, 0)
+    ): XledFrame {
+        for (x in 0 until width) {
+            for (n in 0 until numberOfColumns) {
+                frame[x].add(0, initialColor.clone())
+            }
+        }
+        height += numberOfColumns
+        return this
+    }
+
+    fun expandBottom(
+        numberOfColumns: Int,
+        initialColor: Color<*> = RGBColor(0, 0, 0)
+    ): XledFrame {
+        for (x in 0 until width) {
+            for (n in 0 until numberOfColumns) {
+                frame[x].add(initialColor.clone())
+            }
+        }
+        height += numberOfColumns
+        return this
+    }
+
+    fun expandRight(
+        frame: XledFrame,
+    ): XledFrame {
+        expandRight(frame.width)
+        if (frame.height > height) {
+            expandBottom(frame.height - height)
+        }
+        replaceSubFrame(frame, width - frame.width, 0)
+        return this
+    }
+
+    fun expandLeft(
+        frame: XledFrame,
+    ): XledFrame {
+        expandLeft(frame.width)
+        if (frame.height > height) {
+            expandBottom(frame.height - height)
+        }
+        replaceSubFrame(frame, 0, 0)
+        return this
+    }
+
+    fun expandTop(
+        frame: XledFrame,
+    ): XledFrame {
+        expandTop(frame.height)
+        if (frame.width > width) {
+            expandRight(frame.width - width)
+        }
+        replaceSubFrame(frame, 0, 0)
+        return this
+    }
+
+    fun expandBottom(
+        frame: XledFrame,
+    ): XledFrame {
+        expandBottom(frame.height)
+        if (frame.width > width) {
+            expandRight(frame.width - width)
+        }
+        replaceSubFrame(frame, 0, height - frame.height)
         return this
     }
 
