@@ -50,7 +50,8 @@ class XledSequence(
         var frameLoopCount = loop
         var lastPlayable: Playable? = null
 
-        while (frameLoopCount == -1 || frameLoopCount > 0) {
+        running = true
+        while (running && (frameLoopCount == -1 || frameLoopCount > 0)) {
             for (j in 0 until frames.size) {
                 val playable = nextPlayable(j, lastPlayable, random)
                 if (verbose) log.info("\n$playable")
@@ -105,6 +106,7 @@ class XledSequence(
             is XledFrame -> {
                 for (i in 0 until repetitions) {
                     xled.showRealTimeFrame(playable)
+                    if (!running) break
                     Thread.sleep(min(5000, frameDelay))
                 }
             }

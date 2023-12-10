@@ -24,99 +24,140 @@ The original implementation which was meant to be used within the
 processing framework can be found here: https://github.com/ddf/Minim/tree/main
 
 Involved is also some reverse engineering from the official twinkly android app.
-Nevertheless, I was not able to figure out how the TwinkyMusic microphone
-is used which is very responsive and accurate from what I have seen with the factory presets in the app.
+But this turned out to be a waste of time as there are a lot of details lost in the decompilation process. F.e. the list of supported devices does not contain all products which are officially supported and work within the app (such as the Curtain 210 which I own).
+Also a lot of code which is originally kotlin cannot be reversed to useful code a lot of ends up in outcommented assembler or signature descriptions.
+So for now we have say big thanks to the people who have found so much.
 
-This project is far from feature complete but I think it`s now good enough to see the light of the world :)
+Another mystery was the usage of playlists and movies. I was actually able to upload a new movie but it turned out that I just messed up an existing movie which was actually in my playlist.
+Creating a new movie did not succeed even I got an expected answer from the api.
+
+Because of that fact that I cannot get the movie features to work properly for me I insteaddo the same thing it seems all the others do - I use the realtime frame feature which utilizes the UDP protocoll to upload binary frame data to the device. This works really fast over WLAN and makes possible impressive framerates. Of course this approach has the downside that it depends on a WLAN connection and a player software. On the other hand this allows for a lot of fun stuff.
+
+This project is far from feature complete, but I think it`s now good enough to see the light of the world :)
 
 == Documentation
 
 === Known Endpoints
 
-==== brightness
+==== XLed Devices
+
+Most of these endpoints are determined using the xled python module.
+
+I currently have two twinkly curtain 210.
+That device type does not appear in the lists found within the code of android app.
+I am sure that some things are swallowed during the decompilation process as the device is definitely supported by that app.
+
+Furthermore I want to note that it seems that devices which are connected into an area inside the app are behaving as one thing when using the api. F.e. if you switch the mode on one device which is part of an area all of the participating devices will switch off.
+The only exception to that seems to be the saturation level which can be set separately for all the devices.
+
+===== brightness
 get + post
 
 http://$host/xled/v1/led/out/brightness
 
-==== color
+===== color
 get + post
 
 http://$host/xled/v1/led/color
 
-==== config
+===== config
 get
 
 http://$host/xled/v1/led/config
 
-==== deviceInfo
+===== deviceInfo
 get
 
 http://$host/xled/v1/gestalt
 
-==== effects
+===== effects
 get
 
 http://$host/xled/v1/led/effects
 
-==== effectsCurrent
+===== effectsCurrent
 get
 
 http://$host/xled/v1/led/effects/current
 
-==== layout
+===== layout
 get
 
 http://$host/xled/v1/led/layout/full
 
-==== ledReset
+===== ledReset
 return get("http://$host/xled/v1/led/reset")
 
-==== login
+===== login
 post
 
 http://$host/xled/v1/login
 
-==== verify
+===== verify
 post
 
 http://$host/xled/v1/verify
 
-==== mode
+===== mode
 get + post
 
 http://$host/xled/v1/led/mode
 
-==== movie
+===== movie
 post
 
 http://$host/xled/v1/led/movie/full
 
-==== movieConfig
+===== movieConfig
 get + post
 
 http://$host/xled/v1/led/movie/config
 
-==== movies
+===== movies
 get
 
 http://$host/xled/v1/movies
 
-==== moviesCurrent
+===== moviesCurrent
 get
 
 http://$host/xled/v1/movies/current
 
-==== playlist
+===== playlist
 get
 
 http://$host/xled/v1/playlist
 
-==== playlistCurrent
+===== playlistCurrent
 get
 
 http://$host/xled/v1/playlist/current
 
-==== saturation
+===== saturation
 get + post
 
 http://$host/xled/v1/led/out/saturation
+
+==== XMusic Microphone
+
+These endpoints differ from what I have found in the code of the android app.
+
+===== musicConfig
+get
+
+http://$host/xmusic/v1/music/config
+
+===== musicMode
+get
+
+http://$host/xmusic/v1/music/mode
+
+===== musicMicEnabled
+get
+
+http://$host/xmusic/v1/music/mic_enabled
+
+===== musicStats
+get
+
+http://$host/xmusic/v1/music/stats
