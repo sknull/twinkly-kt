@@ -31,19 +31,18 @@ class FontUtilTest {
 
     @Test
     fun testText() {
-        val sequence = XledSequence.fromTexts(
+        val sequence = XledSequence(
             fontName = "fonts/Only When I Do Fonts Regular.ttf",
             fontSize = 20,
             targetWidth = xledArray.width,
             targetHeight = xledArray.height,
+            frameDelay = 100,
             Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
             Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
             Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
         )
 
         xledArray.mode(DeviceMode.rt)
-        while (true) {
-            xledArray.showRealTimeSequence(sequence, -1)
-        }
+        sequence.play(xledArray)
     }
 }

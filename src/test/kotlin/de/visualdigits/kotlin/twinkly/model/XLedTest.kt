@@ -10,6 +10,7 @@ import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.xled.request.MoviesCurrentRequest
 import de.visualdigits.kotlin.twinkly.model.xled.request.NewMovieRequest
 import de.visualdigits.kotlin.twinkly.model.xled.response.MovieConfig
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.random.Random.Default.nextInt
@@ -46,17 +47,7 @@ class XLedTest {
         conway.run()
     }
 
-    @Test
-    fun testRealTime() {
-        xled.mode(DeviceMode.rt)
-        File(ClassLoader.getSystemResource("images/tetris").toURI())
-            .listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
-            ?.forEach { file ->
-                xled.showRealTimeFrame(XledFrame.fromImage(file))
-                Thread.sleep(20)
-            }
-    }
-
+    @Disabled("Adding a new movie does not really work but might mess up an existing movie.")
     @Test
     fun testNewMovie() {
         val deviceInfo = xled.deviceInfo()
@@ -93,53 +84,54 @@ class XLedTest {
 
     @Test
     fun testRandomColorMovie() {
-        xled.showFrame("Blah", XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
+        val frame = XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255)))
+        frame.play(xled = xled, loop = -1)
     }
 
     @Test
     fun testImage() {
-        xled.showFrame("Test", XledFrame.fromImage(File(ClassLoader.getSystemResource("images/test-image.png").toURI())))
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/test-image.png").toURI()))
+        frame.play(xled = xled, loop = -1)
     }
 
     @Test
     fun testAnimatedGif() {
-        xled.showSequence(name = "Tetris",
-            sequence = XledSequence.fromAnimatedGif(
-                File(ClassLoader.getSystemResource("images/tetris/Animation.gif").toURI()),
-                maxFrames = 200
-            ),
-            fps = 2
-        )
+        val sequence = XledSequence(frameDelay = 500)
+        ClassLoader.getSystemResourceAsStream("images/tetris/Animation.gif")
+            ?.use { ins -> sequence.addAnimatedGif(ins, maxFrames = 200) }
+        sequence.play(xled = xled, loop = -1)
     }
 
     @Test
     fun testDirectoryTetris() {
+        val sequence = XledSequence(
+            directory = File(ClassLoader.getSystemResource("images/tetris").toURI()),
+            frameDelay = 500,
+            maxFrames = 200
+        )
         xled.showSequence(
-            "Tetris", XledSequence.fromDirectory(
-                File(ClassLoader.getSystemResource("images/tetris").toURI()),
-                200
-            ), 2
+            "Tetris", sequence, 2
         )
     }
 
     @Test
     fun testDirectoryChristmas() {
-        xled.showSequence(
-            "Christmas", XledSequence.fromDirectory(
-                File(ClassLoader.getSystemResource("images/christmas").toURI()),
-                200
-            ), 2
+        val sequence = XledSequence(
+            directory = File(ClassLoader.getSystemResource("images/christmas").toURI()),
+            frameDelay = 500,
+            maxFrames = 200
         )
+        sequence.play(xled = xled, loop = -1)
     }
 
     @Test
     fun testDirectoryChristmasTree() {
-        xled.showSequence(
-            "Christmas", XledSequence.fromDirectory(
-                File(ClassLoader.getSystemResource("images/christmas-tree").toURI()),
-                200
-            ), 2
+        val sequence = XledSequence(
+            directory = File(ClassLoader.getSystemResource("images/christmas-tree").toURI()),
+            frameDelay = 500,
+            maxFrames = 200
         )
+        sequence.play(xled = xled, loop = -1)
     }
 
     @Test

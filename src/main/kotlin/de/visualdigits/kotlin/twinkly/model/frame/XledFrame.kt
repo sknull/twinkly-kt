@@ -19,8 +19,8 @@ import javax.imageio.ImageIO
 import kotlin.math.max
 
 open class XledFrame(
-    var width: Int,
-    var height: Int,
+    var width: Int = 0,
+    var height: Int = 0,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     var frameDelay: Long = 1000,
     val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
@@ -30,87 +30,84 @@ open class XledFrame(
 
     protected var running: Boolean = false
 
+    constructor(
+        bytes: ByteArray,
+        initialColor: Color<*> = RGBColor(0, 0, 0),
+        gamma: Double = 1.0
+    ): this(ImageIO.read(bytes.inputStream()), initialColor, gamma)
+
+    constructor(
+        file: File,
+        initialColor: Color<*> = RGBColor(0, 0, 0),
+        gamma: Double = 1.0
+    ): this(ImageIO.read(file), initialColor, gamma)
+
+    constructor(
+        ins: InputStream,
+        initialColor: Color<*> = RGBColor(0, 0, 0),
+        gamma: Double = 1.0
+    ): this(ImageIO.read(ins), initialColor, gamma)
+
+    constructor(
+        image: BufferedImage,
+        initialColor: Color<*> = RGBColor(0, 0, 0),
+        gamma: Double = 1.0
+    ): this(width = image.width, height = image.height, initialColor = initialColor) {
+        setImage(image, gamma)
+    }
+
+    constructor(
+        text: String,
+        fontName: String,
+        fontSize: Int,
+        backgroundColor: Color<*>,
+        textColor: Color<*>,
+        gamma: Double = 1.0
+    ) : this(
+        image = FontUtil.drawText(
+            text = text,
+            fontName = fontName,
+            fontSize = fontSize,
+            backgroundColor = backgroundColor,
+            textColor = textColor
+        ),
+        gamma = gamma
+    )
+
+    constructor(
+        fontName: String,
+        fontSize: Int,
+        vararg texts: Triple<String, Color<*>, Color<*>>
+    ): this() {
+        val frames = texts.map { entry ->
+            XledFrame(
+                text = entry.first,
+                fontName = fontName,
+                fontSize = fontSize,
+                backgroundColor = entry.second,
+                textColor = entry.third
+            )
+        }
+
+        val first = frames.first()
+        initialize(width = first.width, height = first.height, initialColor = initialColor)
+        replaceSubFrame(first, 0, 0)
+        frames.drop(1).forEach { frame -> expandRight(frame) }
+    }
+
     init {
+        initialize(width, height, initialColor)
+    }
+
+    fun initialize(width: Int, height: Int, initialColor: Color<*> = RGBColor(0, 0, 0)) {
+        this.width = width
+        this.height = height
         for (x in 0 until width) {
             val column = mutableListOf<Color<*>>()
             for (y in 0 until height) {
                 column.add(initialColor.clone())
             }
             frame.add(column)
-        }
-    }
-
-    companion object {
-
-        fun fromImage(
-            bytes: ByteArray,
-            initialColor: Color<*> = RGBColor(0, 0, 0),
-            gamma: Double = 1.0
-        ): XledFrame {
-            return fromImage(ImageIO.read(bytes.inputStream()), initialColor, gamma)
-        }
-
-        fun fromImage(
-            file: File,
-            initialColor: Color<*> = RGBColor(0, 0, 0),
-            gamma: Double = 1.0
-        ): XledFrame {
-            return fromImage(ImageIO.read(file), initialColor, gamma)
-        }
-
-        fun fromImage(
-            ins: InputStream,
-            initialColor: Color<*> = RGBColor(0, 0, 0),
-            gamma: Double = 1.0
-        ): XledFrame {
-            return fromImage(ImageIO.read(ins), initialColor, gamma)
-        }
-
-        fun fromImage(
-            image: BufferedImage,
-            initialColor: Color<*> = RGBColor(0, 0, 0),
-            gamma: Double = 1.0
-        ): XledFrame {
-            return XledFrame(image.width, image.height, initialColor).setImage(image, gamma)
-        }
-
-        fun fromText(
-            text: String,
-            fontName: String,
-            fontSize: Int,
-            backgroundColor: Color<*>,
-            textColor: Color<*>
-        ): XledFrame {
-            return fromImage(
-                FontUtil.drawText(
-                    text = text,
-                    fontName = fontName,
-                    fontSize = fontSize,
-                    backgroundColor = backgroundColor,
-                    textColor = textColor
-                )
-            )
-        }
-
-        fun fromTexts(
-            fontName: String,
-            fontSize: Int,
-            vararg texts: Triple<String, Color<*>, Color<*>>
-        ): XledFrame {
-            val frames = texts.map { entry ->
-                fromText(
-                    text = entry.first,
-                    fontName = fontName,
-                    fontSize = fontSize,
-                    backgroundColor = entry.second,
-                    textColor = entry.third
-                )
-            }
-
-            val first = frames.first()
-            frames.drop(1).forEach { frame -> first.expandRight(frame) }
-
-            return first
         }
     }
 

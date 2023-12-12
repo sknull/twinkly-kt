@@ -9,11 +9,11 @@ interface Playable {
 
     fun play(
         xled: XLed,
-        loop: Int = -1, // no loop
+        loop: Int = -1, // endless loop
         random: Boolean = false,
-        transitionType: TransitionType? = null,
-        transitionDirection: TransitionDirection? = null,
-        transitionBlendMode: BlendMode? = null,
+        transitionType: TransitionType? = TransitionType.STRAIGHT,
+        transitionDirection: TransitionDirection? = TransitionDirection.LEFT_RIGHT,
+        transitionBlendMode: BlendMode? = BlendMode.REPLACE,
         transitionDuration: Long = 2550,
         verbose: Boolean = false
     )

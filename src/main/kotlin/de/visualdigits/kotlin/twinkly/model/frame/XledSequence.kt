@@ -9,6 +9,7 @@ import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.scene.Scene
 import de.visualdigits.kotlin.twinkly.model.scene.SceneType
 import de.visualdigits.kotlin.twinkly.model.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.xled.XledArray
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -25,6 +26,56 @@ class XledSequence(
     private val log = LoggerFactory.getLogger(XledSequence::class.java)
 
     private var running: Boolean = false
+
+    constructor(
+        directory: File,
+        maxFrames: Int = Int.MAX_VALUE,
+        initialColor: Color<*> = RGBColor(0, 0, 0),
+        frameDelay: Long = 1000
+    ): this(frameDelay = frameDelay) {
+        if (!directory.isDirectory) throw IllegalArgumentException("Given file is not a directory")
+        directory
+            .listFiles { file -> file.isDirectory }
+            ?.sortedBy { it.name.lowercase() }
+            ?.take(maxFrames)
+            ?.forEach { sceneDirectory ->
+                val sceneFile = File(sceneDirectory, "scene.json")
+                if (sceneFile.exists()) {
+                    val scene = Scene.unmarshall(sceneFile)
+                    val images = sceneDirectory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
+                    if (images != null) {
+                        when (scene.type) {
+                            SceneType.frame -> {
+                                add(XledFrame(images.first(), initialColor))
+                            }
+                            SceneType.sequence -> {
+                                val subSequence = XledSequence()
+                                scene.frameDelay?.let { subSequence.frameDelay = it }
+                                images.forEach { image -> subSequence.add(XledFrame(image, initialColor)) }
+                                add(subSequence)
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
+    constructor(
+        fontName: String,
+        fontSize: Int,
+        targetWidth: Int,
+        targetHeight: Int,
+        frameDelay: Long,
+        vararg texts: Triple<String, Color<*>, Color<*>>
+    ): this(frameDelay = frameDelay) {
+        val banner = XledFrame(
+            fontName = fontName,
+            fontSize = fontSize,
+            texts = texts
+        )
+
+        addScrollingBanner(banner, targetWidth, targetHeight)
+    }
 
     override fun toString(): String {
         val frames =  frames
@@ -75,6 +126,52 @@ class XledSequence(
 
             if (frameLoopCount != -1) frameLoopCount--
         }
+    }
+
+    fun addScrollingBanner(
+        banner: XledFrame,
+        targetWidth: Int,
+        targetHeight: Int
+    ): XledSequence {
+        // move in
+        for (x in 0 until targetWidth - 1) {
+            val frame = banner.subFrame(0, 0, x, min(banner.height, targetHeight))
+            val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+            canvas.replaceSubFrame(frame, targetWidth - 1 - x, 0)
+            add(canvas)
+        }
+
+        // scroll text
+        for (x in 0 until banner.width - targetWidth) {
+            val frame = banner.subFrame(x, 0, targetWidth, min(banner.height, targetHeight))
+            val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+            canvas.replaceSubFrame(frame, 0, 0)
+            add(canvas)
+        }
+
+        // move out
+        for (x in targetWidth - 1 downTo 0) {
+            val frame = banner.subFrame(banner.width - x, 0, x, min(banner.height, targetHeight))
+            val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+            canvas.replaceSubFrame(frame, 0, 0)
+            add(canvas)
+        }
+
+        return this
+    }
+
+    fun addAnimatedGif(
+        ins: InputStream,
+        maxFrames: Int = Int.MAX_VALUE,
+        initialColor: Color<*> = RGBColor(0, 0, 0)
+    ): XledSequence {
+        val gifDecoder = GifDecoder()
+        gifDecoder.read(ins)
+        for (f in 0 until min(gifDecoder.frameCount, maxFrames)) {
+            add(XledFrame(gifDecoder.getFrame(f), initialColor))
+        }
+
+        return this
     }
 
     private fun showTransition(
@@ -156,136 +253,5 @@ class XledSequence(
         val baos = ByteArrayOutputStream()
         forEach { baos.write(it.toByteArray(bytesPerLed)) }
         return baos.toByteArray()
-    }
-
-    companion object {
-        fun fromDirectory(
-            directory: File,
-            maxFrames: Int = Int.MAX_VALUE,
-            initialColor: Color<*> = RGBColor(0, 0, 0),
-            frameDelay: Long = 1000
-        ): XledSequence {
-            if (!directory.isDirectory) throw IllegalArgumentException("Given file is not a directory")
-            val sequence = XledSequence(frameDelay = frameDelay)
-            directory
-                .listFiles { file -> file.isDirectory }
-                ?.sortedBy { it.name.lowercase() }
-                ?.take(maxFrames)
-                ?.forEach { sceneDirectory ->
-                    val sceneFile = File(sceneDirectory, "scene.json")
-                    if (sceneFile.exists()) {
-                        val scene = Scene.unmarshall(sceneFile)
-                        val images = sceneDirectory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
-                        if (images != null) {
-                            when (scene.type) {
-                                SceneType.frame -> {
-                                    sequence.add(XledFrame.fromImage(images.first(), initialColor))
-                                }
-                                SceneType.sequence -> {
-                                    val subSequence = XledSequence()
-                                    scene.frameDelay?.let { subSequence.frameDelay = it }
-                                    images.forEach { image -> subSequence.add(XledFrame.fromImage(image, initialColor)) }
-                                    sequence.add(subSequence)
-                                }
-                            }
-                        }
-                    }
-                }
-            return sequence
-        }
-
-        fun fromAnimatedGif(
-            file: File,
-            maxFrames: Int = Int.MAX_VALUE,
-            initialColor: Color<*> = RGBColor(0, 0, 0)
-        ): XledSequence {
-            return fromAnimatedGif(FileInputStream(file), maxFrames, initialColor)
-        }
-
-        fun fromAnimatedGif(
-            ins: InputStream,
-            maxFrames: Int = Int.MAX_VALUE,
-            initialColor: Color<*> = RGBColor(0, 0, 0)
-        ): XledSequence {
-            val sequence = XledSequence()
-            val gifDecoder = GifDecoder()
-            gifDecoder.read(ins)
-            for (f in 0 until min(gifDecoder.frameCount, maxFrames)) {
-                sequence.add(
-                    XledFrame.fromImage(gifDecoder.getFrame(f), initialColor)
-                )
-            }
-            return sequence
-        }
-
-        fun fromText(
-            text: String,
-            fontName: String,
-            fontSize: Int,
-            backgroundColor: Color<*>,
-            textColor: Color<*>,
-            targetWidth: Int,
-            targetHeight: Int
-        ): XledSequence {
-            val banner = XledFrame.fromText(
-                text = text,
-                fontName = fontName,
-                fontSize = fontSize,
-                backgroundColor = backgroundColor,
-                textColor = textColor
-            )
-
-            return scrollingBanner(banner, targetWidth, targetHeight)
-        }
-
-        fun fromTexts(
-            fontName: String,
-            fontSize: Int,
-            targetWidth: Int,
-            targetHeight: Int,
-            vararg texts: Triple<String, Color<*>, Color<*>>
-        ): XledSequence {
-            val banner = XledFrame.fromTexts(
-                fontName = fontName,
-                fontSize = fontSize,
-                texts = texts
-            )
-
-            return scrollingBanner(banner, targetWidth, targetHeight)
-        }
-
-        fun scrollingBanner(
-            banner: XledFrame,
-            targetWidth: Int,
-            targetHeight: Int
-        ): XledSequence {
-            val sequence = XledSequence(frameDelay = 100)
-
-            // move in
-            for (x in 0 until targetWidth - 1) {
-                val frame = banner.subFrame(0, 0, x, min(banner.height, targetHeight))
-                val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
-                canvas.replaceSubFrame(frame, targetWidth - 1 - x, 0)
-                sequence.add(canvas)
-            }
-
-            // scroll text
-            for (x in 0 until banner.width - targetWidth) {
-                val frame = banner.subFrame(x, 0, targetWidth, min(banner.height, targetHeight))
-                val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
-                canvas.replaceSubFrame(frame, 0, 0)
-                sequence.add(canvas)
-            }
-
-            // move out
-            for (x in targetWidth - 1 downTo 0) {
-                val frame = banner.subFrame(banner.width - x, 0, x, min(banner.height, targetHeight))
-                val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
-                canvas.replaceSubFrame(frame, 0, 0)
-                sequence.add(canvas)
-            }
-
-            return sequence
-        }
     }
 }

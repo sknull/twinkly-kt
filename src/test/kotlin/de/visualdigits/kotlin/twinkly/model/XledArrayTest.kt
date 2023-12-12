@@ -42,7 +42,7 @@ class XledArrayTest {
         )
 
         xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(frame)
+        frame.play(xledArray)
     }
 
     @Test
@@ -54,7 +54,7 @@ class XledArrayTest {
         )
 
         xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(frame)
+        frame.play(xledArray)
     }
 
     @Test
@@ -77,15 +77,15 @@ class XledArrayTest {
         frame.replaceSubFrame(green, 10, 10, BlendMode.ADD)
 
         xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(frame)
+        frame.play(xledArray)
     }
 
     @Test
     fun testFade() {
-        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
 
         xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(frame)
+        frame.play(xledArray)
         Thread.sleep(1000)
 
         runBlocking {
@@ -111,7 +111,7 @@ class XledArrayTest {
         frame.replaceSubFrame(green, 5, 5)
 
         xledArray.mode(DeviceMode.rt)
-        xledArray.showRealTimeFrame(frame)
+        frame.play(xledArray)
     }
 
     @Test
@@ -123,7 +123,7 @@ class XledArrayTest {
             for (x in 0 until 20) {
                 frame[x][y] = RGBColor(255, 255, 255)
             }
-            xledArray.showRealTimeFrame(frame)
+            frame.play(xledArray)
             Thread.sleep(100)
         }
 
@@ -133,7 +133,7 @@ class XledArrayTest {
             for (y in 0 until 21) {
                 frame[x][y] = RGBColor(255, 255, 255)
             }
-            xledArray.showRealTimeFrame(frame)
+            frame.play(xledArray)
             Thread.sleep(100)
         }
     }
@@ -158,14 +158,14 @@ class XledArrayTest {
 
     @Test
     fun testShowRealtimeFrame() {
-        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
         xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray,)
     }
 
     @Test
     fun testSanta() {
-        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/christmas-scenes/09_santa/frame_001.png").toURI()))
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/christmas-scenes/09_santa/frame_001.png").toURI()))
         xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray,)
     }
@@ -199,14 +199,14 @@ class XledArrayTest {
 
     @Test
     fun testChristmasTree() {
-        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
+        val sequence = XledSequence(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
         xledArray.mode(DeviceMode.rt)
         sequence.play(xled = xledArray,)
     }
 
     @Test
     fun testChristmasScenes() {
-        val sequence = XledSequence.fromDirectory(
+        val sequence = XledSequence(
             File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()),
             frameDelay = 5000
         )
@@ -266,14 +266,14 @@ class XledArrayTest {
 
     @Test
     fun testPacmanFrame() {
-        val frame = XledFrame.fromImage(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI()))
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI()))
         xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray,)
     }
 
     @Test
     fun testPacman() {
-        val sequence = XledSequence.fromDirectory(File(ClassLoader.getSystemResource("images/pacman").toURI()))
+        val sequence = XledSequence(File(ClassLoader.getSystemResource("images/pacman").toURI()))
 
         sequence.play(xled = xledArray, loop = 0,)
     }

@@ -84,7 +84,7 @@ class XledArrayController {
     fun showImage(@RequestBody bytes: ByteArray) {
         currentMode = devicesHolder.xledArray.mode()
         devicesHolder.xledArray.mode(DeviceMode.rt)
-        playable = XledFrame.fromImage(bytes)
+        playable = XledFrame(bytes)
         Thread(LoopRunner(
             devicesHolder.xledArray,
             playable!!
