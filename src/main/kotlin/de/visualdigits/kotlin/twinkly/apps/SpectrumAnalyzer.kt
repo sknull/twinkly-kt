@@ -40,7 +40,7 @@ class SpectrumAnalyzer(
         val fft = FFT(player.bufferSize(), player.sampleRate())
         val spectrumSize = fft.specSize() / 16
         val stepSize = ceil(spectrumSize.toDouble() / xled.width).toInt()
-        val maxAmplitudes = MutableList<Int>(xled.width) { 0 }
+        val maxAmplitudes = MutableList(xled.width) { 0 }
         player.disableMonitoring()
         xled.mode(DeviceMode.rt)
         var t = 0
