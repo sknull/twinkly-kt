@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.model
+package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.XMusic
 import org.junit.jupiter.api.Test

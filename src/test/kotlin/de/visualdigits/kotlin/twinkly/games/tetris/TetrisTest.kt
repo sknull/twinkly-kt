@@ -1,12 +1,5 @@
-package de.visualdigits.kotlin.twinkly.model
+package de.visualdigits.kotlin.twinkly.games.tetris
 
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockI
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockJ
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockL
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockO
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockS
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockT
-import de.visualdigits.kotlin.twinkly.games.tetris.BlockZ
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray

@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin
+package de.visualdigits.kotlin.util
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
