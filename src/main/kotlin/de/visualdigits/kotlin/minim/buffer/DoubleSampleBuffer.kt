@@ -3,7 +3,7 @@ package de.visualdigits.kotlin.minim.buffer
 import javax.sound.sampled.AudioFormat
 
 /**
- * A class for small buffers of samples in linear, 32-bit doubleing point format.
+ * A class for small buffers of samples in linear, 32-bit floating point format.
  * <p>
  * It is supposed to be a replacement of the byte[] stream architecture of
  * JavaSound, especially for chains of AudioInputStreams. Ideally, all involved
@@ -11,16 +11,16 @@ import javax.sound.sampled.AudioFormat
  * <p>
  * Specifications:
  * <ol>
- * <li>Channels are separated, i.e. for stereo there are 2 double arrays with
+ * <li>Channels are separated, i.e. for stereo there are 2 float arrays with
  * the samples for the left and right channel
- * <li>All data is handled in samples, where one sample means one double value
+ * <li>All data is handled in samples, where one sample means one float value
  * in each channel
  * <li>All samples are normalized to the interval [-1.0...1.0]
  * </ol>
  * <p>
  * When a cascade of AudioInputStreams use FloatSampleBuffer for processing,
  * they may implement the interface FloatSampleInput. This signals that this
- * stream may provide double buffers for reading. The data is <i>not</i>
+ * stream may provide float buffers for reading. The data is <i>not</i>
  * converted back to bytes, but stays in a single buffer that is passed from
  * stream to stream. For that serves the read(FloatSampleBuffer) method, which
  * is then used as replacement for the byte-based read functions of
@@ -33,35 +33,35 @@ import javax.sound.sampled.AudioFormat
  * <li>auAIS is an AudioInputStream (AIS) that reads from an AU file in 8bit
  * pcm at 8000Hz. It does not implement FloatSampleInput.
  * <li>pcmAIS1 is an AIS that reads from auAIS and converts the data to PCM
- * 16bit. This stream implements FloatSampleInput, i.e. it can generate double
+ * 16bit. This stream implements FloatSampleInput, i.e. it can generate float
  * audio data from the ulaw samples.
  * <li>pcmAIS2 reads from pcmAIS1 and adds a reverb. It operates entirely on
- * doubleing point samples.
+ * floating point samples.
  * <li>The method that reads from pcmAIS2 (i.e. AudioSystem.write) does not
- * handle doubleing point samples.
+ * handle floating point samples.
  * </ul>
  * So, what happens when a block of samples is read from pcmAIS2 ?
  * <ol>
  * <li>the read(byte[]) method of pcmAIS2 is called
- * <li>pcmAIS2 always operates on doubleing point samples, so it uses an own
+ * <li>pcmAIS2 always operates on floating point samples, so it uses an own
  * instance of FloatSampleBuffer and initializes it with the number of samples
  * requested in the read(byte[]) method.
  * <li>It queries pcmAIS1 for the FloatSampleInput interface. As it implements
  * it, pcmAIS2 calls the read(FloatSampleBuffer) method of pcmAIS1.
- * <li>pcmAIS1 notes that its underlying stream does not support doubles, so it
+ * <li>pcmAIS1 notes that its underlying stream does not support floats, so it
  * instantiates a byte buffer which can hold the number of samples of the
  * FloatSampleBuffer passed to it. It calls the read(byte[]) method of auAIS.
  * <li>auAIS fills the buffer with the bytes.
- * <li>pcmAIS1 calls the <code>initFromByteArray</code> method of the double
+ * <li>pcmAIS1 calls the <code>initFromByteArray</code> method of the float
  * buffer to initialize it with the 8 bit data.
- * <li>Then pcmAIS1 processes the data: as the double buffer is normalized, it
+ * <li>Then pcmAIS1 processes the data: as the float buffer is normalized, it
  * does nothing with the buffer - and returns control to pcmAIS2. The
  * SampleSizeInBits field of the AudioFormat of pcmAIS1 defines that it should
  * be 16 bits.
  * <li>pcmAIS2 receives the filled buffer from pcmAIS1 and does its processing
  * on the buffer - it adds the reverb.
  * <li>As pcmAIS2's read(byte[]) method had been called, pcmAIS2 calls the
- * <code>convertToByteArray</code> method of the double buffer to fill the byte
+ * <code>convertToByteArray</code> method of the float buffer to fill the byte
  * buffer with the resulting samples.
  * </ol>
  * <p>
@@ -72,13 +72,13 @@ import javax.sound.sampled.AudioFormat
  * <li>the sample size in bits is irrelevant - normalized range
  * <li>higher quality for processing
  * <li>separated channels (easy process/remove/add channels)
- * <li>potentially less copying of audio data, as processing the double samples
+ * <li>potentially less copying of audio data, as processing the float samples
  * is generally done in-place. The same instance of a FloatSampleBuffer may be
  * used from the original data source to the final data sink.
  * </ul>
  * <p>
  * Simple benchmarks showed that the processing requirements for the conversion
- * to and from double is about the same as when converting it to shorts or ints
+ * to and from float is about the same as when converting it to shorts or ints
  * without dithering, and significantly higher with dithering. An own
  * implementation of a random number generator may improve this.
  * <p>
@@ -107,7 +107,7 @@ import javax.sound.sampled.AudioFormat
  * instance of FloatSampleBuffer. Some converters may decrease the sample count
  * (e.g. sample rate converter) and delete channels (e.g. PCM2PCM converter).
  * So, processing of one block will decrease both. For the next block, all
- * starts from the beginning. With the lazy mechanism, all double arrays are only
+ * starts from the beginning. With the lazy mechanism, all float arrays are only
  * created once for processing all blocks.<br>
  * Having lazy disabled would require for each chunk that is processed
  * <ol>
@@ -121,7 +121,7 @@ import javax.sound.sampled.AudioFormat
  * Dithering:<br>
  * By default, this class uses dithering for reduction of sample width (e.g.
  * original data was 16bit, target data is 8bit). As dithering may be needed in
- * other cases (especially when the double samples are processed using DSP
+ * other cases (especially when the float samples are processed using DSP
  * algorithms), or it is preferred to switch it off, dithering can be
  * explicitely switched on or off with the method setDitherMode(int).<br>
  * For a discussion about dithering, see <a
@@ -131,10 +131,10 @@ import javax.sound.sampled.AudioFormat
  *
  * @author Florian Bomers (java version)
  */
-class DoubleSampleBuffer(
+class FloatSampleBuffer(
     var sampleCount: Int = 0,
     var channelCount: Int = 0,
-    var sampleRate: Double = 0.0
+    var sampleRate: Float = 0.0F
 ) {
 
     /**
@@ -153,10 +153,10 @@ class DoubleSampleBuffer(
      */
     private val DITHER_MODE_OFF = 2
 
-    private val DEFAULT_DITHER_BITS = 0.7
+    private val DEFAULT_DITHER_BITS = 0.7F
 
-    // one double array for each channel
-    private val channels: MutableList<DoubleArray> = MutableList(channelCount) { DoubleArray(sampleCount) }
+    // one float array for each channel
+    private val channels: MutableList<FloatArray> = MutableList(channelCount) { FloatArray(sampleCount) }
 
     // cache for performance
     private var lastConvertToByteArrayFormat: AudioFormat? = null
@@ -172,7 +172,7 @@ class DoubleSampleBuffer(
         for (ch in 0 until localChannelCount) {
             val samples = getChannel(ch)
             for (i in 0 until sampleCount) {
-                samples[i] = 0.0
+                samples[i] = 0.0F
             }
         }
     }
@@ -186,7 +186,7 @@ class DoubleSampleBuffer(
      *
      * @throws IllegalArgumentException if channel is out of bounds
      */
-    fun getChannel(channel: Int): DoubleArray {
+    fun getChannel(channel: Int): FloatArray {
         if (channel >= channelCount) {
             throw IllegalArgumentException(
                 "FloatSampleBuffer: invalid channel number."
@@ -212,7 +212,7 @@ class DoubleSampleBuffer(
      * @throws IllegalArgumentException if the format is not supported
      */
     fun checkFormatSupported(format: AudioFormat) {
-        DoubleSampleTools.getFormatType(format)
+        FloatSampleTools.getFormatType(format)
     }
 
     /**
@@ -232,7 +232,7 @@ class DoubleSampleBuffer(
             )
         }
         if (format !== lastConvertToByteArrayFormat) {
-            if (format.sampleRate.toDouble() != sampleRate) {
+            if (format.sampleRate.toFloat() != sampleRate) {
                 throw IllegalArgumentException(
                     "FloatSampleBuffer.convertToByteArray: different samplerates."
                 )
@@ -243,9 +243,9 @@ class DoubleSampleBuffer(
                 )
             }
             lastConvertToByteArrayFormat = format
-            lastConvertToByteArrayFormatCode = DoubleSampleTools.getFormatType(format)
+            lastConvertToByteArrayFormatCode = FloatSampleTools.getFormatType(format)
         }
-        DoubleSampleTools.double2byte(
+        FloatSampleTools.float2byte(
             channels, buffer, offset,
             sampleCount, lastConvertToByteArrayFormatCode,
             format.channels, format.frameSize,
@@ -255,19 +255,19 @@ class DoubleSampleBuffer(
     }
 
     /**
-     * @return the ditherBits parameter for the double2byte functions
+     * @return the ditherBits parameter for the float2byte functions
      */
-    protected fun getConvertDitherBits(newFormatType: Int): Double {
+    protected fun getConvertDitherBits(newFormatType: Int): Float {
         var doDither = false
         when (newFormatType) {
             DITHER_MODE_AUTOMATIC, DITHER_MODE_OFF -> {}
             DITHER_MODE_ON -> doDither = true
         }
-        return if (doDither) DEFAULT_DITHER_BITS else 0.0
+        return if (doDither) DEFAULT_DITHER_BITS else 0.0F
     }
 
     /**
-     * Initializes audio data from the provided byte array. The double samples
+     * Initializes audio data from the provided byte array. The float samples
      * are written at `destOffset`. This FloatSampleBuffer must be
      * big enough to accomodate the samples.
      *
@@ -278,16 +278,16 @@ class DoubleSampleBuffer(
      * @param input        the input buffer in interleaved audio data
      * @param inByteOffset the offset in `input`
      * @param format       input buffer's audio format
-     * @param doubleOffset  the offset where to write the double samples
+     * @param floatOffset  the offset where to write the float samples
      * @param frameCount   number of samples to write to this sample buffer
      */
     fun setSamplesFromBytes(
         input: ByteArray, inByteOffset: Int,
-        format: AudioFormat, doubleOffset: Int, frameCount: Int
+        format: AudioFormat, floatOffset: Int, frameCount: Int
     ) {
-        if (doubleOffset < 0 || frameCount < 0 || inByteOffset < 0) {
+        if (floatOffset < 0 || frameCount < 0 || inByteOffset < 0) {
             throw IllegalArgumentException(
-                "FloatSampleBuffer.setSamplesFromBytes: negative inByteOffset, doubleOffset, or frameCount"
+                "FloatSampleBuffer.setSamplesFromBytes: negative inByteOffset, floatOffset, or frameCount"
             )
         }
         if (inByteOffset + frameCount * format.frameSize > input.size) {
@@ -295,13 +295,13 @@ class DoubleSampleBuffer(
                 "FloatSampleBuffer.setSamplesFromBytes: input buffer too small."
             )
         }
-        if (doubleOffset + frameCount > sampleCount) {
+        if (floatOffset + frameCount > sampleCount) {
             throw IllegalArgumentException(
                 "FloatSampleBuffer.setSamplesFromBytes: frameCount too large"
             )
         }
-        DoubleSampleTools.byte2double(
-            input, inByteOffset, channels, doubleOffset,
+        FloatSampleTools.byte2float(
+            input, inByteOffset, channels, floatOffset,
             frameCount, format, false
         )
     }

@@ -24,7 +24,7 @@ class StereoBuffer(channels: Int, bufferSize: Int, c: Controller) : AudioListene
         parent = c
     }
 
-    override fun samples(sampL: DoubleArray, sampR: DoubleArray?) {
+    override fun samples(sampL: FloatArray, sampR: FloatArray?) {
         left.set(sampL)
         if (sampR != null) {
             right.set(sampR)

@@ -24,8 +24,8 @@ interface AudioListener {
      * @param sampR a float[] buffer containing the right channel of a STEREO sound stream
      *      */
     fun samples(
-        sampL: DoubleArray,
-        sampR: DoubleArray? = null
+        sampL: FloatArray,
+        sampR: FloatArray? = null
     )
 }
 

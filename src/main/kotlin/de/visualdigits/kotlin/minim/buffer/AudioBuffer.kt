@@ -27,7 +27,7 @@ interface AudioBuffer {
      * @param i int: the index of the sample you want to get
      * @return float: the `i<sup>th</sup>` sample
      *      *      */
-    operator fun get(i: Int): Double
+    operator fun get(i: Int): Float
 
     /**
      * Gets the current level of the buffer. It is calculated as the
@@ -35,7 +35,7 @@ interface AudioBuffer {
      *
      * @return float: the RMS amplitude of the buffer
      *      *      */
-    fun level(): Double
+    fun level(): Float
 
     /**
      * Returns the samples in the buffer in a new float array.
@@ -44,5 +44,5 @@ interface AudioBuffer {
      *
      * @return float[]: a new float array containing the buffer's samples
      *      */
-    fun toArray(): DoubleArray
+    fun toArray(): FloatArray
 }

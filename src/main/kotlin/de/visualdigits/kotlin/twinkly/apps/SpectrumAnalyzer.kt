@@ -37,7 +37,7 @@ class SpectrumAnalyzer(
         val minim = Minim()
         val player = minim.getLineIn()!!
         val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
-        val fft = FFT(player.bufferSize(), player.sampleRate().toDouble())
+        val fft = FFT(player.bufferSize(), player.sampleRate())
         val spectrumSize = fft.specSize() / 16
         val stepSize = ceil(spectrumSize.toDouble() / xled.width).toInt()
         val maxAmplitudes = MutableList<Int>(xled.width) { 0 }
@@ -72,7 +72,7 @@ class SpectrumAnalyzer(
                 colorMax
             }
             val frame = XledFrame(xled.width, xled.height)
-            val values = mutableListOf<Double>()
+            val values = mutableListOf<Float>()
             for ((x, i) in (0 until spectrumSize step stepSize).withIndex()) {
                 val band = fft.getBand(i)
                 values.add(band)

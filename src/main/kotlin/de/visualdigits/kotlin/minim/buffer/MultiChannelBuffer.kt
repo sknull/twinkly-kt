@@ -18,14 +18,14 @@ import kotlin.math.sqrt
  *  *  */
 class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
     // TODO: consider just wrapping a FloatSampleBuffer
-    private var channels: Array<DoubleArray>
+    private var channels: Array<FloatArray>
 
     /**
      * Construct a MultiChannelBuffer, providing a size and number of channels.
      *
      */
     init {
-        channels = Array(numChannels) { DoubleArray(bufferSize) { 0.0 } }
+        channels = Array(numChannels) { FloatArray(bufferSize) { 0.0F } }
     }
 
     /**
@@ -53,7 +53,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      */
     fun setChannelCount(numChannels: Int) {
         if (channels.size != numChannels) {
-            val newChannels = Array(numChannels) {DoubleArray(bufferSize) { 0.0 } }
+            val newChannels = Array(numChannels) {FloatArray(bufferSize) { 0.0F } }
             var c = 0
             while (c < channels.size && c < numChannels) {
                 newChannels[c] = channels[c]
@@ -77,7 +77,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @shortdesc Returns the value of a sample in the given channel,
      * at the given offset from the beginning of the buffer.
      */
-    fun getSample(channelNumber: Int, sampleIndex: Int): Double {
+    fun getSample(channelNumber: Int, sampleIndex: Int): Float {
         return channels[channelNumber][sampleIndex]
     }
 
@@ -92,7 +92,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @param sampleIndex   float: the offset from the beginning of the buffer, in samples.
      * @return float: the value of the sample
      */
-    fun getSample(channelNumber: Int, sampleIndex: Float): Double {
+    fun getSample(channelNumber: Int, sampleIndex: Float): Float {
         val lowSamp = sampleIndex.toInt()
         val hiSamp = lowSamp + 1
         if (hiSamp == bufferSize) {
@@ -110,7 +110,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @param sampleIndex   int: the sample offset from the beginning of the buffer
      * @param value         float: the sample value to set
      */
-    fun setSample(channelNumber: Int, sampleIndex: Int, value: Double) {
+    fun setSample(channelNumber: Int, sampleIndex: Int, value: Float) {
         channels[channelNumber][sampleIndex] = value
     }
 
@@ -120,9 +120,9 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @param channelNumber int: the channel to use
      * @return float: the RMS amplitude of the channel
      *      */
-    fun getLevel(channelNumber: Int): Double {
+    fun getLevel(channelNumber: Int): Float {
         val samples = channels[channelNumber]
-        var level = 0.0
+        var level = 0.0F
         for (i in samples.indices) {
             val value = samples[i]
             level += value * value
@@ -142,7 +142,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @return float[]: the channel represented as a float array
      * @shortdesc Returns the requested channel as a float array.
      */
-    fun getChannel(channelNumber: Int): DoubleArray {
+    fun getChannel(channelNumber: Int): FloatArray {
         return channels[channelNumber]
     }
 
@@ -158,7 +158,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
      * @shortdesc Sets all of the values in a particular channel using
      * the values of the provided float array.
      */
-    fun setChannel(channelNumber: Int, samples: DoubleArray) {
+    fun setChannel(channelNumber: Int, samples: FloatArray) {
         System.arraycopy(samples, 0, channels[channelNumber], 0, bufferSize)
     }
 
@@ -174,7 +174,7 @@ class MultiChannelBuffer(var bufferSize: Int, numChannels: Int) {
         if (this.bufferSize != bufferSize) {
             this.bufferSize = bufferSize
             for (i in channels.indices) {
-                val newChannel = DoubleArray(bufferSize) { 0.0 }
+                val newChannel = FloatArray(bufferSize) { 0.0F }
                 // copy existing data into the new channel array
                 System.arraycopy(
                     channels[i], 0, newChannel, 0,

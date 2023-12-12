@@ -17,14 +17,14 @@ class MAudioBuffer(bufferSize: Int) : AudioBuffer {
 
     private val log = LoggerFactory.getLogger(MAudioBuffer::class.java)
 
-    private var samples: DoubleArray
+    private var samples: FloatArray
 
     /**
      * Constructs and MAudioBuffer that is `bufferSize` samples long.
      *
      */
     init {
-        samples = DoubleArray(bufferSize) { 0.0 }
+        samples = FloatArray(bufferSize) { 0.0F }
     }
 
     @Synchronized
@@ -33,12 +33,12 @@ class MAudioBuffer(bufferSize: Int) : AudioBuffer {
     }
 
     @Synchronized
-    override fun get(i: Int): Double {
+    override fun get(i: Int): Float {
         return samples[i]
     }
 
     @Synchronized
-    operator fun get(i: Float): Double {
+    operator fun get(i: Float): Float {
         val lowSamp = i.toInt()
         val hiSamp = lowSamp + 1
         if (hiSamp == samples.size) {
@@ -49,7 +49,7 @@ class MAudioBuffer(bufferSize: Int) : AudioBuffer {
     }
 
     @Synchronized
-    fun set(buffer: DoubleArray) {
+    fun set(buffer: FloatArray) {
         if (buffer.size != samples.size) {
            log.error(
                     "MAudioBuffer.set: passed array (" + buffer.size + ") " +
@@ -70,7 +70,7 @@ class MAudioBuffer(bufferSize: Int) : AudioBuffer {
      * @param b2 the second buffer
      */
     @Synchronized
-    fun mix(b1: DoubleArray, b2: DoubleArray) {
+    fun mix(b1: FloatArray, b2: FloatArray) {
         if (((b1.size != b2.size) || (b1.size != samples.size))
         ) {
             log.error("MAudioBuffer.mix: The two passed buffers must be the same size as this MAudioBuffer.")
@@ -87,12 +87,12 @@ class MAudioBuffer(bufferSize: Int) : AudioBuffer {
      */
     @Synchronized
     fun clear() {
-        samples = DoubleArray(samples.size) { 0.0 }
+        samples = FloatArray(samples.size) { 0.0F }
     }
 
     @Synchronized
-    override fun level(): Double {
-        var level = 0.0
+    override fun level(): Float {
+        var level = 0.0F
         for (i in samples.indices) {
             level += ((samples[i]) * (samples[i]))
         }
@@ -102,8 +102,8 @@ class MAudioBuffer(bufferSize: Int) : AudioBuffer {
     }
 
     @Synchronized
-    override fun toArray(): DoubleArray {
-        val ret = DoubleArray(samples.size) { 0.0 }
+    override fun toArray(): FloatArray {
+        val ret = FloatArray(samples.size) { 0.0F }
         System.arraycopy(samples, 0, ret, 0, samples.size)
         return ret
     }

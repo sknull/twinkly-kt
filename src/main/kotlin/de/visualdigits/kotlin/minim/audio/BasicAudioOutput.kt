@@ -31,8 +31,8 @@ class BasicAudioOutput(
             if (samplesRead != buffer.bufferSize) {
                 for (i in samplesRead until buffer.bufferSize) {
                     for (c in 0 until buffer.getChannelCount()) {
-                        buffer.setSample(c, i, 0.0)
-                        buffer.setSample(c, i, 0.0)
+                        buffer.setSample(c, i, 0.0F)
+                        buffer.setSample(c, i, 0.0F)
                     }
                 }
             }

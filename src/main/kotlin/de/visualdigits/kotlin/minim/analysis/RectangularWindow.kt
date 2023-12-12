@@ -17,10 +17,10 @@ class RectangularWindow {
      *
      * @param samples a sample buffer
      */
-    fun apply(samples: DoubleArray) {
+    fun apply(samples: FloatArray) {
         length = samples.size
         for (n in samples.indices) {
-            samples[n] = samples[n].times(1.0)
+            samples[n] = samples[n].times(1.0F)
         }
     }
 
@@ -33,10 +33,10 @@ class RectangularWindow {
      * @param offset  int: the index in the array to begin windowing
      * @param length  int: how many samples to apply the window to
      */
-    fun apply(samples: DoubleArray, offset: Int, length: Int) {
+    fun apply(samples: FloatArray, offset: Int, length: Int) {
         this.length = length
         for (n in offset until offset + length) {
-            samples[n] = samples[n].times(1.0)
+            samples[n] = samples[n].times(1.0F)
         }
     }
 }

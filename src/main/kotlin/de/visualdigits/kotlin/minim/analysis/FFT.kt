@@ -2,8 +2,10 @@ package de.visualdigits.kotlin.minim.analysis
 
 import de.visualdigits.kotlin.minim.buffer.AudioBuffer
 import org.slf4j.LoggerFactory
+import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 
@@ -268,24 +270,26 @@ import kotlin.math.sqrt
  */
 class FFT(
     private val timeSize: Int,
-    private val sampleRate: Double
+    private val sampleRate: Float
 ) {
 
     private val log = LoggerFactory.getLogger(FFT::class.java)
 
-    private val bandWidth: Double = 2f / timeSize * (sampleRate / 2f)
+    private val mPI = -Math.PI.toFloat()
+
+    private val bandWidth: Float = 2f / timeSize * (sampleRate / 2f)
     private val currentWindow: RectangularWindow = RectangularWindow()
 
-    private var spectrum = DoubleArray(timeSize / 2 + 1) { 0.0 }
-    private var real = DoubleArray(timeSize) { 0.0 }
-    private var imag = DoubleArray(timeSize) { 0.0 }
-    private var averages = DoubleArray(0) { 0.0 }
+    private var spectrum = FloatArray(timeSize / 2 + 1) { 0.0F }
+    private var real = FloatArray(timeSize) { 0.0F }
+    private var imag = FloatArray(timeSize) { 0.0F }
+    private var averages = FloatArray(0) { 0.0F }
     private var whichAverage = NOAVG
     private var octaves = 0
     private var avgPerOctave = 0
     private var reverse: IntArray = intArrayOf()
-    private var sinlookup = DoubleArray(timeSize) { 0.0 }
-    private var coslookup = DoubleArray(timeSize) { 0.0 }
+    private var sinLookup = FloatArray(timeSize) { 0.0F }
+    private var cosLookup = FloatArray(timeSize) { 0.0F }
 
     /**
      * Constructs an FFT that will accept sample buffers that are
@@ -315,11 +319,11 @@ class FFT(
     }
 
     private fun buildTrigTables() {
-        sinlookup = DoubleArray(timeSize) { 0.0 }
-        coslookup = DoubleArray(timeSize) { 0.0 }
+        sinLookup = FloatArray(timeSize) { 0.0F }
+        cosLookup = FloatArray(timeSize) { 0.0F }
         for (i in 0 until timeSize) {
-            sinlookup[i] = kotlin.math.sin((-Math.PI / i))
-            coslookup[i] = kotlin.math.cos((-Math.PI / i))
+            sinLookup[i] = sin(mPI / i)
+            cosLookup[i] = cos(mPI / i)
         }
     }
 
@@ -336,7 +340,7 @@ class FFT(
             return
         }
         else {
-            DoubleArray(numAvg) { 0.0 }
+            FloatArray(numAvg) { 0.0F }
         }
         whichAverage = LINAVG
     }
@@ -364,7 +368,7 @@ class FFT(
         }
         log.debug("Number of octaves = $octaves")
         avgPerOctave = bandsPerOctave
-        averages = DoubleArray(octaves * bandsPerOctave) { 0.0 }
+        averages = FloatArray(octaves * bandsPerOctave) { 0.0F }
         whichAverage = LOGAVG
     }
 
@@ -394,10 +398,10 @@ class FFT(
      * lower and upper frequency of any average band.
      *
      * @param averageIndex int: the index of the average you want the bandwidth of
-     * @return Double: the bandwidth of the request average band, in Hertz.
+     * @return Float: the bandwidth of the request average band, in Hertz.
      * @see .getAverageCenterFrequency
      */
-    fun getAverageBandWidth(averageIndex: Int): Double {
+    fun getAverageBandWidth(averageIndex: Int): Float {
         if (whichAverage == LINAVG) {
             // an average represents a certain number of bands in the spectrum
             val avgWidth = spectrum.size / averages.size
@@ -408,20 +412,20 @@ class FFT(
             val octave = averageIndex / avgPerOctave
             return getFreqStep(octave)
         }
-        return 0.0
+        return 0.0F
     }
 
-    private fun getFreqStep(octave: Int): Double {
-        val freqStep: Double
+    private fun getFreqStep(octave: Int): Float {
+        val freqStep: Float
         // figure out the low frequency for this octave
-        val lowFreq: Double = if (octave == 0) {
-            0.0
+        val lowFreq: Float = if (octave == 0) {
+            0.0F
         }
         else {
-            sampleRate / 2 / 2.0.pow((octaves - octave))
+            sampleRate / 2 / 2.0F.pow((octaves - octave))
         }
         // and the high frequency for this octave
-        val hiFreq: Double = sampleRate / 2 / 2.0.pow((octaves - octave - 1))
+        val hiFreq: Float = sampleRate / 2 / 2.0F.pow((octaves - octave - 1))
         // each average band within the octave will be this big
         freqStep = (hiFreq - lowFreq) / avgPerOctave
         return freqStep
@@ -431,9 +435,9 @@ class FFT(
      * Returns the center frequency of the i<sup>th</sup> average band.
      *
      * @param i int: which average band you want the center frequency of.
-     * @return Double: the center frequency of the i<sup>th</sup> average band.
+     * @return Float: the center frequency of the i<sup>th</sup> average band.
      */
-    fun getAverageCenterFrequency(i: Int): Double {
+    fun getAverageCenterFrequency(i: Int): Float {
         if (whichAverage == LINAVG) {
             // an average represents a certain number of bands in the spectrum
             val avgWidth = spectrum.size / averages.size
@@ -446,16 +450,16 @@ class FFT(
             val octave = i / avgPerOctave
             // which band within that octave is this?
             val offset = i % avgPerOctave
-            val freqStep: Double
+            val freqStep: Float
             // figure out the low frequency for this octave
-            val lowFreq: Double = if (octave == 0) {
-                0.0
+            val lowFreq: Float = if (octave == 0) {
+                0.0F
             }
             else {
-                sampleRate / 2 / 2.0.pow((octaves - octave))
+                sampleRate / 2 / 2.0F.pow((octaves - octave))
             }
             // and the high frequency for this octave
-            val hiFreq: Double = sampleRate / 2 / 2.0.pow((octaves - octave - 1))
+            val hiFreq: Float = sampleRate / 2 / 2.0F.pow((octaves - octave - 1))
             // each average band within the octave will be this big
             freqStep = (hiFreq - lowFreq) / avgPerOctave
             // figure out the low frequency of the band we care about
@@ -463,26 +467,26 @@ class FFT(
             // the center of the band will be the low plus half the width
             return f + freqStep / 2
         }
-        return 0.0
+        return 0.0F
     }
 
     /**
      * Returns the middle frequency of the i<sup>th</sup> band.
      *
      * @param i int: the index of the band you want to middle frequency of
-     * @return Double: the middle frequency, in Hertz, of the requested band of the spectrum
+     * @return Float: the middle frequency, in Hertz, of the requested band of the spectrum
      */
-    private fun indexToFreq(i: Int): Double {
-        val bw: Double = bandWidth
+    private fun indexToFreq(i: Int): Float {
+        val bw: Float = bandWidth
         // special case: the width of the first bin is half that of the others.
         //               so the center frequency is a quarter of the way.
         if (i == 0) {
-            return bw * 0.25f
+            return bw * 0.25F
         }
         // special case: the width of the last bin is half that of the others.
         if (i == spectrum.size - 1) {
             val lastBinBeginFreq = sampleRate / 2 - bw / 2
-            val binHalfWidth = bw * 0.25f
+            val binHalfWidth = bw * 0.25F
             return lastBinBeginFreq + binHalfWidth
         }
         // the center frequency of the ith band is simply i*bw
@@ -495,10 +499,10 @@ class FFT(
     /**
      * Gets the amplitude of the requested frequency in the spectrum.
      *
-     * @param freq Double: the frequency in Hz
-     * @return Double: the amplitude of the frequency in the spectrum
+     * @param freq Float: the frequency in Hz
+     * @return Float: the amplitude of the frequency in the spectrum
      */
-    fun getFreq(freq: Double): Double {
+    fun getFreq(freq: Float): Float {
         return getBand(freqToIndex(freq))
     }
 
@@ -506,9 +510,9 @@ class FFT(
      * Returns the amplitude of the requested frequency band.
      *
      * @param i int: the index of a frequency band
-     * @return Double: the amplitude of the requested frequency band
+     * @return Float: the amplitude of the requested frequency band
      */
-    fun getBand(i: Int): Double {
+    fun getBand(i: Int): Float {
         var q = i
         if (q < 0) {
             q = 0
@@ -523,10 +527,10 @@ class FFT(
      * Returns the index of the frequency band that contains the requested
      * frequency.
      *
-     * @param freq Double: the frequency you want the index for (in Hz)
+     * @param freq Float: the frequency you want the index for (in Hz)
      * @return int: the index of the frequency band that contains freq
      */
-    private fun freqToIndex(freq: Double): Int {
+    private fun freqToIndex(freq: Float): Int {
         // special case: freq is lower than the bandwidth of spectrum[0]
         if (freq < bandWidth / 2) {
             return 0
@@ -544,19 +548,19 @@ class FFT(
      * Sets the amplitude of the requested frequency in the spectrum to
      * `a`.
      *
-     * @param freq Double: the frequency in Hz
-     * @param a    Double: the new amplitude
+     * @param freq Float: the frequency in Hz
+     * @param a    Float: the new amplitude
      */
-    fun setFreq(freq: Double, a: Double) {
+    fun setFreq(freq: Float, a: Float) {
         setBand(freqToIndex(freq), a)
     }
 
-    private fun setBand(i: Int, a: Double) {
+    private fun setBand(i: Int, a: Float) {
         if (a < 0) {
             log.error("Can't set a frequency band to a negative value.")
             return
         }
-        if (real[i] == 0.0 && imag[i] == 0.0) {
+        if (real[i] == 0.0F && imag[i] == 0.0F) {
             real[i] = a
             spectrum[i] = a
         }
@@ -576,14 +580,14 @@ class FFT(
     /**
      * Scales the amplitude of the requested frequency by `a`.
      *
-     * @param freq Double: the frequency in Hz
-     * @param s    Double: the scaling factor
+     * @param freq Float: the frequency in Hz
+     * @param s    Float: the scaling factor
      */
-    fun scaleFreq(freq: Double, s: Double) {
+    fun scaleFreq(freq: Float, s: Float) {
         scaleBand(freqToIndex(freq), s)
     }
 
-    private fun scaleBand(i: Int, s: Double) {
+    private fun scaleBand(i: Int, s: Float) {
         if (s < 0) {
             log.error("Can't scale a frequency band by a negative value.")
             return
@@ -610,14 +614,14 @@ class FFT(
      * Gets the value of the `i<sup>th</sup>` average.
      *
      * @param i int: the average you want the value of
-     * @return Double: the value of the requested average band
+     * @return Float: the value of the requested average band
      */
-    fun getAvg(i: Int): Double {
-        val ret: Double = if (averages.isNotEmpty()) {
+    fun getAvg(i: Int): Float {
+        val ret: Float = if (averages.isNotEmpty()) {
             averages[i]
         }
         else {
-            0.0
+            0.0F
         }
         return ret
     }
@@ -631,7 +635,7 @@ class FFT(
         forward(buffer.toArray())
     }
 
-    fun forward(buffer: DoubleArray) {
+    fun forward(buffer: FloatArray) {
         if (buffer.size != timeSize) {
             log.error("FFT.forward: The length of the passed sample buffer must be equal to timeSize().")
             return
@@ -657,7 +661,7 @@ class FFT(
         if (whichAverage == LINAVG) {
             val avgWidth = spectrum.size / averages.size
             for (i in averages.indices) {
-                var avg = 0.0
+                var avg = 0.0F
                 var j: Int = 0
                 while (j < avgWidth) {
                     val offset = j + i * avgWidth
@@ -675,14 +679,14 @@ class FFT(
         }
         else if (whichAverage == LOGAVG) {
             for (i in 0 until octaves) {
-                var freqStep: Double
-                val lowFreq: Double = if (i == 0) {
-                    0.0
+                var freqStep: Float
+                val lowFreq: Float = if (i == 0) {
+                    0.0F
                 }
                 else {
-                    sampleRate / 2 / 2.0.pow((octaves - i))
+                    sampleRate / 2 / 2.0F.pow((octaves - i))
                 }
-                val hiFreq: Double = sampleRate / 2 / 2.0.pow((octaves - i - 1))
+                val hiFreq: Float = sampleRate / 2 / 2.0F.pow((octaves - i - 1))
                 freqStep = (hiFreq - lowFreq) / avgPerOctave
                 var f = lowFreq
                 for (j in 0 until avgPerOctave) {
@@ -698,14 +702,14 @@ class FFT(
      * Calculate the average amplitude of the frequency band bounded by
      * `lowFreq` and `hiFreq`, inclusive.
      *
-     * @param lowFreq Double: the lower bound of the band, in Hertz
-     * @param hiFreq  Double: the upper bound of the band, in Hertz
-     * @return Double: the average of all spectrum values within the bounds
+     * @param lowFreq Float: the lower bound of the band, in Hertz
+     * @param hiFreq  Float: the upper bound of the band, in Hertz
+     * @return Float: the average of all spectrum values within the bounds
      */
-    private fun calcAvg(lowFreq: Double, hiFreq: Double): Double {
+    private fun calcAvg(lowFreq: Float, hiFreq: Float): Float {
         val lowBound = freqToIndex(lowFreq)
         val hiBound = freqToIndex(hiFreq)
-        var avg = 0.0
+        var avg = 0.0F
         for (i in lowBound..hiBound) {
             avg += spectrum[i]
         }
@@ -713,7 +717,7 @@ class FFT(
         return avg
     }
 
-    private fun doWindow(samples: DoubleArray) {
+    private fun doWindow(samples: FloatArray) {
         currentWindow.apply(samples)
     }
 
@@ -723,16 +727,16 @@ class FFT(
         var halfSize = 1
         while (halfSize < real.size) {
 
-            // Double k = -(Double)Math.PI/halfSize;
+            // Float k = -(Float)Math.PI/halfSize;
             // phase shift step
-            // Double phaseShiftStepR = (Double)Math.cos(k);
-            // Double phaseShiftStepI = (Double)Math.sin(k);
+            // Float phaseShiftStepR = (Float)Math.cos(k);
+            // Float phaseShiftStepI = (Float)Math.sin(k);
             // using lookup table
-            val phaseShiftStepR = cos(halfSize)
-            val phaseShiftStepI = sin(halfSize)
+            val phaseShiftStepR = cosLookup[halfSize]
+            val phaseShiftStepI = sinLookup[halfSize]
             // current phase shift
-            var currentPhaseShiftR = 1.0
-            var currentPhaseShiftI = 0.0
+            var currentPhaseShiftR = 1.0F
+            var currentPhaseShiftI = 0.0F
             for (fftStep in 0 until halfSize) {
                 var i = fftStep
                 while (i < real.size) {
@@ -753,20 +757,12 @@ class FFT(
         }
     }
 
-    private fun sin(i: Int): Double {
-        return sinlookup[i]
-    }
-
-    private fun cos(i: Int): Double {
-        return coslookup[i]
-    }
-
     // copies the values in the samples array into the real array
     // in bit reversed order. the imag array is filled with zeros.
-    private fun bitReverseSamples(samples: DoubleArray, startAt: Int) {
+    private fun bitReverseSamples(samples: FloatArray, startAt: Int) {
         for (i in 0 until timeSize) {
             real[i] = samples[startAt + reverse[i]]
-            imag[i] = 0.0
+            imag[i] = 0.0F
         }
     }
 
@@ -783,7 +779,7 @@ class FFT(
     }
 
     // lookup tables
-    private fun forward(buffer: DoubleArray, startAt: Int) {
+    private fun forward(buffer: FloatArray, startAt: Int) {
         if (buffer.size - startAt < timeSize) {
             log.error(
                 "FourierTransform.forward: not enough samples in the buffer between " +
@@ -803,7 +799,7 @@ class FFT(
      * @param buffReal the real part of the time domain signal to transform
      * @param buffImag the imaginary part of the time domain signal to transform
      */
-    fun forward(buffReal: DoubleArray, buffImag: DoubleArray) {
+    fun forward(buffReal: FloatArray, buffImag: FloatArray) {
         if (buffReal.size != timeSize || buffImag.size != timeSize) {
             log.error("FFT.forward: The length of the passed buffers must be equal to timeSize().")
             return
@@ -814,7 +810,7 @@ class FFT(
         fillSpectrum()
     }
 
-    private fun setComplex(r: DoubleArray, i: DoubleArray) {
+    private fun setComplex(r: FloatArray, i: FloatArray) {
         if (real.size != r.size && imag.size != i.size) {
             log.error("FourierTransform.setComplex: the two arrays must be the same length as their member counterparts.")
         }
@@ -826,8 +822,8 @@ class FFT(
 
     // bit reverse real[] and imag[]
     private fun bitReverseComplex() {
-        val revReal = DoubleArray(real.size) { 0.0 }
-        val revImag = DoubleArray(imag.size) { 0.0 }
+        val revReal = FloatArray(real.size) { 0.0F }
+        val revImag = FloatArray(imag.size) { 0.0F }
         for (i in real.indices) {
             revReal[i] = real[reverse[i]]
             revImag[i] = imag[reverse[i]]
@@ -836,7 +832,7 @@ class FFT(
         imag = revImag
     }
 
-    fun inverse(buffer: DoubleArray) {
+    fun inverse(buffer: FloatArray) {
         if (buffer.size > real.size) {
             log.error("FFT.inverse: the passed array's length must equal FFT.timeSize().")
             return

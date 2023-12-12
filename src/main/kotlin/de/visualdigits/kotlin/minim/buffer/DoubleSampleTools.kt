@@ -6,7 +6,7 @@ import javax.sound.sampled.AudioFormat
 import kotlin.math.pow
 
 /**
- * Utility functions for handling data in normalized double arrays. Each sample
+ * Utility functions for handling data in normalized float arrays. Each sample
  * is linear in the range of [-1, +1].
  * <p>
  * Currently, the following bit sizes are supported:
@@ -22,7 +22,7 @@ import kotlin.math.pow
  *
  * @author Florian Bomers (java version)
  */
-object DoubleSampleTools {
+object FloatSampleTools {
 
     // sample width (must be in order !)
     val F_8 = 1
@@ -51,7 +51,7 @@ object DoubleSampleTools {
     private var random: Random? = null
 
     /**
-     * Generic conversion function to convert a byte array to a double array.
+     * Generic conversion function to convert a byte array to a float array.
      *
      *
      * Only PCM formats are accepted. The method will convert all bytes from
@@ -76,13 +76,13 @@ object DoubleSampleTools {
      * @throws IllegalArgumentException if one of the parameters is out of
      * bounds
      */
-    fun byte2doubleGeneric(
+    fun byte2floatGeneric(
         input: ByteArray, inByteOffset: Int,
-        inByteStep: Int, output: DoubleArray, outOffset: Int, sampleCount: Int,
+        inByteStep: Int, output: FloatArray, outOffset: Int, sampleCount: Int,
         format: AudioFormat
     ) {
         val formatType = getFormatType(format)
-        byte2doubleGeneric(
+        byte2floatGeneric(
             input, inByteOffset, inByteStep, output, outOffset,
             sampleCount, formatType
         )
@@ -183,7 +183,7 @@ object DoubleSampleTools {
     }
 
     /**
-     * Central conversion function from a byte array to a normalized double
+     * Central conversion function from a byte array to a normalized float
      * array. In order to accomodate interleaved and non-interleaved samples,
      * this method takes inByteStep as parameter which can be used to flexibly
      * convert the data.
@@ -198,9 +198,9 @@ object DoubleSampleTools {
      * ---inByteOffset=format.getFrameSize()/2, outOffset=1,
      * inByteStep=format.getFrameSize()<br></br>
      */
-    fun byte2doubleGeneric(
+    fun byte2floatGeneric(
         input: ByteArray, inByteOffset: Int,
-        inByteStep: Int, output: DoubleArray, outOffset: Int, sampleCount: Int,
+        inByteStep: Int, output: FloatArray, outOffset: Int, sampleCount: Int,
         formatType: Int
     ) {
         val endCount = outOffset + sampleCount
@@ -208,47 +208,47 @@ object DoubleSampleTools {
         var outIndex = outOffset
         while (outIndex < endCount) {
             when (formatType) {
-                CT_8S -> output[outIndex] = input[inIndex] * (1 / pow(2.0, 7.0))
-                CT_8U -> output[outIndex] = ((input[inIndex].toInt() and 0xFF) - 128) * (1 / 2.0.pow(7.0))
+                CT_8S -> output[outIndex] = input[inIndex] * (1 / 2.0F.pow(7.0F))
+                CT_8U -> output[outIndex] = ((input[inIndex].toInt() and 0xFF) - 128) * (1 / 2.0F.pow(7.0F))
                 CT_16SB -> output[outIndex] = (((input[inIndex].toInt() shl 8)
                         or (input[inIndex + 1].toInt() and 0xFF))
-                        * (1 / 2.0.pow(15.0)))
+                        * (1 / 2.0F.pow(15.0F)))
 
                 CT_16SL -> output[outIndex] = (((input[inIndex + 1].toInt() shl 8)
                         or (input[inIndex].toInt() and 0xFF))
-                        * (1 / 2.0.pow(15.0)))
+                        * (1 / 2.0F.pow(15.0F)))
 
                 CT_24_3SB -> output[outIndex] = ((((input[inIndex].toInt() shl 16)
                         or ((input[inIndex + 1].toInt() and 0xFF) shl 8)
                         or (input[inIndex + 2].toInt() and 0xFF)))
-                        * (1 / 2.0.pow(23.0)))
+                        * (1 / 2.0F.pow(23.0F)))
 
                 CT_24_3SL -> output[outIndex] = ((((input[inIndex + 2].toInt() shl 16)
                         or ((input[inIndex + 1].toInt() and 0xFF) shl 8)
                         or (input[inIndex].toInt() and 0xFF)))
-                        * (1 / 2.0.pow(23.0)))
+                        * (1 / 2.0F.pow(23.0F)))
 
                 CT_24_4SB -> output[outIndex] = ((((input[inIndex + 1].toInt() shl 16)
                         or ((input[inIndex + 2].toInt() and 0xFF) shl 8)
                         or (input[inIndex + 3].toInt() and 0xFF)))
-                        * (1 / 2.0.pow(23.0)))
+                        * (1 / 2.0F.pow(23.0F)))
 
                 CT_24_4SL -> output[outIndex] = ((((input[inIndex + 3].toInt() shl 16)
                         or ((input[inIndex + 2].toInt() and 0xFF) shl 8)
                         or (input[inIndex + 1].toInt() and 0xFF)))
-                        * (1 / 2.0.pow(23.0)))
+                        * (1 / 2.0F.pow(23.0F)))
 
                 CT_32SB -> output[outIndex] = ((((input[inIndex].toInt() shl 24)
                         or ((input[inIndex + 1].toInt() and 0xFF) shl 16)
                         or ((input[inIndex + 2].toInt() and 0xFF) shl 8)
                         or (input[inIndex + 3].toInt() and 0xFF)))
-                        * (1 / 2.0.pow(31.0)))
+                        * (1 / 2.0F.pow(31.0F)))
 
                 CT_32SL -> output[outIndex] = ((((input[inIndex + 3].toInt() shl 24)
                         or ((input[inIndex + 2].toInt() and 0xFF) shl 16)
                         or ((input[inIndex + 1].toInt() and 0xFF) shl 8)
                         or (input[inIndex].toInt() and 0xFF)))
-                        * (1 / 2.0.pow(31.0)))
+                        * (1 / 2.0F.pow(31.0F)))
 
                 else -> throw IllegalArgumentException(
                     ("unsupported format="
@@ -280,15 +280,15 @@ object DoubleSampleTools {
     }
 
     /**
-     * @param output          an array of double[] arrays
+     * @param output          an array of float[] arrays
      * @param allowAddChannel if true, and output has fewer channels than
      * format, then only output.length channels are filled
      * @throws ArrayIndexOutOfBoundsException if output does not
      * format.getChannels() elements
      */
-    fun byte2double(
+    fun byte2float(
         input: ByteArray, inByteOffset: Int,
-        output: MutableList<DoubleArray>, outOffset: Int, frameCount: Int, format: AudioFormat,
+        output: MutableList<FloatArray>, outOffset: Int, frameCount: Int, format: AudioFormat,
         allowAddChannel: Boolean
     ) {
         var inByteOffset = inByteOffset
@@ -304,10 +304,10 @@ object DoubleSampleTools {
         for (channel in 0 until channels) {
             var data = output[channel]
             if (data.size < frameCount + outOffset) {
-                data = DoubleArray(frameCount + outOffset)
+                data = FloatArray(frameCount + outOffset)
                 output[channel] = data
             }
-            byte2doubleGeneric(
+            byte2floatGeneric(
                 input, inByteOffset, format.frameSize, data,
                 outOffset, frameCount, format
             )
@@ -316,7 +316,7 @@ object DoubleSampleTools {
     }
 
     /**
-     * Central conversion function from normalized double array to a byte array.
+     * Central conversion function from normalized float array to a byte array.
      * In order to accomodate interleaved and non-interleaved samples, this
      * method takes outByteStep as parameter which can be used to flexibly
      * convert the data.
@@ -331,10 +331,10 @@ object DoubleSampleTools {
      * ---inOffset=1, outByteOffset=format.getFrameSize()/2,
      * outByteStep=format.getFrameSize()<br></br>
      */
-    fun double2byteGeneric(
-        input: DoubleArray, output: ByteArray,
+    fun float2byteGeneric(
+        input: FloatArray, output: ByteArray,
         outByteOffset: Int, outByteStep: Int, sampleCount: Int,
-        formatType: Int, ditherBits: Double
+        formatType: Int, ditherBits: Float
     ) {
         if ((sampleCount > input.size
                     || sampleCount < 0)
@@ -357,7 +357,7 @@ object DoubleSampleTools {
                         + formatType2Str(formatType))
             )
         }
-        if (ditherBits != 0.0 && random == null) {
+        if (ditherBits != 0.0F && random == null) {
             // create the random number generator for dithering
             random = Random()
         }
@@ -366,38 +366,38 @@ object DoubleSampleTools {
         var inIndex = 0
         while (inIndex < sampleCount) {
             when (formatType) {
-                CT_8S -> output[outIndex] = quantize(input[inIndex], ditherBits, 2.0.pow(7.0))
+                CT_8S -> output[outIndex] = quantize(input[inIndex], ditherBits, 2.0F.pow(7.0F))
                 CT_8U -> output[outIndex] =
-                    (quantize(input[inIndex], ditherBits, 2.0.pow(7.0)) + 2.0.pow(7.0)).toInt().toByte()
+                    (quantize(input[inIndex], ditherBits, 2.0F.pow(7.0F)) + 2.0F.pow(7.0F)).toInt().toByte()
 
                 CT_16SB -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(15.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(15.0F)).toInt()
                     output[outIndex] = (iSample shr 8).toByte()
                     output[outIndex + 1] = (iSample and 0xFF).toByte()
                 }
 
                 CT_16SL -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(15.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(15.0F)).toInt()
                     output[outIndex + 1] = (iSample shr 8).toByte()
                     output[outIndex] = (iSample and 0xFF).toByte()
                 }
 
                 CT_24_3SB -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(23.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(23.0F)).toInt()
                     output[outIndex] = (iSample shr 16).toByte()
                     output[outIndex + 1] = ((iSample ushr 8) and 0xFF).toByte()
                     output[outIndex + 2] = (iSample and 0xFF).toByte()
                 }
 
                 CT_24_3SL -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(23.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(23.0F)).toInt()
                     output[outIndex + 2] = (iSample shr 16).toByte()
                     output[outIndex + 1] = ((iSample ushr 8) and 0xFF).toByte()
                     output[outIndex] = (iSample and 0xFF).toByte()
                 }
 
                 CT_24_4SB -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(23.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(23.0F)).toInt()
                     output[outIndex] = 0
                     output[outIndex + 1] = (iSample shr 16).toByte()
                     output[outIndex + 2] = ((iSample ushr 8) and 0xFF).toByte()
@@ -405,7 +405,7 @@ object DoubleSampleTools {
                 }
 
                 CT_24_4SL -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(23.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(23.0F)).toInt()
                     output[outIndex + 3] = (iSample shr 16).toByte()
                     output[outIndex + 2] = ((iSample ushr 8) and 0xFF).toByte()
                     output[outIndex + 1] = (iSample and 0xFF).toByte()
@@ -413,7 +413,7 @@ object DoubleSampleTools {
                 }
 
                 CT_32SB -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(31.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(31.0F)).toInt()
                     output[outIndex] = (iSample shr 24).toByte()
                     output[outIndex + 1] = ((iSample ushr 16) and 0xFF).toByte()
                     output[outIndex + 2] = ((iSample ushr 8) and 0xFF).toByte()
@@ -421,7 +421,7 @@ object DoubleSampleTools {
                 }
 
                 CT_32SL -> {
-                    iSample = quantize(input[inIndex], ditherBits, 2.0.pow(31.0)).toInt()
+                    iSample = quantize(input[inIndex], ditherBits, 2.0F.pow(31.0F)).toInt()
                     output[outIndex + 3] = (iSample shr 24).toByte()
                     output[outIndex + 2] = ((iSample ushr 16) and 0xFF).toByte()
                     output[outIndex + 1] = ((iSample ushr 8) and 0xFF).toByte()
@@ -448,10 +448,10 @@ object DoubleSampleTools {
         }
     }
 
-    private fun quantize(sample: Double, ditherBits: Double, n: Double): Byte {
+    private fun quantize(sample: Float, ditherBits: Float, n: Float): Byte {
         var sample = sample
         sample *= n
-        if (ditherBits != 0.0) {
+        if (ditherBits != 0.0F) {
             sample += random!!.nextFloat() * ditherBits
         }
         if (sample >= n - 1) {
@@ -468,23 +468,23 @@ object DoubleSampleTools {
     }
 
     /**
-     * @param input     an array of double[] arrays
+     * @param input     an array of float[] arrays
      * @param channels  how many channels to use from the input array
      * @param frameSize only as optimization, the number of bytes per sample
      * playable
      * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of
      * bounds
      */
-    fun double2byte(
-        input: List<DoubleArray>, output: ByteArray,
+    fun float2byte(
+        input: List<FloatArray>, output: ByteArray,
         outByteOffset: Int, frameCount: Int, formatCode: Int, channels: Int,
-        frameSize: Int, ditherBits: Double
+        frameSize: Int, ditherBits: Float
     ) {
         var outByteOffset = outByteOffset
         val sampleSize = frameSize / channels
         for (channel in 0 until channels) {
             val data = input[channel]
-            double2byteGeneric(
+            float2byteGeneric(
                 data, output, outByteOffset, frameSize,
                 frameCount, formatCode, ditherBits
             )

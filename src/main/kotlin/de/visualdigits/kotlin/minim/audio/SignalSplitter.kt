@@ -82,13 +82,13 @@ class SignalSplitter(
      * @param sampR a float[] buffer containing the right channel of a STEREO sound stream
      *      *      */
     @Synchronized
-    override fun samples(sampL: DoubleArray, sampR: DoubleArray?) {
+    override fun samples(sampL: FloatArray, sampR: FloatArray?) {
         for (i in listeners.indices) {
             val al = listeners[i]
-            val copyL = DoubleArray(sampL.size) { 0.0 }
+            val copyL = FloatArray(sampL.size) { 0.0F }
             System.arraycopy(sampL, 0, copyL, 0, copyL.size)
             if (sampR != null) {
-                val copyR = DoubleArray(sampR.size) { 0.0 }
+                val copyR = FloatArray(sampR.size) { 0.0F }
                 System.arraycopy(sampR, 0, copyR, 0, copyR.size)
                 al.samples(copyL, copyR)
             } else {

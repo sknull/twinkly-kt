@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.minim.audio
 
-import de.visualdigits.kotlin.minim.buffer.DoubleSampleBuffer
+import de.visualdigits.kotlin.minim.buffer.FloatSampleBuffer
 import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
@@ -21,27 +21,27 @@ class JSAudioOutput(
     private var stream: AudioStream? = null
     private var running: Boolean = false
 
-    private val doubleSampleBuffer: DoubleSampleBuffer = DoubleSampleBuffer(
+    private val floatSampleBuffer: FloatSampleBuffer = FloatSampleBuffer(
         sampleCount = bufferSize,
         channelCount = audioFormat.channels,
-        sampleRate = audioFormat.sampleRate.toDouble()
+        sampleRate = audioFormat.sampleRate.toFloat()
     )
     private var line: SourceDataLine? = sdl
-    private val outBytes: ByteArray = ByteArray(doubleSampleBuffer.getByteArrayBufferSize(audioFormat))
+    private val outBytes: ByteArray = ByteArray(floatSampleBuffer.getByteArrayBufferSize(audioFormat))
 
     override fun run() {
         running = true
         line!!.start()
         while (running) {
-            doubleSampleBuffer.makeSilence()
+            floatSampleBuffer.makeSilence()
             readStream()
             if (line!!.format.channels == 1) {
-                listener!!.samples(doubleSampleBuffer.getChannel(0))
+                listener!!.samples(floatSampleBuffer.getChannel(0))
             }
             else {
-                listener!!.samples(doubleSampleBuffer.getChannel(0), doubleSampleBuffer.getChannel(1))
+                listener!!.samples(floatSampleBuffer.getChannel(0), floatSampleBuffer.getChannel(1))
             }
-            doubleSampleBuffer.convertToByteArray(outBytes, 0, audioFormat)
+            floatSampleBuffer.convertToByteArray(outBytes, 0, audioFormat)
             if (line!!.available() == line!!.bufferSize) {
                 log.debug("Likely buffer underrun in AudioOutput.")
             }
@@ -61,7 +61,7 @@ class JSAudioOutput(
     private fun readStream() {
         stream!!.read(buffer)
         for (i in 0 until buffer.getChannelCount()) {
-            System.arraycopy(buffer.getChannel(i), 0, doubleSampleBuffer.getChannel(i), 0, doubleSampleBuffer.sampleCount)
+            System.arraycopy(buffer.getChannel(i), 0, floatSampleBuffer.getChannel(i), 0, floatSampleBuffer.sampleCount)
         }
     }
 
