@@ -14,9 +14,9 @@ import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
  */
 interface AudioStream : AudioResource {
     /**
-     * Reads the next sample frame.
+     * Reads the next sample playable.
      *
-     * @return an array of floats containing the value of each channel in the sample frame just read.
+     * @return an array of floats containing the value of each channel in the sample playable just read.
      * The size of the returned array will be the same size as getFormat().getChannels().
      */
     @Deprecated("")

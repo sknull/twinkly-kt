@@ -1,14 +1,13 @@
 package de.visualdigits.kotlin.twinkly.games.conway
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
-import de.visualdigits.kotlin.twinkly.model.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.io.File
 
 class Conway(
     val preset: File,
-    val xled: XLed
+    val xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 ) {
 
     fun run() {

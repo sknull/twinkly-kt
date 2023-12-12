@@ -2,13 +2,13 @@ package de.visualdigits.kotlin.twinkly.model
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.common.networkstatus.NetworkStatus
-import de.visualdigits.kotlin.twinkly.model.xled.response.ResponseCode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.Base64
+import java.util.*
 import kotlin.random.Random
 
 const val UDP_PORT = 5555

@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.minim.audio
 
-import de.visualdigits.kotlin.minim.audio.AudioListener
 import javax.sound.sampled.AudioFormat
 
 /**

@@ -76,7 +76,7 @@ class BeatDetect(
 
     /**
      * Analyze the samples in `buffer`.
-     * This is a cumulative process, so you must call this function every frame.
+     * This is a cumulative process, so you must call this function every playable.
      *
      * @param buffer AudioBuffer: the buffer to analyze.
      */

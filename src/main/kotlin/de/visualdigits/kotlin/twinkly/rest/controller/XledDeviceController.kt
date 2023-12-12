@@ -1,9 +1,9 @@
 package de.visualdigits.kotlin.twinkly.rest.controller
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.xled.response.Saturation
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.rest.configuration.DevicesHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,14 +1,13 @@
 package de.visualdigits.kotlin.twinkly.apps
 
+import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.minim.analysis.BeatDetect
 import de.visualdigits.kotlin.minim.analysis.DetectMode
 import de.visualdigits.kotlin.minim.analysis.FFT
-import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
-import de.visualdigits.kotlin.twinkly.model.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -31,7 +30,7 @@ class SpectrumAnalyzer(
     private val colorMaxHiHat: Color<*> = RGBWColor(255, 255, 0, 128),
     private val colorMeterSnare: Color<*> = RGBWColor(0, 0, 255, 0),
     private val colorMaxSnare: Color<*> = RGBWColor(0, 0, 255, 128),
-    private val xled: XLed
+    private val xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 ) {
 
     fun run() {

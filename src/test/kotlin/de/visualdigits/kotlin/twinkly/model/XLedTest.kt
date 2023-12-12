@@ -1,15 +1,15 @@
 package de.visualdigits.kotlin.twinkly.model
 
+import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.games.conway.Conway
-import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
-import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.request.MoviesCurrentRequest
-import de.visualdigits.kotlin.twinkly.model.xled.request.NewMovieRequest
-import de.visualdigits.kotlin.twinkly.model.xled.response.MovieConfig
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.request.MoviesCurrentRequest
+import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.MovieConfig
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -145,28 +145,28 @@ class XLedTest {
         val sequence = XledSequence()
 
         var frame = XledFrame(xled.width, xled.height, RGBWColor(255, 255, 255, 128, normalize = false))
-//        frame.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-0.jpg").toURI()))
+//        playable.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-0.jpg").toURI()))
         sequence.add(frame)
-//        frame = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))
-//        frame.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-1.jpg").toURI()))
-//        sequence.add(frame)
+//        playable = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))
+//        playable.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-1.jpg").toURI()))
+//        sequence.add(playable)
 
 //        val ins = ClassLoader.getSystemResourceAsStream("images/HelloWorld!.png")
 //        val image = ImageIO.read(ins)
 //        for (f in 0 until image.width - columns) {
-//            val frame = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))
+//            val playable = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))
 //            val imageFrame = image.getSubimage(f, 0, columns, rows)
-//            frame.setImage(imageFrame)
-//            sequence.add(frame)
+//            playable.setImage(imageFrame)
+//            sequence.add(playable)
 //        }
 
 //        File(ClassLoader.getSystemResource("images/tetris").toURI())
 //            .listFiles { file -> file.name.lowercase().endsWith(".png") }
 //            ?.forEach { file ->
 //                println("### file: ${file.name}")
-//                val frame = XledFrame(columns, rows, bytesPerLed)
-//                frame.setImage(file)
-//                sequence.add(frame)
+//                val playable = XledFrame(columns, rows, bytesPerLed)
+//                playable.setImage(file)
+//                sequence.add(playable)
 //            }
 
         val numberOfFrames = sequence.size

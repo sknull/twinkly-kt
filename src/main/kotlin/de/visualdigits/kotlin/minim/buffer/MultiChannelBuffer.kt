@@ -9,7 +9,7 @@ import kotlin.math.sqrt
  * and the setSample method of Sampler. When thinking about a buffer of audio
  * we usually consider how many *sample frames* long that buffer is. This
  * is not the same as the actual number of values stored in the buffer. Mono, or
- * single channel audio, contains one sample per sample frame, but stereo is
+ * single channel audio, contains one sample per sample playable, but stereo is
  * two, quadraphonic is four, and so forth. The buffer size of a MultiChannelBuffer
  * is how many sample frames it stores, so when retrieving and setting values
  * it is required to indicate which channel should be operated upon.

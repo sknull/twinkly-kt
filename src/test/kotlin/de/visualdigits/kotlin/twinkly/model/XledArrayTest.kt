@@ -1,20 +1,17 @@
 package de.visualdigits.kotlin.twinkly.model
 
-import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
+import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionType
-import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
-import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
-import de.visualdigits.kotlin.twinkly.model.frame.transition.TransitionDirection
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.XledArray
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.io.File
-import kotlin.random.Random
 
 class XledArrayTest {
 

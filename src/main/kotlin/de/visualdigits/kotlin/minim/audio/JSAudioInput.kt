@@ -82,7 +82,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
         // TODO: this is sort of terrible, but will do for now. would be much better
         // to dig the conversion stuff out of FloatSampleBuffer and do this more directly
         val numSamples = 1
-        // allocate enough bytes for one sample frame
+        // allocate enough bytes for one sample playable
         val bytes = ByteArray(line!!.format.frameSize)
         line!!.read(bytes, 0, bytes.size)
         buffer.setSamplesFromBytes(bytes, 0, line!!.format, 0, numSamples)

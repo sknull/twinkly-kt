@@ -3,9 +3,8 @@ package de.visualdigits.kotlin.util
 import de.visualdigits.kotlin.twinkly.apps.Oscilloscope
 import de.visualdigits.kotlin.twinkly.apps.SpectrumAnalyzer
 import de.visualdigits.kotlin.twinkly.apps.SpectrumQuad
-import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
 import org.junit.jupiter.api.Test
 
 class AudioTest {

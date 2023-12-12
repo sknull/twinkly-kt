@@ -1,11 +1,10 @@
 package de.visualdigits.kotlin.util
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.frame.XledFrame
-import de.visualdigits.kotlin.twinkly.model.frame.XledSequence
-import de.visualdigits.kotlin.twinkly.model.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.xled.XledArray
-import de.visualdigits.kotlin.twinkly.model.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Test
 import java.io.File
 import javax.imageio.ImageIO

@@ -2,7 +2,6 @@ package de.visualdigits.kotlin.minim.buffer
 
 import de.visualdigits.kotlin.minim.audio.AudioListener
 import de.visualdigits.kotlin.minim.audio.Controller
-import org.slf4j.LoggerFactory
 
 class StereoBuffer(channels: Int, bufferSize: Int, c: Controller) : AudioListener {
 

@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.minim.buffer
 
 import java.lang.Math.pow
-import java.util.Random
+import java.util.*
 import javax.sound.sampled.AudioFormat
 import kotlin.math.pow
 
@@ -471,7 +471,7 @@ object DoubleSampleTools {
      * @param input     an array of double[] arrays
      * @param channels  how many channels to use from the input array
      * @param frameSize only as optimization, the number of bytes per sample
-     * frame
+     * playable
      * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of
      * bounds
      */

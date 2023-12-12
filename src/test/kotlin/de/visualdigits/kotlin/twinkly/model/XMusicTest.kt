@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model
 
-import de.visualdigits.kotlin.twinkly.model.xmusic.XMusic
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.XMusic
 import org.junit.jupiter.api.Test
 
 class XMusicTest {
