@@ -89,7 +89,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
         // allocate enough floats for the number of channels
         val samples = DoubleArray(buffer.channelCount)
         for (i in samples.indices) {
-            samples[i] = buffer.getChannel(i)?.get(0)?:0.0
+            samples[i] = buffer.getChannel(i).get(0)
         }
         return samples
     }

@@ -8,23 +8,12 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
 class XledArray(
-    val xLedDevices: List<XLedDevice>,
-    val deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT
+    val xLedDevices: List<XLedDevice>
 ) : XLed {
 
-    override val width: Int
-    override val height: Int
+    override val width: Int = xLedDevices.sumOf { it.width }
+    override val height: Int = xLedDevices.maxOfOrNull { it.height } ?: 0
     override val bytesPerLed: Int = xLedDevices.firstOrNull()?.bytesPerLed?:0
-
-    init {
-        if (deviceOrigin.portrait()) {
-            width = xLedDevices.sumOf { it.width }
-            height = xLedDevices.maxOfOrNull { it.height } ?: 0
-        } else {
-            width = xLedDevices.sumOf { it.height }
-            height = xLedDevices.maxOfOrNull { it.width } ?: 0
-        }
-    }
 
     override fun logout() {
         xLedDevices.forEach { it.logout() }

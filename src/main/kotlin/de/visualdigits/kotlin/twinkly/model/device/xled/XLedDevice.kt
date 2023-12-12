@@ -40,7 +40,10 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.min
 
-class XLedDevice(host: String): de.visualdigits.kotlin.twinkly.model.device.xled.XLed, Session(
+class XLedDevice(
+    host: String,
+    val deviceOrigin: DeviceOrigin
+): de.visualdigits.kotlin.twinkly.model.device.xled.XLed, Session(
     host,
     "http://$host/xled/v1"
 ) {
@@ -60,8 +63,8 @@ class XLedDevice(host: String): de.visualdigits.kotlin.twinkly.model.device.xled
             log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
             deviceInfo = deviceInfo()
             layout = layout()
-            width = layout.columns
-            height = layout.rows
+            width = if (deviceOrigin.isPortrait()) layout.columns else layout.rows
+            height = if (deviceOrigin.isPortrait()) layout.rows else layout.columns
             bytesPerLed = deviceInfo.bytesPerLed!!
         } else {
             deviceInfo = DeviceInfo()
@@ -363,8 +366,14 @@ class XLedDevice(host: String): de.visualdigits.kotlin.twinkly.model.device.xled
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {
+        val translatedFrame = when (deviceOrigin) {
+            DeviceOrigin.TOP_LEFT -> frame
+            DeviceOrigin.TOP_RIGHT -> frame.rotateLeft()
+            DeviceOrigin.BOTTOM_LEFT -> frame.rotateRight()
+            DeviceOrigin.BOTTOM_RIGHT -> frame.rotate180()
+        }
         UdpClient(host, UDP_PORT_STREAMING).use { udpClient ->
-            frame.toByteArray(bytesPerLed)
+            translatedFrame.toByteArray(bytesPerLed)
                 .toList()
                 .chunked(900)
                 .mapIndexed { index, value ->

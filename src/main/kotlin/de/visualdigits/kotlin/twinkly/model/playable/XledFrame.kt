@@ -4,6 +4,7 @@ import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.util.FontUtil
@@ -151,6 +152,7 @@ open class XledFrame(
         verbose: Boolean
     ) {
         if (verbose) log.info("\n$this")
+        xled.mode(DeviceMode.rt)
         val n = max(1, frameDelay / 5000)
         var loopCount = loop
         while (loopCount == -1 || loopCount > 0) {
@@ -317,6 +319,36 @@ open class XledFrame(
         }
         replaceSubFrame(frame, 0, height - frame.height)
         return this
+    }
+
+    fun rotateRight(): XledFrame {
+        val newFrame = XledFrame(height, width, initialColor, frameDelay)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[y][width - x - 1] = frame[x][y]
+            }
+        }
+        return newFrame
+    }
+
+    fun rotateLeft(): XledFrame {
+        val newFrame = XledFrame(height, width, initialColor, frameDelay)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[height - y - 1][x] = frame[x][y]
+            }
+        }
+        return newFrame
+    }
+
+    fun rotate180(): XledFrame {
+        val newFrame = XledFrame(width, height, initialColor, frameDelay)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[width - x - 1][height - y - 1] = frame[x][y]
+            }
+        }
+        return newFrame
     }
 
     fun fade(other: XledFrame, factor: Double, blendMode: BlendMode = BlendMode.AVERAGE): XledFrame {

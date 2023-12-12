@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.games.tetris
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 
-class BlockS() : TetrisBlock(
+class BlockS : TetrisBlock(
     width = 3,
     height = 2,
     initialColor = RGBColor(0, 200, 0),

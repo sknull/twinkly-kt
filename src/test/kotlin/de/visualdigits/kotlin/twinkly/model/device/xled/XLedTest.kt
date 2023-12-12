@@ -16,7 +16,7 @@ import kotlin.random.Random.Default.nextInt
 
 class XLedTest {
 
-    private val xled = XLedDevice("192.168.178.35")
+    private val xled = XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT)
 
     @Test
     fun testDeviceInfo() {

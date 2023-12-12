@@ -11,8 +11,8 @@ class Scene(
 
     companion object {
 
-        fun unmarshall(file: File): Scene = JsonBaseObject.unmarshall<Scene>(file)
+        fun unmarshall(file: File): Scene = unmarshall<Scene>(file)
 
-        fun unmarshall(json: String): Scene = JsonBaseObject.unmarshall<Scene>(json)
+        fun unmarshall(json: String): Scene = unmarshall<Scene>(json)
     }
 }

@@ -8,11 +8,11 @@ enum class DeviceOrigin {
     BOTTOM_RIGHT // for a curtain 210 this would be portrait upside down
     ;
 
-    fun portrait(): Boolean {
+    fun isPortrait(): Boolean {
         return this == TOP_LEFT || this == BOTTOM_RIGHT
     }
 
-    fun landscape(): Boolean {
+    fun isLandscape(): Boolean {
         return this == TOP_RIGHT || this == BOTTOM_LEFT
     }
 }

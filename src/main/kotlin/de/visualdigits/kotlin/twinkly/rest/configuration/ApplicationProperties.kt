@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "application")
 class ApplicationProperties {
 
-    var devices: Map<String, String> = mapOf()
+    var devices: Map<String, XledDeviceConfiguration> = mapOf()
 }

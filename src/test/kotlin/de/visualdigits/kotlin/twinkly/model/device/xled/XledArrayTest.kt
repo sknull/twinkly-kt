@@ -14,8 +14,8 @@ import java.io.File
 class XledArrayTest {
 
     private val xledArray = XledArray(listOf(
-        XLedDevice("192.168.178.35"),
-        XLedDevice("192.168.178.52")
+        XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
+        XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
     ))
 
     @Test
@@ -215,6 +215,25 @@ class XledArrayTest {
             transitionBlendMode = BlendMode.REPLACE,
             transitionDuration = 1000
         )
+    }
+
+    @Test
+    fun testLandscape() {
+        val xledArrayLandscape = XledArray(
+            xLedDevices = listOf(
+                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_RIGHT),
+                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_RIGHT)
+            )
+        )
+        val canvas = XledFrame(xledArrayLandscape.width, xledArrayLandscape.height, RGBWColor(255,0, 0, 0))
+        val green = XledFrame(2, xledArrayLandscape.height, RGBWColor(0,255, 0, 0))
+        canvas.replaceSubFrame(green, 0, 0)
+        val blue = XledFrame(2, xledArrayLandscape.height, RGBWColor(0,0, 255, 0))
+        canvas.replaceSubFrame(blue, xledArrayLandscape.width - 2, 0)
+
+        println(canvas)
+
+        canvas.play(xledArrayLandscape)
     }
 
     @Test
