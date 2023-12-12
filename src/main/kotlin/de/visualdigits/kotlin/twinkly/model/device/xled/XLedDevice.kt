@@ -43,7 +43,7 @@ import kotlin.math.min
 class XLedDevice(
     host: String,
     val deviceOrigin: DeviceOrigin
-): de.visualdigits.kotlin.twinkly.model.device.xled.XLed, Session(
+): XLed, Session(
     host,
     "http://$host/xled/v1"
 ) {
@@ -81,15 +81,6 @@ class XLedDevice(
             tokenExpires = System.currentTimeMillis() + login() - 5000
             log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
         }
-    }
-
-    private fun formatEpoch(epoch: Long): String {
-        return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
-            OffsetDateTime.ofInstant(
-                Instant.ofEpochMilli(epoch),
-                ZoneId.systemDefault()
-            )
-        )
     }
 
     override fun powerOn() {

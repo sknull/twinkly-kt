@@ -37,24 +37,24 @@ class SpectrumQuad(
         xled.mode(DeviceMode.rt)
         while(true) {
             beat.detect(player.mix)
+
             val kick = beat.isKick()
             val hiHat = beat.isHiHat()
             val snare = beat.isSnare()
 
             val frame = XledFrame(xled.width, xled.height, RGBWColor(0, 0, 0, 0))
             if (kick) {
-                val kickFrame = XledFrame(5, 5, colorMeterKick)
-                frame.replaceSubFrame(kickFrame, 2, 5)
+                val kickFrame = XledFrame(3, 5, colorMeterKick)
+                frame.replaceSubFrame(kickFrame, 6, 5)
             }
             if (hiHat) {
-                val hiHatkFrame = XledFrame(5, 5, colorMeterHiHat)
-                frame.replaceSubFrame(hiHatkFrame, 8, 5)
+                val hiHatkFrame = XledFrame(3, 5, colorMeterHiHat)
+                frame.replaceSubFrame(hiHatkFrame, 10, 5)
             }
             if (snare) {
-                val snareFrame = XledFrame(5, 5, colorMeterSnare)
+                val snareFrame = XledFrame(3, 5, colorMeterSnare)
                 frame.replaceSubFrame(snareFrame, 14, 5)
             }
-
             xled.showRealTimeFrame(frame)
             Thread.sleep(10)
         }

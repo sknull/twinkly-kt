@@ -9,6 +9,10 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.random.Random
 
@@ -135,5 +139,14 @@ abstract class Session(
             String::class -> String(response) as T
             else -> mapper.readValue(response, T::class.java)
         }
+    }
+
+    protected fun formatEpoch(epoch: Long): String {
+        return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
+            OffsetDateTime.ofInstant(
+                Instant.ofEpochMilli(epoch),
+                ZoneId.systemDefault()
+            )
+        )
     }
 }

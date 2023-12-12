@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.XMusic
 import org.junit.jupiter.api.Test
 
 class XMusicTest {
@@ -10,6 +9,9 @@ class XMusicTest {
 
     @Test
     fun testMusicStats() {
+        println(xmusic.musicMode())
+        println(xmusic.musicMicEnabled())
+        println(xmusic.musicConfig())
         while(true) {
             println(xmusic.musicStats())
             Thread.sleep(100)
