@@ -4,6 +4,7 @@ import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.minim.analysis.BeatDetect
 import de.visualdigits.kotlin.minim.analysis.DetectMode
 import de.visualdigits.kotlin.minim.analysis.FFT
+import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
@@ -35,9 +36,10 @@ class SpectrumAnalyzer(
 
     fun run() {
         val minim = Minim()
-        val player = minim.getLineIn()!!
+        val player = minim.getLineIn(AudioInputType.MONO)!!
         val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
         val fft = FFT(player.bufferSize(), player.sampleRate())
+        fft.linAverages(xled.width)
         val spectrumSize = fft.specSize() / 16
         val stepSize = ceil(spectrumSize.toDouble() / xled.width).toInt()
         val maxAmplitudes = MutableList(xled.width) { 0 }
@@ -46,31 +48,31 @@ class SpectrumAnalyzer(
         var t = 0
         while(true) {
             fft.forward(player.mix)
-            beat.detect(player.mix)
-            val kick = beat.isKick()
-            val hiHat = beat.isHiHat()
-            val snare = beat.isSnare()
-            val meterColor = if (kick) {
-                colorMeterKick
-            }
-            else if (hiHat) {
-                colorMeterHiHat
-            }
-            else if (snare) {
-                colorMeterSnare
-            }
-            else {
-                colorMeter
-            }
-            val maxColor = if (kick) {
-                colorMaxKick
-            } else if (hiHat) {
-                    colorMaxHiHat
-            } else if (snare) {
-                    colorMaxSnare
-            } else {
-                colorMax
-            }
+//            beat.detect(player.mix)
+//            val kick = beat.isKick()
+//            val hiHat = beat.isHiHat()
+//            val snare = beat.isSnare()
+//            val meterColor = if (kick) {
+//                colorMeterKick
+//            }
+//            else if (hiHat) {
+//                colorMeterHiHat
+//            }
+//            else if (snare) {
+//                colorMeterSnare
+//            }
+//            else {
+//                colorMeter
+//            }
+//            val maxColor = if (kick) {
+//                colorMaxKick
+//            } else if (hiHat) {
+//                    colorMaxHiHat
+//            } else if (snare) {
+//                    colorMaxSnare
+//            } else {
+//                colorMax
+//            }
             val frame = XledFrame(xled.width, xled.height)
             val values = mutableListOf<Float>()
             for ((x, i) in (0 until spectrumSize step stepSize).withIndex()) {
@@ -87,15 +89,15 @@ class SpectrumAnalyzer(
                     maxAmplitudes[x]
                 }
                 for (y in xled.height - amplitude until xled.height) {
-                    frame[x][y] = meterColor
+                    frame[x][y] = colorMeter
                 }
             }
             for (x in 0 until xled.width) {
                 val y = max(0, xled.height - maxAmplitudes[x] - 1)
-                frame[x][y] = maxColor
+                frame[x][y] = colorMax
             }
             xled.showRealTimeFrame(frame)
-            Thread.sleep(20)
+            Thread.sleep(5)
         }
     }
 }

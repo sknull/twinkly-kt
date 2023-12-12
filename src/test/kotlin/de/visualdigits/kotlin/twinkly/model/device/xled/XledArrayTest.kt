@@ -29,6 +29,20 @@ class XledArrayTest {
     }
 
     @Test
+    fun testDrawLine() {
+        val canvas = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(0, 0, 0)
+        )
+
+        canvas.drawLine(1, 2, 18,10, RGBColor(255, 0, 0))
+        canvas.drawLine(17, 3, 4,20, RGBColor(0, 255, 0))
+
+        canvas.play(xledArray)
+    }
+
+    @Test
     fun testWhites() {
         val frame = XledFrame(
             width = xledArray.width,
@@ -36,7 +50,6 @@ class XledArrayTest {
             initialColor = RGBColor(255, 255, 255)
         )
 
-        xledArray.mode(DeviceMode.rt)
         frame.play(xledArray)
     }
 
@@ -77,14 +90,13 @@ class XledArrayTest {
 
     @Test
     fun testFade() {
-        val frame = XledFrame(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
-
         xledArray.mode(DeviceMode.rt)
-        frame.play(xledArray)
-        Thread.sleep(1000)
-
-        runBlocking {
-            frame.fade(xledArray, RGBColor(255,255,0), 2000)
+        var frame = XledFrame(xledArray.width, xledArray.height, RGBColor(255, 0, 0))
+        var black = XledFrame(xledArray.width, xledArray.height, RGBColor(0, 0, 0))
+        for (i in 0 .. 100) {
+            xledArray.showRealTimeFrame(frame)
+            frame = frame.fade(black, 1.0 / 100 * i)
+            Thread.sleep(100)
         }
     }
 

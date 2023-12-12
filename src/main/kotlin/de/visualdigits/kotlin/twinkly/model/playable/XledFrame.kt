@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import javax.imageio.ImageIO
+import kotlin.math.abs
 import kotlin.math.max
 
 open class XledFrame(
@@ -349,6 +350,66 @@ open class XledFrame(
             }
         }
         return newFrame
+    }
+
+    fun drawLine(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
+        // see also here: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+        if (abs(y1 - y0) < abs(x1 - x0)) {
+            if (x0 > x1) {
+                drawLineLow(x1, y1, x0, y0, color)
+            } else {
+                drawLineLow(x0, y0, x1, y1, color)
+            }
+        } else {
+            if (y0 > y1) {
+                drawLineHigh(x1, y1, x0, y0, color)
+            } else {
+                drawLineHigh(x0, y0, x1, y1, color)
+            }
+        }
+        return this
+    }
+
+    private fun drawLineLow(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>) {
+        val dx = x1 - x0
+        var dy = y1 - y0
+        var yi = 1
+        if (dy < 0) {
+            yi = -1
+            dy = -dy
+        }
+        var D = 2 * dy - dx
+        var y = y0
+        for (x in x0 .. x1) {
+            frame[x][y] = color.clone()
+            if (D > 0) {
+                y += yi
+                D += 2 * (dy - dx)
+            } else {
+                D += 2 * dy
+            }
+        }
+    }
+
+    private fun drawLineHigh(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>) {
+        var dx = x1 - x0
+        val dy = y1 - y0
+        var xi = 1
+        if (dx < 0) {
+            xi = -1
+            dx = -dx
+        }
+        var D = 2 * dx - dy
+        var x = x0
+        for (y in y0 .. y1) {
+            frame[x][y] = color.clone()
+            if (D > 0) {
+                x += xi
+                D += 2 * (dx - dy)
+            } else {
+                D += 2 * dx
+            }
+        }
     }
 
     fun fade(other: XledFrame, factor: Double, blendMode: BlendMode = BlendMode.AVERAGE): XledFrame {

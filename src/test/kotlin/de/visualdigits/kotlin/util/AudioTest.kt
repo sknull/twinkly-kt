@@ -3,6 +3,7 @@ package de.visualdigits.kotlin.util
 import de.visualdigits.kotlin.twinkly.apps.Oscilloscope
 import de.visualdigits.kotlin.twinkly.apps.SpectrumAnalyzer
 import de.visualdigits.kotlin.twinkly.apps.SpectrumQuad
+import de.visualdigits.kotlin.twinkly.apps.Visualizer
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
@@ -33,9 +34,17 @@ class AudioTest {
 
     @Test
     fun testOscilloscope() {
-        val analyzer = Oscilloscope(
+        val oscilloscope = Oscilloscope(
             xled = xledArray
         )
-        analyzer.run()
+        oscilloscope.run()
+    }
+
+    @Test
+    fun testVisualizer() {
+        val visualizer = Visualizer(
+            xled = xledArray
+        )
+        visualizer.run()
     }
 }
