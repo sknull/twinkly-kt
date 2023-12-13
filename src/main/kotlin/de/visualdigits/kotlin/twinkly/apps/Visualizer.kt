@@ -9,7 +9,6 @@ import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
-import org.apache.coyote.http11.Constants
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
@@ -33,66 +32,67 @@ class Visualizer(
 ) {
 
     fun run() {
-        val random = Random(System.currentTimeMillis())
-        val minim = Minim()
-        val player = minim.getLineIn(AudioInputType.MONO)!!
-        val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
-        val fft = FFT(player.bufferSize(), player.sampleRate())
-        player.disableMonitoring()
         xled.mode(DeviceMode.rt)
 
-        val color = RGBColor(random.nextInt(0, 256), random.nextInt(0, 256), random.nextInt(0, 256))
-        val black = RGBColor(0, 0, 0)
+        val centerX = xled.width / 2
+        val centerY = xled.height / 2
+        val numberOfPoints = 20
+        val rMin = 3
 
-        var frame = XledFrame(xled.width, xled.height)
-        val frameBlack = XledFrame(xled.width, xled.height)
+        val random = Random(System.currentTimeMillis())
 
-        var f = 0.0
-        var f2 = 0.0
-        var c: RGBColor = RGBColor(0, 0, 0)
+        val minim = Minim()
+
+        val player = minim.getLineIn(AudioInputType.MONO)!!
+        player.disableMonitoring()
+
+        val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
+
+        val fft = FFT(player.bufferSize(), player.sampleRate())
+        val spectrumSize = fft.specSize() / 8
+
+
+        var frame = XledFrame(xled.width, xled.height, RGBColor(0, 0 , 0))
+        val frameBlack = XledFrame(xled.width, xled.height, RGBColor(0, 0 , 0))
+
+        var f = 1.0
         while(true) {
             fft.forward(player.mix)
-            beat.detect(player.mix)
-            val kick = beat.isKick()
-            val snare = beat.isSnare()
-            val hiHat = beat.isHiHat()
-            if (kick) {
-                c = c.fade(RGBColor(255, 0, 0), f, BlendMode.AVERAGE)
+            val st = spectrumSize / 16
+            val band = (0 until spectrumSize step st).map { b ->
+                (0 until st).map { fft.getBand(b + it).toDouble() / 255.0 }.sum() / st
             }
 
-            if (snare) {
-                c = c.fade(RGBColor(0, 255, 0), f, BlendMode.AVERAGE)
-            }
-
-            if (hiHat) {
-                c = c.fade(RGBColor(0, 0, 255), f, BlendMode.AVERAGE)
-            }
+            var c = RGBColor(0, 0, 0)
+            c = c.fade(RGBColor(255, 0, 0), band[0], BlendMode.AVERAGE)
+            c = c.fade(RGBColor(0, 255, 0), band[1], BlendMode.AVERAGE)
+            c = c.fade(RGBColor(0, 0, 255), band[2], BlendMode.AVERAGE)
 
             var a = 0.0
-            val angle = 2 * PI / 200
-            val s = player.bufferSize() / 200
+            val angle = 2 * PI / numberOfPoints
+            val s = player.bufferSize() / numberOfPoints
             for (i in 0 until player.bufferSize() - s step s ) {
-                val x = (10 + cos(a) * (4 * player.mix[i] + 6)).roundToInt()
-                val y = (10 + sin(a) * (4 * player.mix[i] + 6)).roundToInt()
-//                val x2 = (10 + cos(Constants.a + angle) * (4 * player.mix[i + s] + 6)).roundToInt()
-//                val y2 = (10 + sin(Constants.a + angle) * (4 * player.mix[i + s] + 6)).roundToInt()
+                val vu = player.mix[i]
+                val rx = rMin + (xled.width - rMin) * vu
+                val ry = rMin + (xled.height - rMin) * vu
+                val x = (centerX + cos(a) * rx).roundToInt()
+                val y = (centerY + sin(a) * ry).roundToInt()
 
-                frame[max(0, min(xled.width - 1, x))][max(0, min(xled.height - 1, y))] = c.clone()
-//                frame.drawLine(x, y, x2, y2, c)
-//println("$x/$y - $x2/$y2")
+                frame[max(0, min(xled.width - 1, x))][max(0, min(xled.height - 1, y))] = c
                 a += angle
             }
 
             xled.showRealTimeFrame(frame)
-            f += 0.1
-            if (f > 1.0) {
-                f = 0.0
+            f -= 0.001
+            if (f <= 0.0) {
+                f = 1.0
             }
-            f2 += 0.001
-            if (f2 > 1.0) {
-                f2 = 0.0
+            for (y in 0 until xled.height) {
+                for (x in 0 until xled.width) {
+                    val color = frame[x][y] as RGBColor
+                    frame[x][y] = RGBColor((color.red * f).roundToInt(), (color.green * f).roundToInt(), (color.blue * f).roundToInt())
+                }
             }
-            frame = frame.fade(frameBlack, f2)
             Thread.sleep(10)
         }
     }

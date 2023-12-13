@@ -326,7 +326,7 @@ open class XledFrame(
         val newFrame = XledFrame(height, width, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[y][width - x - 1] = frame[x][y]
+                newFrame[height - y - 1][x] = frame[x][y]
             }
         }
         return newFrame
@@ -336,7 +336,7 @@ open class XledFrame(
         val newFrame = XledFrame(height, width, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[height - y - 1][x] = frame[x][y]
+                newFrame[y][width - x - 1] = frame[x][y]
             }
         }
         return newFrame

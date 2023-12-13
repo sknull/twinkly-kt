@@ -93,9 +93,14 @@ class XledArrayTest {
         xledArray.mode(DeviceMode.rt)
         var frame = XledFrame(xledArray.width, xledArray.height, RGBColor(255, 0, 0))
         var black = XledFrame(xledArray.width, xledArray.height, RGBColor(0, 0, 0))
-        for (i in 0 .. 100) {
+        var f = 0.0
+        for (i in 0 .. 1000) {
             xledArray.showRealTimeFrame(frame)
             frame = frame.fade(black, 1.0 / 100 * i)
+            f += 0.01
+            if (f > 1.0) {
+                f = 0.0
+            }
             Thread.sleep(100)
         }
     }

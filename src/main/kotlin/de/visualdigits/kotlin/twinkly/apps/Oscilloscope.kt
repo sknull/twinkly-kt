@@ -25,13 +25,17 @@ class Oscilloscope(
 ) {
 
     fun run() {
-        val minim = Minim()
-        val player = minim.getLineIn(AudioInputType.MONO)!!
-        val beat = BeatDetect()
-        player.disableMonitoring()
         xled.mode(DeviceMode.rt)
+
+        val minim = Minim()
+
+        val player = minim.getLineIn(AudioInputType.MONO)!!
+        player.disableMonitoring()
+
         val bufferSize = player.bufferSize()
         val stepSize = ceil(bufferSize.toDouble() / xled.width).toInt()
+
+        val beat = BeatDetect()
 
         val w = xled.width
         val h = xled.height
