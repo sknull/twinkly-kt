@@ -545,12 +545,7 @@ class AudioInput(
     }
 
     override fun close() {
-        log.debug("Closing $this")
         out.close()
-
-        // if we have a parent, tell them to stop tracking us
-        // so that we can get garbage collected
-        parent?.removeSource(this)
         mStream.close()
     }
 

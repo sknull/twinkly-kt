@@ -18,13 +18,6 @@ class Minim {
 
     private val log = LoggerFactory.getLogger(Minim::class.java)
 
-    // we keep track of all the resources we are asked to create
-    // so that when shutting down the library, users can simply call stop(),
-    // and don't have to call close() on all of the things they've created.
-    // in the event that they *do* call close() on resource we've created,
-    // it will be removed from this list.
-    private val sources = ArrayList<AudioInput>()
-
     /**
      * An AudioInput is used when you want to monitor the active audio input
      * of the computer. On a laptop, for instance, this will typically be
@@ -77,12 +70,6 @@ class Minim {
             }
             input = AudioInput(stream, out)
         }
-        if (input != null) {
-            sources.add(input)
-        }
-        else {
-            log.error("Minim.getLineIn: attempt failed, could not secure an AudioInput.")
-        }
         return input
     }
 
@@ -115,10 +102,6 @@ class Minim {
         return getLineIn(type, bufferSize, sampleRate, 16)
     }
 
-    fun removeSource(s: AudioInput?) {
-        sources.remove(s)
-    }
-
     private fun getAudioInput(
         type: AudioInputType, bufferSize: Int,
         sampleRate: Float, bitDepth: Int
@@ -139,13 +122,6 @@ class Minim {
             try {
                 line = AudioSystem.getLine(dataLineInfo) as TargetDataLine
                 line.open(format, bufferSize * format.frameSize)
-                log.debug(
-                    """
-                    TargetDataLine buffer size is ${line.bufferSize}
-                    TargetDataLine format is ${line.format}
-                    TargetDataLine info is ${line.lineInfo}
-                    """.trimIndent()
-                )
             } catch (e: Exception) {
                 log.error("Error acquiring TargetDataLine: " + e.message)
             }
@@ -172,17 +148,7 @@ class Minim {
         if (AudioSystem.isLineSupported(info)) {
             try {
                 line = AudioSystem.getLine(info) as SourceDataLine
-                // remember that time you spent, like, an entire afternoon fussing
-                // with this buffer size to try to get the latency decent on Linux
-                // Yah, don't fuss with this anymore, ok
                 line.open(format, bufferSize * format.frameSize * 4)
-                if (line.isOpen) {
-                    log.debug(
-                        """SourceDataLine is ${line.javaClass}
-Buffer size is ${line.bufferSize} bytes.
-Format is ${line.format}."""
-                    )
-                }
             } catch (e: java.lang.Exception) {
                 log.error("Couldn't open the line: " + e.message)
             }
