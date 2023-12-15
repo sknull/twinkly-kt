@@ -283,58 +283,30 @@ class AudioInput(
      *
      * @return the current mute state
      */
-    fun isMuted(): Boolean {
+    fun isMuted(): Boolean? {
         return getBooleanValue(BooleanControl.Type.MUTE)
     }
 
-    private fun getBooleanValue(type: BooleanControl.Type): Boolean {
-        var v = false
-        if (hasControl(type)) {
-            val c = getControl(type) as BooleanControl?
-            v = c!!.value
-        }
-        else {
-            log.error("$type is not supported.")
-        }
-        return v
+    private fun getBooleanValue(type: BooleanControl.Type): Boolean? {
+        return getControl(type)?.let { (it as BooleanControl).value }
     }
 
-    private fun setBooleanValue(type: BooleanControl.Type, v: Boolean) {
-        if (hasControl(type)) {
-            val c = getControl(type) as BooleanControl?
-            c!!.value = v
-        }
-        else {
-            log.error("$type is not supported.")
+    private fun setBooleanValue(type: BooleanControl.Type, value: Boolean) {
+        getControl(type)?.let { control ->
+            (control as BooleanControl).value = value
         }
     }
 
-    private fun getFloatValue(type: FloatControl.Type): Float {
-        var v = 0f
-        if (hasControl(type)) {
-            val c = getControl(type) as FloatControl?
-            v = c!!.value
-        }
-        else {
-            log.error("$type is not supported.")
-        }
-        return v
+    private fun getFloatValue(type: FloatControl.Type): Float? {
+        return getControl(type)?.let { (it as FloatControl).value }
     }
 
-    private fun setFloatValue(type: FloatControl.Type, v: Float) {
-        var v = v
-        if (hasControl(type)) {
-            val c = getControl(type) as FloatControl?
-            if (v > c!!.maximum) {
-                v = c.maximum
+    private fun setFloatValue(type: FloatControl.Type, value: Float) {
+        getControl(type)?.let { control ->
+            val fc = (control as FloatControl)
+            if (value >= fc.minimum && value <= fc.maximum) {
+                fc.value = value
             }
-            else if (v < c.minimum) {
-                v = c.minimum
-            }
-            c.setValue(v)
-        }
-        else {
-            log.error("$type is not supported.")
         }
     }
 
@@ -346,7 +318,7 @@ class AudioInput(
      * @return the current volume or zero if a volume control is unavailable
      * @shortdesc Returns the current volume.
      *      *      */
-    fun getVolume(): Float {
+    fun getVolume(): Float? {
         return getFloatValue(FloatControl.Type.VOLUME)
     }
 
@@ -392,7 +364,7 @@ class AudioInput(
      * the gain is expressed in decibels.
      * @shortdesc Returns the current gain.
      *      *      *      */
-    fun getGain(): Float {
+    fun getGain(): Float? {
         return getFloatValue(FloatControl.Type.MASTER_GAIN)
     }
 
@@ -432,7 +404,7 @@ class AudioInput(
      * @return float: the current balance or zero if a balance control is unavailable
      * @shortdesc Returns the current balance.
      *      *      *      */
-    fun getBalance(): Float {
+    fun getBalance(): Float? {
         return getFloatValue(FloatControl.Type.BALANCE)
     }
 
@@ -473,7 +445,7 @@ class AudioInput(
      * @return float: the current pan or zero if a pan control is unavailable
      * @shortdesc Returns the current pan.
      *      *      *      */
-    fun getPan(): Float {
+    fun getPan(): Float? {
         return getFloatValue(FloatControl.Type.PAN)
     }
 

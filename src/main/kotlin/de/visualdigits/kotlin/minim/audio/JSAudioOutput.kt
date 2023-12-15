@@ -24,7 +24,7 @@ class JSAudioOutput(
     private val floatSampleBuffer: FloatSampleBuffer = FloatSampleBuffer(
         sampleCount = bufferSize,
         channelCount = audioFormat.channels,
-        sampleRate = audioFormat.sampleRate.toFloat()
+        sampleRate = audioFormat.sampleRate
     )
     private var line: SourceDataLine? = sdl
     private val outBytes: ByteArray = ByteArray(floatSampleBuffer.getByteArrayBufferSize(audioFormat))

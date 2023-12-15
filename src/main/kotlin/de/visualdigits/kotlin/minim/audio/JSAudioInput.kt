@@ -25,7 +25,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResour
         buffer = FloatSampleBuffer(
             sampleCount = bufferSize,
             channelCount = tdl.format.channels,
-            sampleRate = tdl.format.sampleRate.toFloat()
+            sampleRate = tdl.format.sampleRate
         )
         finished = false
         val byteBufferSize = buffer.getByteArrayBufferSize(line!!.format)
@@ -45,10 +45,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResour
             )
             // apply effects, if any, and broadcast the result
             // to all listeners
-            try {
-                sleep(10)
-            } catch (e: InterruptedException) {
-            }
+            sleep(10)
         }
         // we are done, clean up the line
         line!!.flush()
@@ -86,7 +83,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResour
         val convert = FloatSampleBuffer(
             sampleCount = numSamples,
             channelCount = numChannels,
-            sampleRate = sampleRate.toFloat()
+            sampleRate = sampleRate
         )
         // allocate enough bytes for the size of this buffer
         val bytes = ByteArray(convert.getByteArrayBufferSize(line!!.format))
