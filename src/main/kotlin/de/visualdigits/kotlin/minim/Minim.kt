@@ -65,7 +65,7 @@ class Minim {
      * @param bitDepth   int: the desired bit depth (typically 16)
      * @return an `AudioInput` with the requested attributes
      */
-    fun getLineIn(type: AudioInputType, bufferSize: Int, sampleRate: Float, bitDepth: Int): AudioInput? {
+    private fun getLineIn(type: AudioInputType, bufferSize: Int, sampleRate: Float, bitDepth: Int): AudioInput? {
         var input: AudioInput? = null
         val stream: AudioStream? = getAudioInput(type, bufferSize, sampleRate, bitDepth)
         if (stream != null) {

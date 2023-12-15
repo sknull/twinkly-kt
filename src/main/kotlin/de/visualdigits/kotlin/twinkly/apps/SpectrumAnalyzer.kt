@@ -36,6 +36,8 @@ class SpectrumAnalyzer(
         player.disableMonitoring()
 
         val fft = FFT(player.bufferSize(), player.sampleRate())
+        val offsetX = 3
+        fft.linAverages(xled.width / offsetX)
         val beat = BeatDetect(DetectMode.FREQ_ENERGY)
 
         val spectrumSize = fft.specSize() / 2
@@ -43,14 +45,15 @@ class SpectrumAnalyzer(
         val maxAmplitudes = MutableList(xled.width) { 0 }
         var t = 0
         while(true) {
-            fft.forward(player.mix)
-            beat.detect(player.mix)
-            val color = if (beat.isKick()) colorMax else colorMeter
+            val buffer = player.mix
+            fft.forward(buffer)
+            beat.detect(buffer)
+            val color = colorMeter//if (beat.isKick()) colorMax else colorMeter
             val frame = XledFrame(xled.width, xled.height)
 
             var b = 0
-            for (x in 0 until xled.width step 6) {
-                val vu = ((0 until s).map { fft.getBand(b + it).toDouble() / 64.0 }.sum() / s * xled.height).roundToInt()
+            for (x in 0 until xled.width step offsetX) {
+                val vu = (fft.getAvg(b++) * xled.height).roundToInt()
                 val vy = max(0, xled.height - 1 - vu)
 
                 for (y in min(xled.height - 1, vy) until xled.height) {
@@ -67,8 +70,6 @@ class SpectrumAnalyzer(
 //                }
 //                frame[x][vy] = colorMax
 //                frame[x + 1][vy] = colorMax
-
-                b += s
             }
 
             xled.showRealTimeFrame(frame)

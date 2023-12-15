@@ -68,6 +68,11 @@
       <version>1.10.0</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.imgscalr</groupId>
       <artifactId>imgscalr-lib</artifactId>
       <version>4.2</version>
@@ -77,11 +82,6 @@
       <artifactId>animated-gif-lib</artifactId>
       <version>1.4</version>
     </dependency>
-    <!--dependency>
-      <groupId>de.visualdigits</groupId>
-      <artifactId>mini-minim</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency-->
 
     <!-- springboot -->
     <dependency>
@@ -142,34 +142,6 @@
       <version>${version.jackson}</version>
     </dependency>
 
-    <!-- exif and iptc data -->
-    <dependency> <!-- https://github.com/drewnoakes/metadata-extractor -->
-      <groupId>com.drewnoakes</groupId>
-      <artifactId>metadata-extractor</artifactId>
-      <version>2.18.0</version>
-    </dependency>
-
-    <!-- thumbnails -->
-    <dependency>
-      <groupId>net.coobird</groupId>
-      <artifactId>thumbnailator</artifactId>
-      <version>0.4.20</version>
-    </dependency>
-
-    <!-- markdown rocessing -->
-    <dependency>
-      <groupId>com.github.rjeschke</groupId>
-      <artifactId>txtmark</artifactId>
-      <version>0.13</version>
-    </dependency>
-
-    <!-- mime types -->
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-
     <!-- Crypto stuff -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -188,7 +160,7 @@
     </dependency>
 
     <!-- Ajax -->
-    <dependency>
+    <!--dependency>
       <groupId>org.webjars</groupId>
       <artifactId>jquery</artifactId>
       <version>3.6.1</version>
@@ -197,7 +169,7 @@
       <groupId>org.webjars</groupId>
       <artifactId>bootstrap</artifactId>
       <version>5.2.3</version>
-    </dependency>
+    </dependency-->
 
     <!-- testing -->
     <dependency>
@@ -209,6 +181,7 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>5.10.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

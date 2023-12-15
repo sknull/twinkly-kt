@@ -55,6 +55,6 @@ interface Recordable {
      *
      * @return the sample rate of the audio
      */
-    fun sampleRate(): Float
+    fun sampleRate(): Double
 }
 

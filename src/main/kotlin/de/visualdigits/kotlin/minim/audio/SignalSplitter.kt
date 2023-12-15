@@ -102,8 +102,8 @@ class SignalSplitter(
      *
      * @return the sample rate of the audio
      */
-    override fun sampleRate(): Float {
-        return f.sampleRate
+    override fun sampleRate(): Double {
+        return f.sampleRate.toDouble()
     }
 }
 

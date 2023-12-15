@@ -154,8 +154,8 @@ open class AudioSource(val stream: AudioOutput) : Controller(stream.getControls(
      *
      * @return the sample rate of this sound object.
      */
-    override fun sampleRate(): Float {
-        return stream.getFormat().sampleRate
+    override fun sampleRate(): Double {
+        return stream.getFormat().sampleRate.toDouble()
     }
 }
 
