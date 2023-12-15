@@ -3,8 +3,7 @@ package de.visualdigits.kotlin.minim
 import de.visualdigits.kotlin.minim.audio.AudioInput
 import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.minim.audio.AudioOutput
-import de.visualdigits.kotlin.minim.audio.AudioSource
-import de.visualdigits.kotlin.minim.audio.AudioStream
+import de.visualdigits.kotlin.minim.audio.AudioResource
 import de.visualdigits.kotlin.minim.audio.BasicAudioOutput
 import de.visualdigits.kotlin.minim.audio.JSAudioInput
 import de.visualdigits.kotlin.minim.audio.JSAudioOutput
@@ -24,7 +23,7 @@ class Minim {
     // and don't have to call close() on all of the things they've created.
     // in the event that they *do* call close() on resource we've created,
     // it will be removed from this list.
-    private val sources = ArrayList<AudioSource>()
+    private val sources = ArrayList<AudioInput>()
 
     /**
      * An AudioInput is used when you want to monitor the active audio input
@@ -67,7 +66,7 @@ class Minim {
      */
     private fun getLineIn(type: AudioInputType, bufferSize: Int, sampleRate: Float, bitDepth: Int): AudioInput? {
         var input: AudioInput? = null
-        val stream: AudioStream? = getAudioInput(type, bufferSize, sampleRate, bitDepth)
+        val stream: AudioResource? = getAudioInput(type, bufferSize, sampleRate, bitDepth)
         if (stream != null) {
             var out: AudioOutput? = getAudioOutput(type.channels, bufferSize, sampleRate, bitDepth)
             // couldn't get an output, the system might not have one available
@@ -116,14 +115,14 @@ class Minim {
         return getLineIn(type, bufferSize, sampleRate, 16)
     }
 
-    fun removeSource(s: AudioSource?) {
+    fun removeSource(s: AudioInput?) {
         sources.remove(s)
     }
 
     private fun getAudioInput(
         type: AudioInputType, bufferSize: Int,
         sampleRate: Float, bitDepth: Int
-    ): AudioStream? {
+    ): AudioResource? {
         require(!(bitDepth != 8 && bitDepth != 16)) { "Unsupported bit depth, use either 8 or 16." }
         val format = AudioFormat(sampleRate, bitDepth, type.channels, true, false)
         val line: TargetDataLine? = getTargetDataLine(format, bufferSize * 4)

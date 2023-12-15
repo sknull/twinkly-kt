@@ -8,7 +8,7 @@ import javax.sound.sampled.Control
 import javax.sound.sampled.TargetDataLine
 
 
-class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream {
+class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResource {
 
     private val log = LoggerFactory.getLogger(JSAudioInput::class.java)
 
@@ -76,22 +76,6 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioStream
 
     override fun getControls(): Array<Control> {
         return line!!.controls
-    }
-
-    override fun read(): FloatArray {
-        // TODO: this is sort of terrible, but will do for now. would be much better
-        // to dig the conversion stuff out of FloatSampleBuffer and do this more directly
-        val numSamples = 1
-        // allocate enough bytes for one sample playable
-        val bytes = ByteArray(line!!.format.frameSize)
-        line!!.read(bytes, 0, bytes.size)
-        buffer.setSamplesFromBytes(bytes, 0, line!!.format, 0, numSamples)
-        // allocate enough floats for the number of channels
-        val samples = FloatArray(buffer.channelCount)
-        for (i in samples.indices) {
-            samples[i] = buffer.getChannel(i).get(0)
-        }
-        return samples
     }
 
     override fun read(buffer: MultiChannelBuffer): Int {

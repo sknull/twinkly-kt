@@ -18,7 +18,7 @@ interface AudioOutput : AudioResource {
      * Sets the AudioStream that this output will use to generate sound.
      *
      */
-    fun setAudioStream(stream: AudioStream)
+    fun setAudioStream(stream: AudioResource)
 
     /**
      * Sets the AudioListener that will have sound broadcasted to it as the

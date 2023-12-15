@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.minim.audio
 
+import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
 
@@ -29,5 +30,15 @@ interface AudioResource {
      * @return the AudioFormat of this AudioResource
      */
     fun getFormat(): AudioFormat
+
+    /**
+     * Reads buffer.getBufferSize() sample frames and puts them into buffer's channels.
+     * The provided buffer will be forced to have the same number of channels that this
+     * AudioStream does.
+     *
+     * @param buffer The MultiChannelBuffer to fill with audio samples.
+     * @return int: the number of sample frames that were actually read, could be smaller than the size of the buffer.
+     */
+    fun read(buffer: MultiChannelBuffer): Int
 }
 

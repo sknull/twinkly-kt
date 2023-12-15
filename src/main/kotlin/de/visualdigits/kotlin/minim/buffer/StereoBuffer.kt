@@ -1,15 +1,15 @@
 package de.visualdigits.kotlin.minim.buffer
 
+import de.visualdigits.kotlin.minim.audio.AudioInput
 import de.visualdigits.kotlin.minim.audio.AudioListener
-import de.visualdigits.kotlin.minim.audio.Controller
 
-class StereoBuffer(channels: Int, bufferSize: Int, c: Controller) : AudioListener {
+class StereoBuffer(channels: Int, bufferSize: Int, c: AudioInput) : AudioListener {
 
     var left: MAudioBuffer
     var right: MAudioBuffer
     var mix: MAudioBuffer
 
-    private val parent: Controller
+    private val parent: AudioInput
 
     init {
         left = MAudioBuffer(bufferSize)

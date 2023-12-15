@@ -15,7 +15,7 @@ class BasicAudioOutput(
 
     private val buffer: MultiChannelBuffer = MultiChannelBuffer(bufferSize, getFormat().channels)
     private var listener: AudioListener? = null
-    private var stream: AudioStream? = null
+    private var stream: AudioResource? = null
     private var running = false
 
     override fun run() {
@@ -64,11 +64,13 @@ class BasicAudioOutput(
 
     override fun getFormat(): AudioFormat = audioFormat
 
+    override fun read(buffer: MultiChannelBuffer): Int = 0
+
     override fun bufferSize(): Int {
         return buffer.bufferSize
     }
 
-    override fun setAudioStream(stream: AudioStream) {
+    override fun setAudioStream(stream: AudioResource) {
         this.stream = stream
     }
 

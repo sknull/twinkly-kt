@@ -18,7 +18,7 @@ class JSAudioOutput(
     private val audioFormat: AudioFormat= sdl.format
     private val buffer: MultiChannelBuffer = MultiChannelBuffer(bufferSize, audioFormat.channels)
     private var listener: AudioListener? = null
-    private var stream: AudioStream? = null
+    private var stream: AudioResource? = null
     private var running: Boolean = false
 
     private val floatSampleBuffer: FloatSampleBuffer = FloatSampleBuffer(
@@ -85,9 +85,11 @@ class JSAudioOutput(
         return line!!.controls
     }
 
-    override fun setAudioStream(stream: AudioStream) {
+    override fun setAudioStream(stream: AudioResource) {
         this.stream = stream
     }
+
+    override fun read(buffer: MultiChannelBuffer): Int = 0
 
     override fun getFormat(): AudioFormat = audioFormat
 }
