@@ -5,17 +5,14 @@ import org.apache.commons.math3.transform.DftNormalization
 import org.apache.commons.math3.transform.FastFourierTransformer
 import org.apache.commons.math3.transform.TransformType
 import org.slf4j.LoggerFactory
-import kotlin.math.cos
-import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sin
 import kotlin.math.sqrt
 
 
 class FFT(
     private val timeSize: Int,
-    private val sampleRate: Double
+    private val sampleRate: Double,
 ) {
 
     private val log = LoggerFactory.getLogger(FFT::class.java)
@@ -56,9 +53,11 @@ class FFT(
     // used so that this class can handle creating the average array
     // and also do spectrum shaping if necessary
     private fun fillSpectrum() {
-        spectrum = real.zip(imag).mapIndexed { i, (real, imag) ->
-            sqrt((real * real + imag * imag))
-        }.toMutableList()
+        real.zip(imag).withIndex().forEach { entry ->
+            val real = entry.value.first
+            val imag = entry.value.second
+            spectrum[entry.index] = sqrt((real * real + imag * imag))
+        }
         when (whichAverage) {
             AverageType.LINAVG -> {
                 val avgWidth = spectrum.size / averages.size
@@ -68,7 +67,7 @@ class FFT(
                         .subList(b, b + avgWidth)
                         .average()
                 }
-println("#### averages: ${averages.toList()}")
+//println("#### averages: ${averages.toList()}")
             }
 
             AverageType.LOGAVG -> {

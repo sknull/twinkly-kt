@@ -9,10 +9,10 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 /**
  * Displays a spectrum on the given xled device.
@@ -37,11 +37,11 @@ class SpectrumAnalyzer(
         player.disableMonitoring()
 
         val fft = FFT(player.bufferSize(), player.sampleRate())
-        val offsetX = 3
-        fft.linAverages(xled.width / offsetX)
+        val offsetX = 4
+        fft.linAverages((xled.width.toDouble() / offsetX).roundToInt())
         val beat = BeatDetect(DetectMode.FREQ_ENERGY)
 
-        val spectrumSize = fft.specSize() / 2
+        val spectrumSize = fft.specSize() / 1
         val s = (spectrumSize.toDouble() / xled.width).roundToInt()
         val maxAmplitudes = MutableList(xled.width) { 0 }
         var t = 0
@@ -53,9 +53,11 @@ class SpectrumAnalyzer(
             val frame = XledFrame(xled.width, xled.height)
 
             var b = 0
+//println()
             for (x in 0 until xled.width step offsetX) {
-                val vu = (fft.getAvg(b++) * xled.height).roundToInt()
-                val vy = max(0, xled.height - 1 - vu)
+                val db = (fft.getAvg(b++)).roundToInt()
+//print("$db ")
+                val vy = max(0, min(xled.height - 1, xled.height - 1 - db))
 
                 for (y in min(xled.height - 1, vy) until xled.height) {
                     frame[x][y] = color
