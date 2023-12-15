@@ -1,6 +1,7 @@
 package de.visualdigits.kotlin.minim.buffer
 
 import javax.sound.sampled.AudioFormat
+import kotlin.math.sqrt
 
 /**
  * A class for small buffers of samples in linear, 32-bit floating point format.
@@ -133,7 +134,7 @@ import javax.sound.sampled.AudioFormat
  */
 class FloatSampleBuffer(
     var sampleCount: Int = 0,
-    var channelCount: Int = 0,
+    var channelCnt: Int = 0,
     var sampleRate: Float = 0.0F
 ) {
 
@@ -156,7 +157,7 @@ class FloatSampleBuffer(
     private val DEFAULT_DITHER_BITS = 0.7F
 
     // one float array for each channel
-    private val channels: MutableList<FloatArray> = MutableList(channelCount) { FloatArray(sampleCount) }
+    private var channels: MutableList<FloatArray> = MutableList(channelCnt) { FloatArray(sampleCount) { 0.0F } }
 
     // cache for performance
     private var lastConvertToByteArrayFormat: AudioFormat? = null
@@ -168,7 +169,7 @@ class FloatSampleBuffer(
     fun makeSilence() {
         require(!(sampleCount < 0)) { "offset and/or sampleCount out of bounds" }
         // silence all channels
-        val localChannelCount = channelCount
+        val localChannelCount = channelCnt
         for (ch in 0 until localChannelCount) {
             val samples = getChannel(ch)
             for (i in 0 until sampleCount) {
@@ -187,12 +188,45 @@ class FloatSampleBuffer(
      * @throws IllegalArgumentException if channel is out of bounds
      */
     fun getChannel(channel: Int): FloatArray {
-        if (channel >= channelCount) {
-            throw IllegalArgumentException(
-                "FloatSampleBuffer: invalid channel number."
-            )
-        }
         return channels[channel]
+    }
+
+    /**
+     * Sets the value of a sample in the given channel at the given
+     * offset from the beginning of the buffer.
+     *
+     * @param channelNumber int: the channel of the buffer
+     * @param sampleIndex   int: the sample offset from the beginning of the buffer
+     * @param value         float: the sample value to set
+     */
+    fun setSample(channelNumber: Int, sampleIndex: Int, value: Float) {
+        channels[channelNumber][sampleIndex] = value
+    }
+
+    /**
+     * Calculates the RMS amplitude of one of the buffer's channels.
+     *
+     * @param channelNumber int: the channel to use
+     * @return float: the RMS amplitude of the channel
+     *      */
+    fun getLevel(channelNumber: Int): Double {
+        return sqrt(channels[channelNumber].average())
+    }
+
+    /**
+     * Sets all of the values in a particular channel using
+     * the values of the provided float array. The array
+     * should be at least as long as the current buffer size
+     * of this buffer and this will only copy as many samples
+     * as fit into its current buffer size.
+     *
+     * @param channelNumber int: the channel to set
+     * @param samples       float[]: the array of values to copy into the channel
+     * @shortdesc Sets all of the values in a particular channel using
+     * the values of the provided float array.
+     */
+    fun setChannel(channelNumber: Int, samples: FloatArray) {
+        System.arraycopy(samples, 0, channels[channelNumber], 0, sampleCount)
     }
 
     /**
@@ -237,7 +271,7 @@ class FloatSampleBuffer(
                     "FloatSampleBuffer.convertToByteArray: different samplerates."
                 )
             }
-            if (format.channels != channelCount) {
+            if (format.channels != channelCnt) {
                 throw IllegalArgumentException(
                     "FloatSampleBuffer.convertToByteArray: different channel count."
                 )
@@ -264,6 +298,27 @@ class FloatSampleBuffer(
             DITHER_MODE_ON -> doDither = true
         }
         return if (doDither) DEFAULT_DITHER_BITS else 0.0F
+    }
+
+    /**
+     * Set the number of channels this buffer contains.
+     * Doing this will retain any existing channels
+     * under the new channel count.
+     *
+     * @param channelCount int: the number of channels this buffer should contain
+     * @shortdesc Set the number of channels this buffer contains.
+     */
+    fun setChannelCount(channelCount: Int) {
+        this.channelCnt = channelCount
+        if (channels.size != channelCount) {
+            val newChannels = MutableList(channelCount) { FloatArray(sampleCount) { 0.0F } }
+            var c = 0
+            while (c < channels.size && c < channelCount) {
+                newChannels[c] = channels[c]
+                ++c
+            }
+            channels = newChannels
+        }
     }
 
     /**

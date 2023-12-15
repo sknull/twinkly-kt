@@ -1,48 +1,105 @@
 package de.visualdigits.kotlin.minim.buffer
 
+import org.slf4j.LoggerFactory
+import kotlin.math.sqrt
+
 /**
- * An `AudioBuffer` is a buffer of floating point samples
- * corresponding to a single channel of streaming audio. It is readonly, but you
- * can obtain a copy of the samples in the buffer by using the `toArray` method.
- * In fact, when drawing a waveform, you should use the `toArray` method
- * rather than iterating over the buffer itself because it is possible that the samples
- * in the buffer will be replaced with new ones between calls to the `get` method,
- * which results in a waveform that appears to have discontinuities in it.
+ * `MAudioBuffer` encapsulates a sample buffer of floats. All Minim
+ * classes that give you access to audio samples do so with an
+ * `MAudioBuffer`. The underlying array is not immutable and this
+ * class has a number of methods for reading and writing to that array. It is
+ * even possible to be given a direct handle on the array to process it as you
+ * wish.
  *
  * @author Damien Di Fede
  */
-interface AudioBuffer {
+class AudioBuffer(sampleCount: Int) {
+
+    private val log = LoggerFactory.getLogger(AudioBuffer::class.java)
+
+    private var samples: FloatArray
 
     /**
-     * Returns the length of the buffer.
+     * Constructs and MAudioBuffer that is `bufferSize` samples long.
      *
-     * @return int: the number of samples in the buffer
-     *      */
-    fun size(): Int
+     */
+    init {
+        samples = FloatArray(sampleCount) { 0.0F }
+    }
+
+    @Synchronized
+    fun size(): Int {
+        return samples.size
+    }
+
+    @Synchronized
+    operator fun get(i: Int): Float {
+        return samples[i]
+    }
+
+    @Synchronized
+    operator fun get(i: Float): Float {
+        val lowSamp = i.toInt()
+        val hiSamp = lowSamp + 1
+        if (hiSamp == samples.size) {
+            return samples[lowSamp]
+        }
+        val lerp = i - lowSamp
+        return (samples[lowSamp]) + lerp * ((samples[hiSamp]) - (samples[lowSamp]))
+    }
+
+    @Synchronized
+    fun set(buffer: FloatArray) {
+        if (buffer.size != samples.size) {
+           log.error(
+                    "MAudioBuffer.set: passed array (" + buffer.size + ") " +
+                            "must be the same length (" + samples.size + ") as this MAudioBuffer."
+                )
+        }
+        else {
+            samples = buffer
+        }
+    }
 
     /**
-     * Gets the `i<sup>th</sup>` sample in the buffer. This method
-     * does not do bounds checking, so it may throw an exception.
+     * Mixes the two float arrays and puts the result in this buffer. The
+     * passed arrays must be the same length as this buffer. If they are not, an
+     * error will be reported and nothing will be done. The mixing function is:
      *
-     * @param i int: the index of the sample you want to get
-     * @return float: the `i<sup>th</sup>` sample
-     *      *      */
-    operator fun get(i: Int): Float
+     * @param b1 the first buffer
+     * @param b2 the second buffer
+     */
+    @Synchronized
+    fun mix(b1: FloatArray, b2: FloatArray) {
+        if (((b1.size != b2.size) || (b1.size != samples.size))
+        ) {
+            log.error("MAudioBuffer.mix: The two passed buffers must be the same size as this MAudioBuffer.")
+        }
+        else {
+            for (i in samples.indices) {
+                samples[i] = (b1[i] + (b2[i])) / 2
+            }
+        }
+    }
 
     /**
-     * Gets the current level of the buffer. It is calculated as the
-     * root-mean-square of all the samples in the buffer.
-     *
-     * @return float: the RMS amplitude of the buffer
-     *      *      */
-    fun level(): Float
+     * Sets all of the values in this buffer to zero.
+     */
+    @Synchronized
+    fun clear() {
+        samples = FloatArray(samples.size) { 0.0F }
+    }
 
-    /**
-     * Returns the samples in the buffer in a new float array.
-     * Modifying the samples in the returned array will not change
-     * the samples in the buffer.
-     *
-     * @return float[]: a new float array containing the buffer's samples
-     *      */
-    fun toArray(): FloatArray
+    @Synchronized
+    fun level(): Double {
+        return sqrt(samples.average())
+    }
+
+    @Synchronized
+    fun toArray(): FloatArray {
+        val ret = FloatArray(samples.size) { 0.0F }
+        System.arraycopy(samples, 0, ret, 0, samples.size)
+        return ret
+    }
 }
+

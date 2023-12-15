@@ -1,7 +1,6 @@
 package de.visualdigits.kotlin.minim.audio
 
 import de.visualdigits.kotlin.minim.buffer.FloatSampleBuffer
-import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
@@ -24,7 +23,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResour
         this.bufferSize = bufferSize
         buffer = FloatSampleBuffer(
             sampleCount = bufferSize,
-            channelCount = tdl.format.channels,
+            channelCnt = tdl.format.channels,
             sampleRate = tdl.format.sampleRate
         )
         finished = false
@@ -75,14 +74,14 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResour
         return line!!.controls
     }
 
-    override fun read(buffer: MultiChannelBuffer): Int {
+    override fun read(buffer: FloatSampleBuffer): Int {
         // create our converter object
         val numChannels = line!!.format.channels
-        val numSamples = buffer.bufferSize
+        val numSamples = buffer.sampleCount
         val sampleRate = line!!.format.sampleRate
         val convert = FloatSampleBuffer(
             sampleCount = numSamples,
-            channelCount = numChannels,
+            channelCnt = numChannels,
             sampleRate = sampleRate
         )
         // allocate enough bytes for the size of this buffer
@@ -94,7 +93,7 @@ class JSAudioInput(tdl: TargetDataLine, bufferSize: Int) : Thread(), AudioResour
         // copy the converted floats into the MultiChannelBuffer
         // make sure it has the correct number of channels first
         buffer.setChannelCount(numChannels)
-        for (i in 0 until convert.channelCount) {
+        for (i in 0 until convert.channelCnt) {
             buffer.setChannel(i, convert.getChannel(i))
         }
         return numSamples

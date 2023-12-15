@@ -3,23 +3,27 @@ package de.visualdigits.kotlin.minim.buffer
 import de.visualdigits.kotlin.minim.audio.AudioInput
 import de.visualdigits.kotlin.minim.audio.AudioListener
 
-class StereoBuffer(channels: Int, bufferSize: Int, c: AudioInput) : AudioListener {
+class StereoBuffer(
+    channels: Int,
+    bufferSize: Int,
+    c: AudioInput
+) : AudioListener {
 
-    var left: MAudioBuffer
-    var right: MAudioBuffer
-    var mix: MAudioBuffer
+    var left: AudioBuffer
+    var right: AudioBuffer
+    var mix: AudioBuffer
 
     private val parent: AudioInput
 
     init {
-        left = MAudioBuffer(bufferSize)
+        left = AudioBuffer(bufferSize)
         if (channels == 1) {
             right = left
             mix = left
         }
         else {
-            right = MAudioBuffer(bufferSize)
-            mix = MAudioBuffer(bufferSize)
+            right = AudioBuffer(bufferSize)
+            mix = AudioBuffer(bufferSize)
         }
         parent = c
     }

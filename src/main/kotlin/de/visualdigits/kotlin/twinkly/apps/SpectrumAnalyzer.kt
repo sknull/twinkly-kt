@@ -12,6 +12,7 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 /**
  * Displays a spectrum on the given xled device.

@@ -6,6 +6,7 @@ import org.apache.commons.math3.transform.FastFourierTransformer
 import org.apache.commons.math3.transform.TransformType
 import org.slf4j.LoggerFactory
 import kotlin.math.cos
+import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -67,7 +68,7 @@ class FFT(
                         .subList(b, b + avgWidth)
                         .average()
                 }
-//println("#### averages: ${averages.toList()}")
+println("#### averages: ${averages.toList()}")
             }
 
             AverageType.LOGAVG -> {

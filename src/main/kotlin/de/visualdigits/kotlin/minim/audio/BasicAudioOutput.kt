@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.minim.audio
 
-import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
+import de.visualdigits.kotlin.minim.buffer.FloatSampleBuffer
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
 
@@ -13,7 +13,10 @@ class BasicAudioOutput(
     bufferSize: Int
 ) : Thread(), AudioOutput {
 
-    private val buffer: MultiChannelBuffer = MultiChannelBuffer(bufferSize, getFormat().channels)
+    private val buffer: FloatSampleBuffer = FloatSampleBuffer(
+        sampleCount = bufferSize,
+        channelCnt = getFormat().channels
+    )
     private var listener: AudioListener? = null
     private var stream: AudioResource? = null
     private var running = false
@@ -28,15 +31,15 @@ class BasicAudioOutput(
             // a full buffer if the TargetDataLine the stream is reading from
             // is closed during a read, so in that case we simply
             // fill the rest of the buffer with silence
-            if (samplesRead != buffer.bufferSize) {
-                for (i in samplesRead until buffer.bufferSize) {
-                    for (c in 0 until buffer.getChannelCount()) {
+            if (samplesRead != buffer.sampleCount) {
+                for (i in samplesRead until buffer.sampleCount) {
+                    for (c in 0 until buffer.channelCnt) {
                         buffer.setSample(c, i, 0.0F)
                         buffer.setSample(c, i, 0.0F)
                     }
                 }
             }
-            if (buffer.getChannelCount() == 1) {
+            if (buffer.channelCnt == 1) {
                 listener!!.samples(buffer.getChannel(0))
             }
             else {
@@ -64,10 +67,10 @@ class BasicAudioOutput(
 
     override fun getFormat(): AudioFormat = audioFormat
 
-    override fun read(buffer: MultiChannelBuffer): Int = 0
+    override fun read(buffer: FloatSampleBuffer): Int = 0
 
     override fun bufferSize(): Int {
-        return buffer.bufferSize
+        return buffer.sampleCount
     }
 
     override fun setAudioStream(stream: AudioResource) {

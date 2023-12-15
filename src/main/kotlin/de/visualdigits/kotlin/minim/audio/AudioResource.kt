@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.minim.audio
 
-import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
+import de.visualdigits.kotlin.minim.buffer.FloatSampleBuffer
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
 
@@ -34,6 +34,6 @@ interface AudioResource : AutoCloseable {
      * @param buffer The MultiChannelBuffer to fill with audio samples.
      * @return int: the number of sample frames that were actually read, could be smaller than the size of the buffer.
      */
-    fun read(buffer: MultiChannelBuffer): Int
+    fun read(buffer: FloatSampleBuffer): Int
 }
 

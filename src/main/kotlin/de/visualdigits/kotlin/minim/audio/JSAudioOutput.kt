@@ -1,7 +1,6 @@
 package de.visualdigits.kotlin.minim.audio
 
 import de.visualdigits.kotlin.minim.buffer.FloatSampleBuffer
-import de.visualdigits.kotlin.minim.buffer.MultiChannelBuffer
 import org.slf4j.LoggerFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.Control
@@ -16,14 +15,17 @@ class JSAudioOutput(
     private val log = LoggerFactory.getLogger(JSAudioOutput::class.java)
 
     private val audioFormat: AudioFormat= sdl.format
-    private val buffer: MultiChannelBuffer = MultiChannelBuffer(bufferSize, audioFormat.channels)
+    private val buffer: FloatSampleBuffer = FloatSampleBuffer(
+        sampleCount = bufferSize,
+        channelCnt = audioFormat.channels
+    )
     private var listener: AudioListener? = null
     private var stream: AudioResource? = null
     private var running: Boolean = false
 
     private val floatSampleBuffer: FloatSampleBuffer = FloatSampleBuffer(
         sampleCount = bufferSize,
-        channelCount = audioFormat.channels,
+        channelCnt = audioFormat.channels,
         sampleRate = audioFormat.sampleRate
     )
     private var line: SourceDataLine? = sdl
@@ -60,7 +62,7 @@ class JSAudioOutput(
 
     private fun readStream() {
         stream!!.read(buffer)
-        for (i in 0 until buffer.getChannelCount()) {
+        for (i in 0 until buffer.channelCnt) {
             System.arraycopy(buffer.getChannel(i), 0, floatSampleBuffer.getChannel(i), 0, floatSampleBuffer.sampleCount)
         }
     }
@@ -89,7 +91,7 @@ class JSAudioOutput(
         this.stream = stream
     }
 
-    override fun read(buffer: MultiChannelBuffer): Int = 0
+    override fun read(buffer: FloatSampleBuffer): Int = 0
 
     override fun getFormat(): AudioFormat = audioFormat
 }
