@@ -81,10 +81,14 @@ class BeatDetect(
      * @param buffer AudioBuffer: the buffer to analyze.
      */
     fun detect(buffer: AudioBuffer) {
-        val buffer1 = buffer.toArray().map{ it.toDouble() }.toDoubleArray()
+        val doubleBuffer = buffer.toArray().map{ it.toDouble() }.toDoubleArray()
+        detect(doubleBuffer)
+    }
+
+    fun detect(doubleBuffer: DoubleArray) {
         when (algorithm) {
-            DetectMode.SOUND_ENERGY -> sEnergy(buffer1)
-            DetectMode.FREQ_ENERGY -> fEnergy(buffer1)
+            DetectMode.SOUND_ENERGY -> sEnergy(doubleBuffer)
+            DetectMode.FREQ_ENERGY -> fEnergy(doubleBuffer)
         }
     }
 

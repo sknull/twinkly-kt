@@ -19,9 +19,10 @@ class FFT(
 
     private val bandWidth: Double = 2f / timeSize * (sampleRate / 2f)
 
-    private var spectrum = MutableList(timeSize) { 0.0 }
-    private var real = MutableList(timeSize) { 0.0 }
-    private var imag = MutableList(timeSize) { 0.0 }
+    private var spectrum = DoubleArray(timeSize) { 0.0 }
+    private var db = DoubleArray(timeSize) { 0.0 }
+    private var real = DoubleArray(timeSize) { 0.0 }
+    private var imag = DoubleArray(timeSize) { 0.0 }
     private var averages = DoubleArray(0) { 0.0 }
     private var whichAverage: AverageType = AverageType.NOAVG
     private var octaves = 0
@@ -44,30 +45,29 @@ class FFT(
 
         val fft = FastFourierTransformer(DftNormalization.STANDARD)
         val fftC = fft.transform(buffer, TransformType.FORWARD)
-        real = fftC.map { it.real }.toMutableList()
-        imag = fftC.map { it.imaginary }.toMutableList()
-        fillSpectrum()
+        real = fftC.map { it.real }.toDoubleArray()
+        imag = fftC.map { it.imaginary }.toDoubleArray()
+        calculateMagnitudes()
+        calculateAverages()
     }
 
-    // fill the spectrum array with the amps of the data in real and imag
-    // used so that this class can handle creating the average array
-    // and also do spectrum shaping if necessary
-    private fun fillSpectrum() {
+    private fun calculateMagnitudes() {
         real.zip(imag).withIndex().forEach { entry ->
             val real = entry.value.first
             val imag = entry.value.second
             spectrum[entry.index] = sqrt((real * real + imag * imag))
         }
+    }
+
+    private fun calculateAverages() {
         when (whichAverage) {
             AverageType.LINAVG -> {
                 val avgWidth = spectrum.size / averages.size
                 var b = 0
                 for (x in 0 until spectrum.size - avgWidth step avgWidth) {
-                    averages[b++] = spectrum
-                        .subList(b, b + avgWidth)
-                        .average()
+                    averages[b++] = (b until b + avgWidth).map { spectrum[it] }.sum() / avgWidth
                 }
-//println("#### averages: ${averages.toList()}")
+println("#### averages: ${averages.toList()}")
             }
 
             AverageType.LOGAVG -> {

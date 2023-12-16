@@ -46,7 +46,7 @@ class SpectrumAnalyzer(
         val maxAmplitudes = MutableList(xled.width) { 0 }
         var t = 0
         while(true) {
-            val buffer = player.mix
+            val buffer = player.mix.toArray().map { it.toDouble() }.toDoubleArray()
             fft.forward(buffer)
             beat.detect(buffer)
             val color = colorMeter//if (beat.isKick()) colorMax else colorMeter
