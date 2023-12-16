@@ -5,6 +5,7 @@ import org.apache.commons.math3.transform.DftNormalization
 import org.apache.commons.math3.transform.FastFourierTransformer
 import org.apache.commons.math3.transform.TransformType
 import org.slf4j.LoggerFactory
+import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -48,6 +49,7 @@ class FFT(
         real = fftC.map { it.real }.toDoubleArray()
         imag = fftC.map { it.imaginary }.toDoubleArray()
         calculateMagnitudes()
+        calculateDb()
         calculateAverages()
     }
 
@@ -59,6 +61,14 @@ class FFT(
         }
     }
 
+    private fun calculateDb() {
+        val normalizeOffset = 20.0 * log10(timeSize * 2.0.pow(16) / 2.0)
+        for (i in 0 until timeSize) {
+            db[i] = 20.0 * log10(spectrum[i])// - normalizeOffset
+        }
+        println(db.toList())
+    }
+
     private fun calculateAverages() {
         when (whichAverage) {
             AverageType.LINAVG -> {
@@ -67,7 +77,7 @@ class FFT(
                 for (x in 0 until spectrum.size - avgWidth step avgWidth) {
                     averages[b++] = (b until b + avgWidth).map { spectrum[it] }.sum() / avgWidth
                 }
-println("#### averages: ${averages.toList()}")
+//println("#### averages: ${averages.toList()}")
             }
 
             AverageType.LOGAVG -> {
