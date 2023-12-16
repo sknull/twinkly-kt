@@ -4,6 +4,8 @@ import com.madgag.gif.fmsware.GifDecoder
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.scene.Scene
@@ -22,39 +24,48 @@ class XledSequence(
 
     private val log = LoggerFactory.getLogger(XledSequence::class.java)
 
-    private var running: Boolean = false
+    override var running: Boolean = false
 
     constructor(
         directory: File,
         maxFrames: Int = Int.MAX_VALUE,
         initialColor: Color<*> = RGBColor(0, 0, 0),
         frameDelay: Long = 1000
-    ): this(frameDelay = frameDelay) {
+    ) : this(frameDelay = frameDelay) {
         if (!directory.isDirectory) throw IllegalArgumentException("Given file is not a directory")
-        directory
-            .listFiles { file -> file.isDirectory }
-            ?.sortedBy { it.name.lowercase() }
-            ?.take(maxFrames)
-            ?.forEach { sceneDirectory ->
-                val sceneFile = File(sceneDirectory, "scene.json")
-                if (sceneFile.exists()) {
-                    val scene = Scene.unmarshall(sceneFile)
-                    val images = sceneDirectory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
-                    if (images != null) {
-                        when (scene.type) {
-                            SceneType.frame -> {
-                                add(XledFrame(images.first(), initialColor))
-                            }
-                            SceneType.sequence -> {
-                                val subSequence = XledSequence()
-                                scene.frameDelay?.let { subSequence.frameDelay = it }
-                                images.forEach { image -> subSequence.add(XledFrame(image, initialColor)) }
-                                add(subSequence)
-                            }
-                        }
+        if (!readSceneDirectory(directory, initialColor)) {
+            directory
+                .listFiles { file -> file.isDirectory }
+                ?.sortedBy { it.name.lowercase() }
+                ?.take(maxFrames)
+                ?.forEach { sceneDirectory ->
+                    readSceneDirectory(sceneDirectory, initialColor)
+                }
+        }
+    }
+
+    private fun readSceneDirectory(sceneDirectory: File, initialColor: Color<*>): Boolean {
+        val sceneFile = File(sceneDirectory, "scene.json")
+        val exists = sceneFile.exists()
+        if (exists) {
+            val scene = Scene.unmarshall(sceneFile)
+            val images = sceneDirectory.listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
+            if (images != null) {
+                when (scene.type) {
+                    SceneType.frame -> {
+                        add(XledFrame(images.first(), initialColor))
+                    }
+
+                    SceneType.sequence -> {
+                        val subSequence = XledSequence()
+                        scene.frameDelay?.let { subSequence.frameDelay = it }
+                        images.forEach { image -> subSequence.add(XledFrame(image, initialColor)) }
+                        add(subSequence)
                     }
                 }
             }
+        }
+        return exists
     }
 
     constructor(
@@ -64,7 +75,7 @@ class XledSequence(
         targetHeight: Int,
         frameDelay: Long,
         vararg texts: Triple<String, Color<*>, Color<*>>
-    ): this(frameDelay = frameDelay) {
+    ) : this(frameDelay = frameDelay) {
         val banner = XledFrame(
             fontName = fontName,
             fontSize = fontSize,
@@ -75,7 +86,7 @@ class XledSequence(
     }
 
     override fun toString(): String {
-        val frames =  frames
+        val frames = frames
             .map { it.toString().split("\n") }
         val sb = StringBuilder()
         for (y in 0 until frames[0].size) {
@@ -85,7 +96,7 @@ class XledSequence(
     }
 
     override fun play(
-        xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed,
+        xled: XLed,
         loop: Int,
         random: Boolean,
         transitionType: TransitionType?,
@@ -97,6 +108,8 @@ class XledSequence(
         val repetitions = max(1, frameDelay / 5000)
         var frameLoopCount = loop
         var lastPlayable: Playable? = null
+
+        xled.mode(DeviceMode.rt)
 
         running = true
         while (running && (frameLoopCount == -1 || frameLoopCount > 0)) {
@@ -204,6 +217,7 @@ class XledSequence(
                     Thread.sleep(min(5000, frameDelay))
                 }
             }
+
             is XledSequence -> {
                 xled.showRealTimeSequence(
                     frameSequence = playable,
@@ -233,10 +247,6 @@ class XledSequence(
             nextPlayable = frames.random()
         }
         return nextPlayable
-    }
-
-    override fun stop() {
-        running = false
     }
 
     fun append(other: XledSequence): XledSequence {

@@ -192,7 +192,7 @@
 					"response": []
 				},
 				{
-					"name": "turn off",
+					"name": "power off",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -496,6 +496,92 @@
 								"v1",
 								"xledarray",
 								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "christmas-tree",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "images/christmas-scenes/03_glitter",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/sequence",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"sequence"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "christmas-scenes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "images/christmas-scenes",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8024/twinkly/api/v1/xledarray/sequence?loop=1&frameDelay=3000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8024",
+							"path": [
+								"twinkly",
+								"api",
+								"v1",
+								"xledarray",
+								"sequence"
+							],
+							"query": [
+								{
+									"key": "loop",
+									"value": "1"
+								},
+								{
+									"key": "frameDelay",
+									"value": "3000"
+								}
 							]
 						}
 					},

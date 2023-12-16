@@ -1,11 +1,15 @@
 package de.visualdigits.kotlin.twinkly.rest.controller
 
+import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.Playable
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
+import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
+import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.rest.configuration.DevicesHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.io.File
 
 @RestController()
 @RequestMapping("/twinkly/api/v1/xledarray")
@@ -81,28 +87,49 @@ class XledArrayController {
 
     @PostMapping("/image")
     fun showImage(@RequestBody bytes: ByteArray) {
+        if (playable != null && playable?.running == true) {
+            stopLoop()
+        }
         currentMode = devicesHolder.xledArray.mode()
         devicesHolder.xledArray.mode(DeviceMode.rt)
         playable = XledFrame(bytes)
-        Thread(LoopRunner(
-            devicesHolder.xledArray,
-            playable!!
-        )).start()
+        playable?.playAsync(
+            xled = devicesHolder.xledArray,
+        )
+    }
+
+    @PostMapping("/sequence")
+    fun showSequence(
+        @RequestParam(required = false, defaultValue = "-1") loop: Int,
+        @RequestParam(required = false, defaultValue = "false") random: Boolean,
+        @RequestParam(required = false, defaultValue = "STRAIGHT") transitionType: TransitionType,
+        @RequestParam(required = false, defaultValue = "LEFT_RIGHT") transitionDirection: TransitionDirection,
+        @RequestParam(required = false, defaultValue = "REPLACE") transitionBlendMode: BlendMode,
+        @RequestParam(required = false, defaultValue = "2550") transitionDuration: Long,
+        @RequestParam(required = false, defaultValue = "100") frameDelay: Long,
+        @RequestBody directory: String
+    ) {
+        if (playable != null && playable?.running == true) {
+            stopLoop()
+        }
+        currentMode = devicesHolder.xledArray.mode()
+        devicesHolder.xledArray.mode(DeviceMode.rt)
+        playable = XledSequence(frameDelay = frameDelay,
+            directory = File(ClassLoader.getSystemResource(directory).toURI()))
+        playable?.playAsync(
+            xled = devicesHolder.xledArray,
+            loop = loop,
+            random = random,
+            transitionType = transitionType,
+            transitionDirection = transitionDirection,
+            transitionBlendMode = transitionBlendMode,
+            transitionDuration = transitionDuration
+        )
     }
 
     @PutMapping("/loop/stop")
     fun stopLoop() {
         devicesHolder.xledArray.mode(currentMode)
         playable?.stop()
-    }
-
-    class LoopRunner(
-        val xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed,
-        val playable: Playable
-    ): Runnable {
-        override fun run() {
-            playable.play(xled, 5000,)
-        }
-
     }
 }

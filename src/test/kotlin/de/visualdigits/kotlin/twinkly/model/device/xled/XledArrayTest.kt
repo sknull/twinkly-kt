@@ -171,14 +171,12 @@ class XledArrayTest {
     @Test
     fun testShowRealtimeFrame() {
         val frame = XledFrame(File(ClassLoader.getSystemResource("images/smiley.png").toURI()))
-        xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray,)
     }
 
     @Test
     fun testSanta() {
         val frame = XledFrame(File(ClassLoader.getSystemResource("images/christmas-scenes/09_santa/frame_001.png").toURI()))
-        xledArray.mode(DeviceMode.rt)
         frame.play(xled = xledArray,)
     }
 
@@ -215,8 +213,7 @@ class XledArrayTest {
     @Test
     fun testChristmasTree() {
         val sequence = XledSequence(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
-        xledArray.mode(DeviceMode.rt)
-        sequence.play(xled = xledArray,)
+        sequence.play(xled = xledArray)
     }
 
     @Test
@@ -225,7 +222,6 @@ class XledArrayTest {
             File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()),
             frameDelay = 5000
         )
-        xledArray.mode(DeviceMode.rt)
         sequence.play(
             xled = xledArray,
             loop = -1,

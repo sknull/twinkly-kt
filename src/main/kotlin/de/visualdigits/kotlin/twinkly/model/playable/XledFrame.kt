@@ -28,9 +28,9 @@ open class XledFrame(
 
     private val log = LoggerFactory.getLogger(XledFrame::class.java)
 
-    private var frame: Array<Array<Color<*>>> = Array(width) { Array(height) { initialColor } }
+    override var running: Boolean = false
 
-    protected var running: Boolean = false
+    private var frame: Array<Array<Color<*>>> = Array(width) { Array(height) { initialColor } }
 
     constructor(
         bytes: ByteArray,
@@ -159,7 +159,9 @@ open class XledFrame(
         verbose: Boolean
     ) {
         if (verbose) log.info("\n$this")
+
         xled.mode(DeviceMode.rt)
+
         val n = max(1, frameDelay / 5000)
         var loopCount = loop
         while (loopCount == -1 || loopCount > 0) {
@@ -169,10 +171,6 @@ open class XledFrame(
                 if (loopCount > 0) Thread.sleep(kotlin.math.min(5000, frameDelay))
             }
         }
-    }
-
-    override fun stop() {
-        running = false
     }
 
     suspend fun fade(
