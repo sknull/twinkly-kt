@@ -22,7 +22,8 @@ class DevicesHolder {
     fun initialize() {
         log.info("XledArrayController TwinklyController...")
         xledDevices = properties.devices.map {
-            Pair(it.key.substringAfter('.'), XLedDevice(it.value.ipAddress!!, it.value.deviceOrigin!!))
+            val value = it.value
+            Pair(it.key.substringAfter('.'), XLedDevice(value.ipAddress!!, value.deviceOrigin!!))
         }.toMap()
         log.info("Using devices '${xledDevices.keys}'")
         xledArray = XledArray(xledDevices.values.toList())

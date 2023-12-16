@@ -4,5 +4,5 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 
 class XledDeviceConfiguration(
     val ipAddress: String? = null,
-    val deviceOrigin: DeviceOrigin? = null,
+    val deviceOrigin: DeviceOrigin? = null
 )

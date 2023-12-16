@@ -1,11 +1,11 @@
 server:
   port: 8024
-
-application:
+  application:
+    name: Twinkly KT
   devices:
-    - curtain1:
+    curtain1:
         ipAddress: 192.168.178.35
         deviceOrigin: TOP_LEFT
-    - curtain2:
+    curtain2:
         ipAddress: 192.168.178.52
         deviceOrigin: TOP_LEFT
