@@ -40,7 +40,7 @@ class TetrisTest {
         xledArray.mode(DeviceMode.rt)
 
         for (x in 0 until xledArray.width) {
-            board[x][xledArray.height - 1] = RGBColor(255, 255, 255)
+            board[x, xledArray.height - 1] = RGBColor(255, 255, 255)
         }
 
         blockFountain()

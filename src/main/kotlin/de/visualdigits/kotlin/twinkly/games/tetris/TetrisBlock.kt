@@ -26,17 +26,18 @@ open class TetrisBlock(
         this.board = board
         posX = Random(System.currentTimeMillis()).nextInt(0, board.width - width)
         oldFrame = board.subFrame(posX, posY, width, height)
-        if (oldFrame.frame.any { row -> row.any { color -> !color.isBlack() } }) {
-            println("#### all blocked - not starting block '${this::class.simpleName}'")
-            return
-        }
+// todo
+//        if (oldFrame.frame.any { row -> row.any { color -> !color.isBlack() } }) {
+//            println("#### all blocked - not starting block '${this::class.simpleName}'")
+//            return
+//        }
         board.replaceSubFrame(this, posX, posY)
 
         xled.showRealTimeFrame(board)
 
         running = true
         while (running) {
-            val collision = pixelsToCheck.any { p -> !this.board[posX + p.first][posY + p.second].isBlack() }
+            val collision = pixelsToCheck.any { p -> !this.board[posX + p.first, posY + p.second].isBlack() }
             if (collision) {
                 println("collision - stopping block '${this::class.simpleName}'")
                 running = false

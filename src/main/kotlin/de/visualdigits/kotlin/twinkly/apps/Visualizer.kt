@@ -78,7 +78,7 @@ class Visualizer(
                 val x = (centerX + cos(a) * rx).roundToInt()
                 val y = (centerY + sin(a) * ry).roundToInt()
 
-                frame[max(0, min(xled.width - 1, x))][max(0, min(xled.height - 1, y))] = c
+                frame[max(0, min(xled.width - 1, x)), max(0, min(xled.height - 1, y))] = c
                 a += angle
             }
 
@@ -89,8 +89,8 @@ class Visualizer(
             }
             for (y in 0 until xled.height) {
                 for (x in 0 until xled.width) {
-                    val color = frame[x][y] as RGBColor
-                    frame[x][y] = RGBColor((color.red * f).roundToInt(), (color.green * f).roundToInt(), (color.blue * f).roundToInt())
+                    val color = frame[x, y] as RGBColor
+                    frame[x, y] = RGBColor((color.red * f).roundToInt(), (color.green * f).roundToInt(), (color.blue * f).roundToInt())
                 }
             }
             Thread.sleep(10)

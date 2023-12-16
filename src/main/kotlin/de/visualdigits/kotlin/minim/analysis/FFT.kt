@@ -66,7 +66,7 @@ class FFT(
         for (i in 0 until timeSize) {
             db[i] = 20.0 * log10(spectrum[i])// - normalizeOffset
         }
-        println(db.toList())
+//println(db.toList())
     }
 
     private fun calculateAverages() {

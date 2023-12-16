@@ -36,7 +36,7 @@ class TransitionDisc : Transition() {
                     for (a in 0 until 360) {
                         val x = max(0, min(width - 1, (mx + r * cos(a * PI / 180.0)).roundToInt()))
                         val y = max(0, min(width - 1, (my + r * sin(a * PI / 180.0)).roundToInt()))
-                        newTargetFrame[x][y] = sourceFrame[x][y].fade(targetFrame[x][y], factor, blendMode)
+                        newTargetFrame[x, y] = sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
                     }
                 }
             }
@@ -48,7 +48,7 @@ class TransitionDisc : Transition() {
                     for (a in 0 until 360) {
                         val x = max(0, min(width - 1, (mx + r * cos(a * PI / 180.0)).roundToInt()))
                         val y = max(0, min(width - 1, (my + r * sin(a * PI / 180.0)).roundToInt()))
-                        newTargetFrame[x][y] = targetFrame[x][y].fade(sourceFrame[x][y], factor, blendMode)
+                        newTargetFrame[x, y] = targetFrame[x, y].fade(sourceFrame[x, y], factor, blendMode)
                     }
                 }
             }

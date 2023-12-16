@@ -57,12 +57,19 @@ class SpectrumAnalyzer(
             for (x in 0 until xled.width step offsetX) {
                 val db = (fft.getAvg(b++)).roundToInt()
 //print("$db ")
-                val vy = max(0, min(xled.height - 1, xled.height - 1 - db))
+                val vy = max(0, min(xled.height - 1, xled.height - db))
 
-                for (y in min(xled.height - 1, vy) until xled.height) {
-                    frame[x][y] = color
-                    frame[x + 1][y] = color
-                }
+                val frameMeter = XledFrame(2, max(0, db - 1), colorMeter)
+                frame.replaceSubFrame(frameMeter, x, vy + 1)
+//                val frameMid = XledFrame(2, 2, colorMid)
+//                frame.replaceSubFrame(frameMid, x, vy + 1)
+                val frameMax = XledFrame(2, 1, colorMax)
+                frame.replaceSubFrame(frameMax, x, vy)
+
+//                for (y in min(xled.height - 1, vy) until xled.height) {
+//                    frame[x, y] = color
+//                    frame[x + 1, y] = color
+//                }
 //                for (y in min(xled.height - 1, vy + 3) until xled.height) {
 //                    frame[x][y] = colorMeter
 //                    frame[x + 1][y] = colorMeter

@@ -16,8 +16,8 @@ class Conway(
         xled.mode(DeviceMode.rt)
         for (y in 0 until xled.height) {
             for (x in 0 until xled.width) {
-                if (!initialFrame[x][y].isBlack()) {
-                    initialFrame[x][y] = RGBColor(0, 0, 255)
+                if (!initialFrame[x, y].isBlack()) {
+                    initialFrame[x, y] = RGBColor(0, 0, 255)
                     matrix[x][y] = 1
                 }
             }
@@ -33,7 +33,7 @@ class Conway(
             for (y in 0 until xled.height) {
                 for (x in 0 until xled.width) {
                     if (matrix[x][y] != 0) {
-                        frame[x][y] = color
+                        frame[x, y] = color
                     }
                 }
             }

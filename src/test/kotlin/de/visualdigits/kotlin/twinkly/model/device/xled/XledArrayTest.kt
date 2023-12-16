@@ -133,7 +133,7 @@ class XledArrayTest {
         for (y in 0 until 21) {
             val frame = XledFrame(20, 21)
             for (x in 0 until 20) {
-                frame[x][y] = RGBColor(255, 255, 255)
+                frame[x, y] = RGBColor(255, 255, 255)
             }
             frame.play(xledArray)
             Thread.sleep(100)
@@ -143,7 +143,7 @@ class XledArrayTest {
         for (x in 0 until 20) {
             val frame = XledFrame(20, 21)
             for (y in 0 until 21) {
-                frame[x][y] = RGBColor(255, 255, 255)
+                frame[x, y] = RGBColor(255, 255, 255)
             }
             frame.play(xledArray)
             Thread.sleep(100)
@@ -187,8 +187,11 @@ class XledArrayTest {
         val frame = XledFrame(8, 10, RGBColor(255, 0, 0))
         println(frame)
         frame.expandRight(5, RGBColor(0, 255, 0))
+        println(frame)
         frame.expandLeft(4, RGBColor(0, 0, 255))
+        println(frame)
         frame.expandTop(3, RGBColor(0, 255, 255))
+        println(frame)
         frame.expandBottom(2, RGBColor(255, 0, 255))
         println(frame)
 

@@ -27,8 +27,8 @@ class TransitionCurtainClose : Transition() {
                 val n = (width / 2 * factor).roundToInt()
                 for (y in 0 until height) {
                     for (x in 0 until n) {
-                        newTargetFrame[x][y] =  sourceFrame[x][y].fade(targetFrame[x][y], factor, blendMode)
-                        newTargetFrame[width - 1 - x][y] =  sourceFrame[width - 1 - x][y].fade(targetFrame[width - 1 - x][y], factor, blendMode)
+                        newTargetFrame[x, y] =  sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
+                        newTargetFrame[width - 1 - x, y] =  sourceFrame[width - 1 - x, y].fade(targetFrame[width - 1 - x, y], factor, blendMode)
                     }
                 }
             }
@@ -36,8 +36,8 @@ class TransitionCurtainClose : Transition() {
                 val n = (height / 2 * factor).roundToInt()
                 for (x in 0 until width) {
                     for (y in 0 until n) {
-                        newTargetFrame[x][y] = sourceFrame[x][y].fade(targetFrame[x][y], factor, blendMode)
-                        newTargetFrame[x][height - 1 - y] = sourceFrame[x][height - 1 - y].fade(targetFrame[x][height - 1 - y], factor, blendMode)
+                        newTargetFrame[x, y] = sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
+                        newTargetFrame[x, height - 1 - y] = sourceFrame[x, height - 1 - y].fade(targetFrame[x, height - 1 - y], factor, blendMode)
                     }
                 }
             }

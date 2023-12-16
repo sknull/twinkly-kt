@@ -9,8 +9,9 @@ class BlockS : TetrisBlock(
     pixelsToCheck = listOf(Pair(0, 2), Pair(1, 2), Pair(2, 1))
 ) {
 
-    init {
-        frame[0][0] = RGBColor(0, 0, 0, 0)
-        frame[2][1] = RGBColor(0, 0, 0, 0)
-    }
+// todo
+//    init {
+//        frame[0][0] = RGBColor(0, 0, 0, 0)
+//        frame[2][1] = RGBColor(0, 0, 0, 0)
+//    }
 }

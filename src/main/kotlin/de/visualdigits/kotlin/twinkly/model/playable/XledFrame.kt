@@ -3,7 +3,6 @@ package de.visualdigits.kotlin.twinkly.model.playable
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
@@ -19,42 +18,44 @@ import javax.imageio.ImageIO
 import kotlin.math.abs
 import kotlin.math.max
 
+
 open class XledFrame(
     var width: Int = 0,
     var height: Int = 0,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     var frameDelay: Long = 1000,
-    val frame: MutableList<MutableList<Color<*>>> = mutableListOf()
-) : Playable, MutableList<MutableList<Color<*>>> by frame {
+) : Playable {
 
     private val log = LoggerFactory.getLogger(XledFrame::class.java)
+
+    private var frame: Array<Array<Color<*>>> = Array(width) { Array(height) { initialColor } }
 
     protected var running: Boolean = false
 
     constructor(
         bytes: ByteArray,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-        gamma: Double = 1.0
-    ): this(ImageIO.read(bytes.inputStream()), initialColor, gamma)
+    ): this(ImageIO.read(bytes.inputStream()), initialColor)
 
     constructor(
         file: File,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-        gamma: Double = 1.0
-    ): this(ImageIO.read(file), initialColor, gamma)
+    ): this(ImageIO.read(file), initialColor)
 
     constructor(
         ins: InputStream,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-        gamma: Double = 1.0
-    ): this(ImageIO.read(ins), initialColor, gamma)
+    ): this(ImageIO.read(ins), initialColor)
 
     constructor(
         image: BufferedImage,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-        gamma: Double = 1.0
     ): this(width = image.width, height = image.height, initialColor = initialColor) {
-        setImage(image, gamma)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                frame[x][y] = RGBColor(image.getRGB(x, y).toLong())
+            }
+        }
     }
 
     constructor(
@@ -62,8 +63,7 @@ open class XledFrame(
         fontName: String,
         fontSize: Int,
         backgroundColor: Color<*>,
-        textColor: Color<*>,
-        gamma: Double = 1.0
+        textColor: Color<*>
     ) : this(
         image = FontUtil.drawText(
             text = text,
@@ -71,8 +71,7 @@ open class XledFrame(
             fontSize = fontSize,
             backgroundColor = backgroundColor,
             textColor = textColor
-        ),
-        gamma = gamma
+        )
     )
 
     constructor(
@@ -96,21 +95,17 @@ open class XledFrame(
         frames.drop(1).forEach { frame -> expandRight(frame) }
     }
 
-    init {
-        initialize(width, height, initialColor)
-    }
-
-    fun initialize(width: Int, height: Int, initialColor: Color<*> = RGBColor(0, 0, 0)) {
+    private fun initialize(width: Int, height: Int, initialColor: Color<*> = RGBColor(0, 0, 0)) {
         this.width = width
         this.height = height
-        for (x in 0 until width) {
-            val column = mutableListOf<Color<*>>()
-            for (y in 0 until height) {
-                column.add(initialColor.clone())
-            }
-            frame.add(column)
-        }
+        this.frame = Array(width) { Array(height) { initialColor } }
     }
+
+    operator fun set(x: Int, y: Int, color: Color<*>) {
+        frame[x][y] = color
+    }
+
+    operator fun get(x: Int, y: Int): Color<*> = frame[x][y]
 
     override fun toString(): String {
         val sb = StringBuilder()
@@ -124,11 +119,22 @@ open class XledFrame(
         return sb.toString()
     }
 
+    fun toBufferedImage(): BufferedImage {
+        val image = BufferedImage(width,  height, BufferedImage.TYPE_INT_RGB)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                image.setRGB(x, y, frame[x][y].toRGB().value().toInt())
+            }
+        }
+
+        return image
+    }
+
     fun clone(): XledFrame {
         val clone = XledFrame(width, height, initialColor)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                clone[x][y] = frame[x][y].clone()
+                clone[x, y] = frame[x][y].clone()
             }
         }
         return clone
@@ -181,7 +187,7 @@ open class XledFrame(
             delay(max(0, delay))
             for (y in 0 until height) {
                 for (x in 0 until width) {
-                    frame[x][y] = oldFrame[x][y].fade(color, f / 256.0, BlendMode.AVERAGE)
+                    frame[x][y] = oldFrame[x, y].fade(color, f / 256.0, BlendMode.AVERAGE)
                 }
             }
         }
@@ -199,9 +205,10 @@ open class XledFrame(
         val subFrame = XledFrame(width, height)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                subFrame[x][y] = frame[x + offsetX][y + offsetY].clone()
+                subFrame[x, y] = frame[x + offsetX][y + offsetY].clone()
             }
         }
+
         return subFrame
     }
 
@@ -216,9 +223,10 @@ open class XledFrame(
 
         for (y in yStart until min(subFrame.height, height - offsetY)) {
             for (x in xStart until min(subFrame.width, width - offsetX)) {
-                frame[x + offsetX][y + offsetY] = frame[x + offsetX][y + offsetY].blend(subFrame[x][y], blendMode)
+                frame[x + offsetX][y + offsetY] = frame[x + offsetX][y + offsetY].blend(subFrame[x, y], blendMode)
             }
         }
+
         return this
     }
 
@@ -226,14 +234,11 @@ open class XledFrame(
         numberOfColumns: Int,
         initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
-        for (n in 0 until numberOfColumns) {
-            val column = mutableListOf<Color<*>>()
-            for (y in 0 until height) {
-                column.add(initialColor.clone())
-            }
-            frame.add(column)
-        }
+        val newFrame = XledFrame(width + numberOfColumns, height, initialColor)
+        newFrame.replaceSubFrame(this, 0, 0)
         width += numberOfColumns
+        frame = newFrame.frame
+
         return this
     }
 
@@ -241,14 +246,11 @@ open class XledFrame(
         numberOfColumns: Int,
         initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
-        for (n in 0 until numberOfColumns) {
-            val column = mutableListOf<Color<*>>()
-            for (y in 0 until height) {
-                column.add(initialColor.clone())
-            }
-            frame.add(0, column)
-        }
+        val newFrame = XledFrame(width + numberOfColumns, height, initialColor)
+        newFrame.replaceSubFrame(this, numberOfColumns, 0)
         width += numberOfColumns
+        frame = newFrame.frame
+
         return this
     }
 
@@ -256,12 +258,11 @@ open class XledFrame(
         numberOfColumns: Int,
         initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
-        for (x in 0 until width) {
-            for (n in 0 until numberOfColumns) {
-                frame[x].add(0, initialColor.clone())
-            }
-        }
+        val newFrame = XledFrame(width, height + numberOfColumns, initialColor)
+        newFrame.replaceSubFrame(this, 0, numberOfColumns)
         height += numberOfColumns
+        frame = newFrame.frame
+
         return this
     }
 
@@ -269,12 +270,11 @@ open class XledFrame(
         numberOfColumns: Int,
         initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
-        for (x in 0 until width) {
-            for (n in 0 until numberOfColumns) {
-                frame[x].add(initialColor.clone())
-            }
-        }
+        val newFrame = XledFrame(width, height + numberOfColumns, initialColor)
+        newFrame.replaceSubFrame(this, 0, 0)
         height += numberOfColumns
+        frame = newFrame.frame
+
         return this
     }
 
@@ -286,6 +286,7 @@ open class XledFrame(
             expandBottom(frame.height - height)
         }
         replaceSubFrame(frame, width - frame.width, 0)
+
         return this
     }
 
@@ -297,6 +298,7 @@ open class XledFrame(
             expandBottom(frame.height - height)
         }
         replaceSubFrame(frame, 0, 0)
+
         return this
     }
 
@@ -308,6 +310,7 @@ open class XledFrame(
             expandRight(frame.width - width)
         }
         replaceSubFrame(frame, 0, 0)
+
         return this
     }
 
@@ -319,6 +322,7 @@ open class XledFrame(
             expandRight(frame.width - width)
         }
         replaceSubFrame(frame, 0, height - frame.height)
+
         return this
     }
 
@@ -326,9 +330,10 @@ open class XledFrame(
         val newFrame = XledFrame(height, width, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[height - y - 1][x] = frame[x][y]
+                newFrame[height - y - 1, x] = frame[x][y]
             }
         }
+
         return newFrame
     }
 
@@ -336,9 +341,10 @@ open class XledFrame(
         val newFrame = XledFrame(height, width, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[y][width - x - 1] = frame[x][y]
+                newFrame[y, width - x - 1] = frame[x][y]
             }
         }
+
         return newFrame
     }
 
@@ -346,9 +352,10 @@ open class XledFrame(
         val newFrame = XledFrame(width, height, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[width - x - 1][height - y - 1] = frame[x][y]
+                newFrame[width - x - 1, height - y - 1] = frame[x][y]
             }
         }
+
         return newFrame
     }
 
@@ -367,6 +374,7 @@ open class XledFrame(
                 drawLineHigh(x0, y0, x1, y1, color)
             }
         }
+
         return this
     }
 
@@ -378,15 +386,15 @@ open class XledFrame(
             yi = -1
             dy = -dy
         }
-        var D = 2 * dy - dx
+        var d = 2 * dy - dx
         var y = y0
         for (x in x0 .. x1) {
             frame[x][y] = color.clone()
-            if (D > 0) {
+            if (d > 0) {
                 y += yi
-                D += 2 * (dy - dx)
+                d += 2 * (dy - dx)
             } else {
-                D += 2 * dy
+                d += 2 * dy
             }
         }
     }
@@ -399,15 +407,15 @@ open class XledFrame(
             xi = -1
             dx = -dx
         }
-        var D = 2 * dx - dy
+        var d = 2 * dx - dy
         var x = x0
         for (y in y0 .. y1) {
             frame[x][y] = color.clone()
-            if (D > 0) {
+            if (d > 0) {
                 x += xi
-                D += 2 * (dx - dy)
+                d += 2 * (dx - dy)
             } else {
-                D += 2 * dx
+                d += 2 * dx
             }
         }
     }
@@ -416,84 +424,22 @@ open class XledFrame(
         val newFrame = XledFrame(width, height, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[x][y] = frame[x][y].fade(other[x][y], factor, blendMode)
+                newFrame[x, y] = frame[x][y].fade(other[x, y], factor, blendMode)
             }
         }
+
         return newFrame
-    }
-
-    fun setImage(file: File): XledFrame {
-        return setImage(ImageIO.read(file))
-    }
-
-    fun setImage(ins: InputStream): XledFrame {
-        return setImage(ImageIO.read(ins))
-    }
-
-    fun setImage(
-        image: BufferedImage,
-        gamma: Double = 1.0
-    ): XledFrame {
-
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val colors = frame[x]
-                colors[y] = RGBColor(image.getRGB(x, y).toLong())
-            }
-        }
-        return this
     }
 
     override fun toByteArray(bytesPerLed: Int): ByteArray {
         val baos = ByteArrayOutputStream()
         for (x in 0 until width) {
             for (y in 0 until height) {
-                baos.write(createPixel(frame[x][y], bytesPerLed))
+                baos.write(frame[x][y].toLedPixel(bytesPerLed))
             }
         }
-        return baos.toByteArray()
-    }
 
-    private fun createPixel(color: Color<*>, bytesPerLed: Int): ByteArray {
-        return when (color) {
-            is RGBWColor -> {
-                if (bytesPerLed == 4) {
-                    byteArrayOf(
-                        color.white.toByte(),
-                        color.red.toByte(),
-                        color.green.toByte(),
-                        color.blue.toByte()
-                    )
-                }
-                else {
-                    val rgbColor = color.toRGB()
-                    byteArrayOf(
-                        rgbColor.red.toByte(),
-                        rgbColor.green.toByte(),
-                        rgbColor.blue.toByte()
-                    )
-                }
-            }
-            is RGBColor -> {
-                if (bytesPerLed == 4) {
-                    val rgbwColor = color.toRGBW()
-                    byteArrayOf(
-                        rgbwColor.white.toByte(),
-                        rgbwColor.red.toByte(),
-                        rgbwColor.green.toByte(),
-                        rgbwColor.blue.toByte()
-                    )
-                }
-                else {
-                    byteArrayOf(
-                        color.red.toByte(),
-                        color.green.toByte(),
-                        color.blue.toByte()
-                    )
-                }
-            }
-            else -> byteArrayOf()
-        }
+        return baos.toByteArray()
     }
 
     override fun frames(): List<Playable> = listOf(this)

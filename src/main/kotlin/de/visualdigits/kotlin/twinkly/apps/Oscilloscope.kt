@@ -47,7 +47,7 @@ class Oscilloscope(
             for ((x, i) in (0 until bufferSize - stepSize step stepSize).withIndex()) {
                 val left = (i until i + stepSize).map { j -> player.left[j] + 1.0 }
                 val lAverage =(left.sum() / left.size.toDouble() * h / 2.0).roundToInt()
-                frame[x][max(h - 1 - lAverage, 0)] = c
+                frame[x, max(h - 1 - lAverage, 0)] = c
             }
             xled.showRealTimeFrame(frame)
             Thread.sleep(20)
