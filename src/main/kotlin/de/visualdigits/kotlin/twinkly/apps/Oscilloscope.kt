@@ -25,7 +25,7 @@ class Oscilloscope(
 ) {
 
     fun run() {
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
 
         val minim = Minim()
 

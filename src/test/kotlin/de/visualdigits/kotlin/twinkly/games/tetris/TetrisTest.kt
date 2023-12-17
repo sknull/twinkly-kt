@@ -37,7 +37,7 @@ class TetrisTest {
 
     @Test
     fun testBlocks() {
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
 
         for (x in 0 until xledArray.width) {
             board[x, xledArray.height - 1] = RGBColor(255, 255, 255)

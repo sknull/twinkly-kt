@@ -35,7 +35,7 @@ class SpectrumQuad(
         val player = minim.getLineIn(AudioInputType.MONO)!!
         val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
         player.disableMonitoring()
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
         while(true) {
             beat.detect(player.mix)
 

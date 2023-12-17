@@ -31,24 +31,24 @@ class XledArray(
         xLedDevices.forEach { it.ledReset() }
     }
 
-    override fun mode(): DeviceMode {
-        return xLedDevices.map { it.mode() }.first()
+    override fun getMode(): DeviceMode {
+        return xLedDevices.map { it.getMode() }.first()
     }
 
-    override fun mode(mode: DeviceMode): JsonObject {
-        return xLedDevices.map { it.mode(mode) }.first()
+    override fun setMode(mode: DeviceMode): JsonObject {
+        return xLedDevices.map { it.setMode(mode) }.first()
     }
 
-    override fun brightness(brightness: Brightness) {
-        xLedDevices.forEach { it.brightness(brightness) }
+    override fun setBrightness(brightness: Brightness) {
+        xLedDevices.forEach { it.setBrightness(brightness) }
     }
 
-    override fun saturation(saturation: Saturation) {
-        xLedDevices.forEach { it.saturation(saturation) }
+    override fun setSaturation(saturation: Saturation) {
+        xLedDevices.forEach { it.setSaturation(saturation) }
     }
 
-    override fun color(color: Color<*>) {
-        xLedDevices.forEach { it.color(color) }
+    override fun setColor(color: Color<*>) {
+        xLedDevices.forEach { it.setColor(color) }
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {

@@ -109,7 +109,7 @@ class XledSequence(
         var frameLoopCount = loop
         var lastPlayable: Playable? = null
 
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
 
         running = true
         while (running && (frameLoopCount == -1 || frameLoopCount > 0)) {

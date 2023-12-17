@@ -43,7 +43,7 @@ class XledDeviceController {
         @PathVariable device: String
     ): Brightness? {
         log.info("Getting saturation")
-        return devicesHolder.xledDevices[device]?.brightness()
+        return devicesHolder.xledDevices[device]?.getBrightness()
     }
 
     @PutMapping("/{device}/brightness/{brightness}")
@@ -52,7 +52,7 @@ class XledDeviceController {
         @PathVariable brightness: Int,
     ) {
         log.info("Setting brightness to $brightness")
-        devicesHolder.xledDevices[device]?.brightness(Brightness(value = brightness))
+        devicesHolder.xledDevices[device]?.setBrightness(Brightness(value = brightness))
     }
 
     @GetMapping("/{device}/saturation", produces = ["application/json"])
@@ -60,7 +60,7 @@ class XledDeviceController {
         @PathVariable device: String
     ): Saturation? {
         log.info("Getting saturation")
-        return devicesHolder.xledDevices[device]?.saturation()
+        return devicesHolder.xledDevices[device]?.getSaturation()
     }
 
     @PutMapping("/{device}/saturation/{saturation}")
@@ -69,7 +69,7 @@ class XledDeviceController {
         @PathVariable saturation: Int,
     ) {
         log.info("Setting saturation to $saturation")
-        devicesHolder.xledDevices[device]?.saturation(Saturation(value = saturation))
+        devicesHolder.xledDevices[device]?.setSaturation(Saturation(value = saturation))
     }
 
     @PutMapping("/{device}/mode/{mode}")
@@ -78,7 +78,7 @@ class XledDeviceController {
         @PathVariable mode: String,
     ) {
         log.info("Setting saturation to $mode")
-        devicesHolder.xledDevices[device]?.mode(DeviceMode.valueOf(mode))
+        devicesHolder.xledDevices[device]?.setMode(DeviceMode.valueOf(mode))
     }
 
     @PutMapping("/{device}/color/{red}/{green}/{blue}/{white}")
@@ -91,7 +91,7 @@ class XledDeviceController {
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
         log.info("Showing color ${rgbwColor.ansiColor()}")
-        devicesHolder.xledDevices[device]?.mode(DeviceMode.color)
-        devicesHolder.xledDevices[device]?.color(rgbwColor)
+        devicesHolder.xledDevices[device]?.setMode(DeviceMode.color)
+        devicesHolder.xledDevices[device]?.setColor(rgbwColor)
     }
 }

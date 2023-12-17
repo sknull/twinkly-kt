@@ -7,7 +7,6 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -61,7 +60,7 @@ class XledArrayTest {
             initialColor = RGBColor(10, 0, 30)
         )
 
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         frame.play(xledArray)
     }
 
@@ -84,13 +83,13 @@ class XledArrayTest {
         frame.replaceSubFrame(red, 5, 5, BlendMode.ADD)
         frame.replaceSubFrame(green, 10, 10, BlendMode.ADD)
 
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         frame.play(xledArray)
     }
 
     @Test
     fun testFade() {
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         var frame = XledFrame(xledArray.width, xledArray.height, RGBColor(255, 0, 0))
         var black = XledFrame(xledArray.width, xledArray.height, RGBColor(0, 0, 0))
         var f = 0.0
@@ -122,14 +121,14 @@ class XledArrayTest {
 
         frame.replaceSubFrame(green, 5, 5)
 
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         frame.play(xledArray)
     }
 
     @Test
     fun testMovingStripes() {
         // vertical
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         for (y in 0 until 21) {
             val frame = XledFrame(20, 21)
             for (x in 0 until 20) {
@@ -282,7 +281,7 @@ class XledArrayTest {
 //            )))
 //        }
 
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         sequence.play(
             xled = xledArray,
             loop = -1,
@@ -297,7 +296,7 @@ class XledArrayTest {
     @Test
     fun testPacmanFrame() {
         val frame = XledFrame(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI()))
-        xledArray.mode(DeviceMode.rt)
+        xledArray.setMode(DeviceMode.rt)
         frame.play(xled = xledArray,)
     }
 
@@ -310,7 +309,7 @@ class XledArrayTest {
 
     @Test
     fun testColors() {
-        xledArray.color(RGBWColor(0, 0, 0, 255))
+        xledArray.setColor(RGBWColor(0, 0, 0, 255))
     }
 
     @Test

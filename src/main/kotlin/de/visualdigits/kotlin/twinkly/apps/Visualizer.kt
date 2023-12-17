@@ -32,7 +32,7 @@ class Visualizer(
 ) {
 
     fun run() {
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
 
         val centerX = xled.width / 2
         val centerY = xled.height / 2

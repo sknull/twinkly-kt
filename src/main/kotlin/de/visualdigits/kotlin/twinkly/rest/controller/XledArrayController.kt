@@ -52,7 +52,7 @@ class XledArrayController {
         @PathVariable brightness: Int,
     ) {
         log.info("Setting brightness to $brightness")
-        devicesHolder.xledArray.brightness(Brightness(value = brightness))
+        devicesHolder.xledArray.setBrightness(Brightness(value = brightness))
     }
 
     @PutMapping("/saturation/{saturation}")
@@ -60,7 +60,7 @@ class XledArrayController {
         @PathVariable saturation: Int,
     ) {
         log.info("Setting saturation to $saturation")
-        devicesHolder.xledArray.saturation(Saturation(value = saturation))
+        devicesHolder.xledArray.setSaturation(Saturation(value = saturation))
     }
 
     @PutMapping("/mode/{mode}")
@@ -69,7 +69,7 @@ class XledArrayController {
     ) {
         log.info("Setting saturation to $mode")
         currentMode = DeviceMode.valueOf(mode)
-        devicesHolder.xledArray.mode(currentMode)
+        devicesHolder.xledArray.setMode(currentMode)
     }
 
     @PutMapping("/color/{red}/{green}/{blue}/{white}")
@@ -81,8 +81,8 @@ class XledArrayController {
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
         log.info("Showing color ${rgbwColor.ansiColor()}")
-        devicesHolder.xledArray.mode(DeviceMode.color)
-        devicesHolder.xledArray.color(rgbwColor)
+        devicesHolder.xledArray.setMode(DeviceMode.color)
+        devicesHolder.xledArray.setColor(rgbwColor)
     }
 
     @PostMapping("/image")
@@ -90,8 +90,8 @@ class XledArrayController {
         if (playable != null && playable?.running == true) {
             stopLoop()
         }
-        currentMode = devicesHolder.xledArray.mode()
-        devicesHolder.xledArray.mode(DeviceMode.rt)
+        currentMode = devicesHolder.xledArray.getMode()
+        devicesHolder.xledArray.setMode(DeviceMode.rt)
         playable = XledFrame(bytes)
         playable?.playAsync(
             xled = devicesHolder.xledArray,
@@ -112,8 +112,8 @@ class XledArrayController {
         if (playable != null && playable?.running == true) {
             stopLoop()
         }
-        currentMode = devicesHolder.xledArray.mode()
-        devicesHolder.xledArray.mode(DeviceMode.rt)
+        currentMode = devicesHolder.xledArray.getMode()
+        devicesHolder.xledArray.setMode(DeviceMode.rt)
         playable = XledSequence(frameDelay = frameDelay,
             directory = File(ClassLoader.getSystemResource(directory).toURI()))
         playable?.playAsync(
@@ -129,7 +129,7 @@ class XledArrayController {
 
     @PutMapping("/loop/stop")
     fun stopLoop() {
-        devicesHolder.xledArray.mode(currentMode)
+        devicesHolder.xledArray.setMode(currentMode)
         playable?.stop()
     }
 }

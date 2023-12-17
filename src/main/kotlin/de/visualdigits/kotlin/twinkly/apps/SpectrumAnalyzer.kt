@@ -9,7 +9,6 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
-import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -29,7 +28,7 @@ class SpectrumAnalyzer(
 ) {
 
     fun run() {
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
 
         val minim = Minim()
 

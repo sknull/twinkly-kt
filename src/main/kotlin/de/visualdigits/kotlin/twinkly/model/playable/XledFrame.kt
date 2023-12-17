@@ -160,7 +160,7 @@ open class XledFrame(
     ) {
         if (verbose) log.info("\n$this")
 
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
 
         val n = max(1, frameDelay / 5000)
         var loopCount = loop

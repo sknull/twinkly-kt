@@ -13,7 +13,7 @@ class Conway(
     fun run() {
         val initialFrame = XledFrame(preset)
         var matrix = Matrix(xled.width, xled.height)
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
         for (y in 0 until xled.height) {
             for (x in 0 until xled.width) {
                 if (!initialFrame[x, y].isBlack()) {

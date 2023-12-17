@@ -33,10 +33,6 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.musicenabled.Mu
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
-import java.time.Instant
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.min
 
@@ -62,7 +58,7 @@ class XLedDevice(
             tokenExpires = System.currentTimeMillis() + login() - 5000
             log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
             deviceInfo = deviceInfo()
-            layout = layout()
+            layout = getLayout()
             width = if (deviceOrigin.isPortrait()) layout.columns else layout.rows
             height = if (deviceOrigin.isPortrait()) layout.rows else layout.columns
             bytesPerLed = deviceInfo.bytesPerLed!!
@@ -87,7 +83,7 @@ class XLedDevice(
         refreshTokenIfNeeded()
         listOf(DeviceMode.playlist, DeviceMode.movie, DeviceMode.effect)
             .forEach { mode ->
-                val responseCode = mode(mode)
+                val responseCode = setMode(mode)
                 if (responseCode.responseCode == ResponseCode.Ok) {
                     return
                 }
@@ -96,10 +92,10 @@ class XLedDevice(
 
     override fun powerOff() {
         refreshTokenIfNeeded()
-        mode(DeviceMode.off)
+        setMode(DeviceMode.off)
     }
 
-    override fun mode(): DeviceMode {
+    override fun getMode(): DeviceMode {
         refreshTokenIfNeeded()
         val response = get<Mode>(
             url = "$baseUrl/led/mode",
@@ -107,7 +103,7 @@ class XLedDevice(
         return response.deviceMode
     }
 
-    override fun mode(mode: DeviceMode): JsonObject {
+    override fun setMode(mode: DeviceMode): JsonObject {
         refreshTokenIfNeeded()
         val body = "{\"mode\":\"${mode.name}\"}"
         log.info("Setting mode for device '$host' to ${mode.name}...")
@@ -125,49 +121,49 @@ class XLedDevice(
         return get("$baseUrl/led/reset")
     }
 
-    fun musicStats(): MusicStats {
+    fun getMusicStats(): MusicStats {
         refreshTokenIfNeeded()
         return get<MusicStats>(
             url = "$baseUrl/music/stats",
         )
     }
 
-    fun musicEnabled(): MusicEnabled {
+    fun getMusicEnabled(): MusicEnabled {
         refreshTokenIfNeeded()
         return get<MusicEnabled>(
             url = "$baseUrl/music/enabled",
         )
     }
 
-    fun musicDriversCurrent(): MusicDriversCurrent {
+    fun getMusicDriversCurrent(): MusicDriversCurrent {
         refreshTokenIfNeeded()
         return get<MusicDriversCurrent>(
             url = "$baseUrl/music/drivers/current",
         )
     }
 
-    fun musicDriversSets(): MusicDriversSets {
+    fun getMusicDriversSets(): MusicDriversSets {
         refreshTokenIfNeeded()
         return get<MusicDriversSets>(
             url = "$baseUrl/music/drivers/sets",
         )
     }
 
-    fun currentMusicDriversSet(): CurrentMusicDriverSet {
+    fun getCurrentMusicDriversSet(): CurrentMusicDriverSet {
         refreshTokenIfNeeded()
         return get<CurrentMusicDriverSet>(
             url = "$baseUrl/music/drivers/sets/current",
         )
     }
 
-    fun brightness(): Brightness {
+    fun getBrightness(): Brightness {
         refreshTokenIfNeeded()
         return get<Brightness>(
             url = "$baseUrl/led/out/brightness",
         )
     }
 
-    override fun brightness(brightness: Brightness) {
+    override fun setBrightness(brightness: Brightness) {
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/brightness",
@@ -178,14 +174,14 @@ class XLedDevice(
         )
     }
 
-    fun saturation(): Saturation {
+    fun getSaturation(): Saturation {
         refreshTokenIfNeeded()
         return get<Saturation>(
             url = "$baseUrl/led/out/saturation",
         )
     }
 
-    override fun saturation(saturation: Saturation) {
+    override fun setSaturation(saturation: Saturation) {
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/saturation",
@@ -196,7 +192,7 @@ class XLedDevice(
         )
     }
 
-    fun color(): Color<*> {
+    fun getColor(): Color<*> {
         refreshTokenIfNeeded()
         val response = get<Map<String, Any>>(
             url = "$baseUrl/led/color",
@@ -227,7 +223,7 @@ class XLedDevice(
         }
     }
 
-    override fun color(color: Color<*>) {
+    override fun setColor(color: Color<*>) {
         refreshTokenIfNeeded()
         val body = when (color) {
             is RGBColor -> "{\"red\":${color.red},\"green\":${color.green},\"blue\":${color.blue}}"
@@ -248,32 +244,32 @@ class XLedDevice(
         )
     }
 
-    fun config(): LedConfig {
+    fun getConfig(): LedConfig {
         refreshTokenIfNeeded()
         return get<LedConfig>(
             url = "$baseUrl/led/config",
         )
     }
 
-    fun layout(): LedLayout {
+    fun getLayout(): LedLayout {
         return get<LedLayout>(
             url = "$baseUrl/led/layout/full",
         )
     }
 
-    fun effects(): Effects {
+    fun getEffects(): Effects {
         return get<Effects>(
             url = "$baseUrl/led/effects",
         )
     }
 
-    fun effectsCurrent(): EffectsCurrent {
+    fun getEffectsCurrent(): EffectsCurrent {
         return get<EffectsCurrent>(
             url = "$baseUrl/led/effects/current",
         )
     }
 
-    fun movies(): Movies {
+    fun getMovies(): Movies {
         return get<Movies>(
             url = "$baseUrl/movies",
         )
@@ -285,13 +281,13 @@ class XLedDevice(
         )
     }
 
-    fun moviesCurrent(): MoviesCurrentResponse {
+    fun getMoviesCurrent(): MoviesCurrentResponse {
         return get<MoviesCurrentResponse>(
             url = "$baseUrl/movies/current",
         )
     }
 
-    fun moviesCurrent(moviesCurrentRequest: MoviesCurrentRequest): JsonObject {
+    fun setMoviesCurrent(moviesCurrentRequest: MoviesCurrentRequest): JsonObject {
         return post<JsonObject>(
             url = "$baseUrl/movies/current",
             body = moviesCurrentRequest.marshallToBytes(),
@@ -301,13 +297,13 @@ class XLedDevice(
         )
     }
 
-    fun playlist(): PlayList {
+    fun getPlaylist(): PlayList {
         return get<PlayList>(
             url = "$baseUrl/playlist",
         )
     }
 
-    fun playlistCurrent(): String {
+    fun getPlaylistCurrent(): String {
         return get<String>(
             url = "$baseUrl/playlist/current",
         )
@@ -325,8 +321,8 @@ class XLedDevice(
         sequence: XledSequence,
         fps: Int
     ) {
-        color(RGBColor(0, 0, 0))
-        mode(DeviceMode.color)
+        setColor(RGBColor(0, 0, 0))
+        setMode(DeviceMode.color)
         deleteMovies()
 
         val deviceInfo = deviceInfo()
@@ -351,9 +347,9 @@ class XLedDevice(
                 framesNumber = numberOfFrames,
             )
         )
-        moviesCurrent(MoviesCurrentRequest(id = newMovie.id))
+        setMoviesCurrent(MoviesCurrentRequest(id = newMovie.id))
 
-        mode(DeviceMode.movie)
+        setMode(DeviceMode.movie)
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {

@@ -23,16 +23,16 @@ class XLedTest {
         println(xled.deviceInfo)
         println(xled.status())
         println(xled.networkStatus())
-        println(xled.musicEnabled())
-        println(xled.musicDriversCurrent())
-        println(xled.musicDriversSets())
-        println(xled.currentMusicDriversSet())
+        println(xled.getMusicEnabled())
+        println(xled.getMusicDriversCurrent())
+        println(xled.getMusicDriversSets())
+        println(xled.getCurrentMusicDriversSet())
     }
 
     @Test
     fun testMusicStats() {
         while(true) {
-            println(xled.musicStats())
+            println(xled.getMusicStats())
             Thread.sleep(100)
         }
     }
@@ -51,8 +51,8 @@ class XLedTest {
     fun testNewMovie() {
         val deviceInfo = xled.deviceInfo()
 
-        xled.color(RGBColor())
-        xled.mode(DeviceMode.color)
+        xled.setColor(RGBColor())
+        xled.setMode(DeviceMode.color)
         xled.deleteMovies()
         val newMovie = xled.newMovie(
             NewMovieRequest(
@@ -72,13 +72,13 @@ class XLedTest {
                 framesNumber = 1,
             )
         )
-        xled.mode(DeviceMode.movie)
-        println(xled.movies())
-        println(xled.moviesCurrent())
-        println(xled.playlist())
-        println(xled.playlistCurrent())
-        println(xled.effects())
-        println(xled.effectsCurrent())
+        xled.setMode(DeviceMode.movie)
+        println(xled.getMovies())
+        println(xled.getMoviesCurrent())
+        println(xled.getPlaylist())
+        println(xled.getPlaylistCurrent())
+        println(xled.getEffects())
+        println(xled.getEffectsCurrent())
     }
 
     @Test
@@ -135,8 +135,8 @@ class XLedTest {
 
     @Test
     fun testColor() {
-        xled.color(RGBColor(0, 0, 0))
-        xled.mode(DeviceMode.color)
+        xled.setColor(RGBColor(0, 0, 0))
+        xled.setMode(DeviceMode.color)
         xled.deleteMovies()
 
         val fps = 1
@@ -186,11 +186,11 @@ class XLedTest {
                 framesNumber = numberOfFrames,
             )
         )
-        xled.moviesCurrent(
+        xled.setMoviesCurrent(
             MoviesCurrentRequest(
                 id = newMovie.id
             )
         )
-        xled.mode(DeviceMode.movie)
+        xled.setMode(DeviceMode.movie)
     }
 }

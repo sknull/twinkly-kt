@@ -34,7 +34,7 @@ class VUMeter(
         val beat = BeatDetect(algorithm = DetectMode.SOUND_ENERGY)
 
         val fft = FFT(player.bufferSize(), player.sampleRate())
-        xled.mode(DeviceMode.rt)
+        xled.setMode(DeviceMode.rt)
 
         val canvas = XledFrame(xled.width, xled.height)
 

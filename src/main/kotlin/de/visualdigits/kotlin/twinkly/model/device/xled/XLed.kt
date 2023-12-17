@@ -20,17 +20,17 @@ interface XLed {
 
     fun powerOff()
 
-    fun mode(): DeviceMode
+    fun getMode(): DeviceMode
 
-    fun mode(mode: DeviceMode): JsonObject
+    fun setMode(mode: DeviceMode): JsonObject
 
     fun ledReset()
 
-    fun brightness(brightness: Brightness)
+    fun setBrightness(brightness: Brightness)
 
-    fun saturation(saturation: Saturation)
+    fun setSaturation(saturation: Saturation)
 
-    fun color(color: Color<*>)
+    fun setColor(color: Color<*>)
 
     fun showRealTimeSequence(frameSequence: XledSequence, loop: Int = 1) {
         val frames = frameSequence
