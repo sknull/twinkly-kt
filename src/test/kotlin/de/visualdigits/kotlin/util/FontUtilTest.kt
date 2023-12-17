@@ -7,6 +7,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Test
+import java.awt.GraphicsEnvironment
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -21,7 +22,7 @@ class FontUtilTest {
     fun writeBanner() {
         val image = FontUtil.drawText(
             text = "Hello World! ggg",
-            fontName = "fonts/BigSquareDots.ttf",
+            fontName = "BigSquareDots.ttf",
             fontSize = 21,
             backgroundColor = RGBColor(0, 0, 0),
             textColor = RGBColor(255, 0, 0)
@@ -43,6 +44,28 @@ class FontUtilTest {
         )
 
         sequence.play(xledArray)
+    }
+
+    @Test
+    fun testFigletText() {
+        val xledArrayLandscape = XledArray(
+            xLedDevices = listOf(
+                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
+                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+            )
+        )
+
+        val sequence = XledSequence(
+            fontName = "6x10",
+            targetWidth = xledArrayLandscape.width,
+            targetHeight = xledArrayLandscape.height,
+            frameDelay = 100,
+            Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
+            Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
+            Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
+        )
+
+        sequence.play(xledArrayLandscape)
     }
 
     @Test

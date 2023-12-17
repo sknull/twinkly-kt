@@ -9,6 +9,10 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 class XledArrayTest {
 
@@ -206,7 +210,44 @@ class XledArrayTest {
         frame.expandTop(cyan)
         frame.expandBottom(yellow)
         println(frame)
+    }
 
+    @Test
+    fun testClock() {
+        val xledArrayLandscape = XledArray(
+            xLedDevices = listOf(
+                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
+                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+            )
+        )
+        val canvas = XledFrame(xledArrayLandscape.width, xledArrayLandscape.height)
+        val bgColor = RGBColor(0, 0, 0)
+        val digitColor = RGBColor(255, 0, 0)
+        val doubleColonColor = RGBColor(0, 0, 128)
+        var separator = ":"
+        while (true) {
+            val now = LocalTime.now()
+            val frame = XledFrame(
+                fontName = "xttyb",
+                Triple(now.format(DateTimeFormatter.ofPattern("HH")), bgColor, digitColor),
+                Triple(separator, bgColor, doubleColonColor),
+                Triple(now.format(DateTimeFormatter.ofPattern("mm")), bgColor, digitColor),
+                Triple(separator, bgColor, doubleColonColor),
+                Triple(now.format(DateTimeFormatter.ofPattern("ss")), bgColor, digitColor),
+            )
+//            if (separator == ":") separator = " " else separator = ":"
+            canvas.replaceSubFrame(frame)
+            val dayMarker = (now.hour / 24.0 * xledArrayLandscape.width).roundToInt()
+            for (x in 0 until dayMarker) {
+                canvas[x, 0] = RGBColor(0, 255, 0)
+            }
+            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArrayLandscape.width).roundToInt()
+            for (x in 0 until yearMarker) {
+                canvas[x, xledArrayLandscape.height - 1] = RGBColor(255, 255, 0)
+            }
+            canvas.play(xledArrayLandscape, 1)
+            Thread.sleep(1000)
+        }
     }
 
     @Test

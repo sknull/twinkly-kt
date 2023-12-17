@@ -8,6 +8,7 @@ import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirect
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.util.FontUtil
 import kotlinx.coroutines.delay
+import org.apache.commons.lang3.SystemUtils
 import org.apache.commons.lang3.math.NumberUtils.min
 import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
@@ -58,15 +59,21 @@ open class XledFrame(
         }
     }
 
+    /**
+     * Constructs a frame from the given text with the width and height of the resulting image.
+     * The frame will be probably wider than a xled device and is meant for scrolling.
+     */
     constructor(
         text: String,
+        fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontName: String,
         fontSize: Int,
-        backgroundColor: Color<*>,
-        textColor: Color<*>
+        backgroundColor: Color<*> = RGBColor(0, 0, 0),
+        textColor: Color<*> = RGBColor(255, 0, 0)
     ) : this(
         image = FontUtil.drawText(
             text = text,
+            fontDirectory = fontDirectory,
             fontName = fontName,
             fontSize = fontSize,
             backgroundColor = backgroundColor,
@@ -74,21 +81,63 @@ open class XledFrame(
         )
     )
 
+    /**
+     * Constructs a frame from the given texts with the width and height of the resulting image.
+     * The frame will be probably wider than a xled device and is meant for scrolling.
+     */
     constructor(
+        fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontName: String,
         fontSize: Int,
         vararg texts: Triple<String, Color<*>, Color<*>>
     ): this() {
-        val frames = texts.map { entry ->
+        join(texts.map { entry ->
             XledFrame(
                 text = entry.first,
+                fontDirectory = fontDirectory,
                 fontName = fontName,
                 fontSize = fontSize,
                 backgroundColor = entry.second,
                 textColor = entry.third
             )
-        }
+        })
+    }
 
+    /**
+     * Constructs a frame from the given text with the width and height of the resulting image.
+     * The frame will be probably wider than a xled device and is meant for scrolling.
+     */
+    constructor(
+        text: String,
+        fontName: String = "6x10",
+        backgroundColor: Color<*> = RGBColor(0, 0, 0),
+        textColor: Color<*> = RGBColor(255, 0, 0)
+    ) : this() {
+        val figletFrame = FontUtil.drawFigletText(text, fontName, backgroundColor, textColor)
+        this.frame = figletFrame.frame
+        this.width = figletFrame.width
+        this.height = figletFrame.height
+    }
+
+    /**
+     * Constructs a frame from the given texts with the width and height of the resulting image.
+     * The frame will be probably wider than a xled device and is meant for scrolling.
+     */
+    constructor(
+        fontName: String = "6x10",
+        vararg texts: Triple<String, Color<*>, Color<*>>
+    ): this() {
+        join(texts.map { entry ->
+            XledFrame(
+                text = entry.first,
+                fontName = fontName,
+                backgroundColor = entry.second,
+                textColor = entry.third
+            )
+        })
+    }
+
+    private fun XledFrame.join(frames: List<XledFrame>) {
         val first = frames.first()
         initialize(width = first.width, height = first.height, initialColor = initialColor)
         replaceSubFrame(first, 0, 0)

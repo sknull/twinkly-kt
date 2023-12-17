@@ -44,6 +44,38 @@ class XledSequence(
         }
     }
 
+    constructor(
+        fontName: String,
+        fontSize: Int,
+        targetWidth: Int,
+        targetHeight: Int,
+        frameDelay: Long = 100,
+        vararg texts: Triple<String, Color<*>, Color<*>>
+    ) : this(frameDelay = frameDelay) {
+        val banner = XledFrame(
+            fontName = fontName,
+            fontSize = fontSize,
+            texts = texts
+        )
+
+        addScrollingBanner(banner, targetWidth, targetHeight)
+    }
+
+    constructor(
+        fontName: String,
+        targetWidth: Int,
+        targetHeight: Int,
+        frameDelay: Long = 100,
+        vararg texts: Triple<String, Color<*>, Color<*>>
+    ) : this(frameDelay = frameDelay) {
+        val banner = XledFrame(
+            fontName = fontName,
+            texts = texts
+        )
+
+        addScrollingBanner(banner, targetWidth, targetHeight)
+    }
+
     private fun readSceneDirectory(sceneDirectory: File, initialColor: Color<*>): Boolean {
         val sceneFile = File(sceneDirectory, "scene.json")
         val exists = sceneFile.exists()
@@ -66,23 +98,6 @@ class XledSequence(
             }
         }
         return exists
-    }
-
-    constructor(
-        fontName: String,
-        fontSize: Int,
-        targetWidth: Int,
-        targetHeight: Int,
-        frameDelay: Long,
-        vararg texts: Triple<String, Color<*>, Color<*>>
-    ) : this(frameDelay = frameDelay) {
-        val banner = XledFrame(
-            fontName = fontName,
-            fontSize = fontSize,
-            texts = texts
-        )
-
-        addScrollingBanner(banner, targetWidth, targetHeight)
     }
 
     override fun toString(): String {

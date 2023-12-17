@@ -9,6 +9,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.MovieConfig
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
+import de.visualdigits.kotlin.util.TimeUtil
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -79,6 +80,20 @@ class XLedTest {
         println(xled.getPlaylistCurrent())
         println(xled.getEffects())
         println(xled.getEffectsCurrent())
+    }
+
+    @Test
+    fun testTimer() {
+        val response = xled.setTimer(10, 35, 10, 36)
+        val timer = xled.getTimer()
+        println(timer)
+    }
+
+    @Test
+    fun testTimer2() {
+        val timer = xled.getTimer()
+        val t = TimeUtil.offsetDateTimeOfSecondsFromMidnight(timer.timeNow)
+        println(t)
     }
 
     @Test

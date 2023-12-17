@@ -23,6 +23,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.NewMovieRespons
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.PlayList
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
@@ -33,7 +34,11 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.musicenabled.Mu
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
-import java.util.*
+import de.visualdigits.kotlin.util.TimeUtil
+import java.lang.IllegalStateException
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.util.Base64
 import kotlin.math.min
 
 class XLedDevice(
@@ -45,7 +50,7 @@ class XLedDevice(
 ) {
 
     val deviceInfo: DeviceInfo
-    val layout: LedLayout
+    val ledLayout: LedLayout
 
     override val width: Int
     override val height: Int
@@ -58,13 +63,13 @@ class XLedDevice(
             tokenExpires = System.currentTimeMillis() + login() - 5000
             log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
             deviceInfo = deviceInfo()
-            layout = getLayout()
-            width = if (deviceOrigin.isPortrait()) layout.columns else layout.rows
-            height = if (deviceOrigin.isPortrait()) layout.rows else layout.columns
+            ledLayout = getLayout()
+            width = if (deviceOrigin.isPortrait()) ledLayout.columns else ledLayout.rows
+            height = if (deviceOrigin.isPortrait()) ledLayout.rows else ledLayout.columns
             bytesPerLed = deviceInfo.bytesPerLed!!
         } else {
             deviceInfo = DeviceInfo()
-            layout = LedLayout()
+            ledLayout = LedLayout()
             width = 0
             height = 0
             bytesPerLed = 0
@@ -413,5 +418,53 @@ class XLedDevice(
                 "Content-Type" to "application/json"
             )
         )
+    }
+
+    override fun getTimer(): Timer {
+        return get<Timer>(
+            url = "$baseUrl/timer"
+        )
+    }
+
+    override fun setTimer(
+        timeOn: OffsetDateTime,
+        timeOff: OffsetDateTime
+    ): Timer {
+        return setTimer(
+            timeOnHour = timeOn.hour,
+            timeOnMinute = timeOn.minute,
+            timeOffHour = timeOff.hour,
+            timeOffMinute = timeOff.minute,
+        )
+    }
+
+    override fun setTimer(
+        timeOnHour: Int,
+        timeOnMinute: Int,
+        timeOffHour: Int,
+        timeOffMinute: Int
+    ): Timer {
+        val timer = Timer(
+            timeNow = TimeUtil.utcSecondsAfterMidnight(),
+            timeOn =  TimeUtil.utcSecondsAfterMidnight(timeOnHour, timeOnMinute),
+            timeOff =  TimeUtil.utcSecondsAfterMidnight(timeOffHour, timeOffMinute)
+        )
+        return setTimer(timer)
+    }
+
+    override fun setTimer(timer: Timer): Timer {
+        val result = post<JsonObject>(
+            url = "$baseUrl/timer",
+            body = timer.marshallToBytes(),
+            headers = mutableMapOf(
+                "Content-Type" to "application/json"
+            )
+        )
+        return if (result.responseCode == ResponseCode.Ok) {
+            getTimer()
+        }
+        else {
+            throw IllegalStateException("Could not set timer")
+        }
     }
 }
