@@ -504,7 +504,7 @@ class AudioInput(
     /**
      * Returns an AudioFormat object that describes the audio properties
      * of this sound generating object. This is often useful information
-     * when doing sound analysis or some synthesis, but typically you
+     * when doing sound fft or some synthesis, but typically you
      * will not need to know about the specific format.
      *
      * @return an AudioFormat describing this sound object.

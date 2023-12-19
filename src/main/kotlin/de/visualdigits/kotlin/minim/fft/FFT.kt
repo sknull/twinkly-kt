@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim.analysis
+package de.visualdigits.kotlin.minim.fft
 
 import de.visualdigits.kotlin.minim.buffer.AudioBuffer
 import org.apache.commons.math3.transform.DftNormalization

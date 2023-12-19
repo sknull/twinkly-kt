@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.minim.analysis
+package de.visualdigits.kotlin.minim.fft
 
 /**
  * A Rectangular window function
