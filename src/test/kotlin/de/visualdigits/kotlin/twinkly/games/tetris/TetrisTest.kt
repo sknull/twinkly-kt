@@ -17,8 +17,8 @@ import kotlin.reflect.full.createInstance
 class TetrisTest {
 
     private val xledArray = XledArray(listOf(
-        XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
+        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
+        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
     ))
 
     private val board = XledFrame(xledArray.width, xledArray.height)

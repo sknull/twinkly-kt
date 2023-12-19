@@ -1,9 +1,8 @@
-package de.visualdigits.kotlin.twinkly.model
+package de.visualdigits.kotlin.twinkly.model.device
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.common.networkstatus.NetworkStatus
-import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import org.slf4j.LoggerFactory

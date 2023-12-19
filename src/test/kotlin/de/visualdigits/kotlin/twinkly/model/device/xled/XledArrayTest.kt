@@ -17,9 +17,16 @@ import kotlin.math.roundToInt
 class XledArrayTest {
 
     private val xledArray = XledArray(listOf(
-        XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
+        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
+        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
     ))
+
+    val xledArrayLandscape = XledArray(
+        xLedDevices = listOf(
+            XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
+            XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+        )
+    )
 
     @Test
     fun testPowerOn() {
@@ -214,12 +221,6 @@ class XledArrayTest {
 
     @Test
     fun testClock() {
-        val xledArrayLandscape = XledArray(
-            xLedDevices = listOf(
-                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
-            )
-        )
         val canvas = XledFrame(xledArrayLandscape.width, xledArrayLandscape.height)
         val bgColor = RGBColor(0, 0, 0)
         val digitColor = RGBColor(255, 0, 0)
@@ -275,12 +276,6 @@ class XledArrayTest {
 
     @Test
     fun testLandscape() {
-        val xledArrayLandscape = XledArray(
-            xLedDevices = listOf(
-                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_RIGHT),
-                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_RIGHT)
-            )
-        )
         val canvas = XledFrame(xledArrayLandscape.width, xledArrayLandscape.height, RGBWColor(255,0, 0, 0))
         val green = XledFrame(2, xledArrayLandscape.height, RGBWColor(0,255, 0, 0))
         canvas.replaceSubFrame(green, 0, 0)

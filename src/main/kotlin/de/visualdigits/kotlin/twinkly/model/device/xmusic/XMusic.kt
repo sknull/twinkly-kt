@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
-import de.visualdigits.kotlin.twinkly.model.Session
-import de.visualdigits.kotlin.twinkly.model.UDP_PORT_STREAMING
+import de.visualdigits.kotlin.twinkly.model.device.Session
+import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MicEnabled
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicStats

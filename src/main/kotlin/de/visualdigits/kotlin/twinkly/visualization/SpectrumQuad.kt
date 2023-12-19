@@ -6,6 +6,7 @@ import de.visualdigits.kotlin.minim.fft.DetectMode
 import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
@@ -27,7 +28,7 @@ class SpectrumQuad(
     private val colorMaxHiHat: Color<*> = RGBWColor(255, 255, 0, 128),
     private val colorMeterSnare: Color<*> = RGBWColor(0, 0, 255, 0),
     private val colorMaxSnare: Color<*> = RGBWColor(0, 0, 255, 128),
-    private val xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed
+    private val xled: XLed
 ) {
 
     fun run() {

@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
-import de.visualdigits.kotlin.twinkly.model.Session
-import de.visualdigits.kotlin.twinkly.model.UDP_PORT_STREAMING
+import de.visualdigits.kotlin.twinkly.model.device.Session
+import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
@@ -36,12 +36,11 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
 import de.visualdigits.kotlin.util.TimeUtil
 import java.lang.IllegalStateException
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.util.Base64
 import kotlin.math.min
 
-class XLedDevice(
+class XLedDevice private constructor(
     host: String,
     val deviceOrigin: DeviceOrigin
 ): XLed, Session(
@@ -73,6 +72,20 @@ class XLedDevice(
             width = 0
             height = 0
             bytesPerLed = 0
+        }
+    }
+
+    companion object {
+
+        @Volatile
+        private var deviceMap: MutableMap<String, XLedDevice> = mutableMapOf()
+
+        fun getInstance(host: String, deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT): XLedDevice {
+            return deviceMap.get(host) ?: synchronized(this) {
+                XLedDevice(host, deviceOrigin).also {
+                    deviceMap[host] = it
+                }
+            }
         }
     }
 

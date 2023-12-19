@@ -4,20 +4,24 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Test
-import java.awt.GraphicsEnvironment
 import java.io.File
 import javax.imageio.ImageIO
 
 class FontUtilTest {
 
     private val xledArray = XledArray(listOf(
-        XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
+        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
+        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
     ))
 
+    val xledArrayLandscape = XledArray(
+        xLedDevices = listOf(
+            XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
+            XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+        )
+    )
     @Test
     fun writeBanner() {
         val image = FontUtil.drawText(
@@ -48,12 +52,6 @@ class FontUtilTest {
 
     @Test
     fun testFigletText() {
-        val xledArrayLandscape = XledArray(
-            xLedDevices = listOf(
-                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
-            )
-        )
 
         val sequence = XledSequence(
             fontName = "6x10",
@@ -70,13 +68,6 @@ class FontUtilTest {
 
     @Test
     fun testLandscapeText() {
-        val xledArrayLandscape = XledArray(
-            xLedDevices = listOf(
-                XLedDevice("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_RIGHT),
-                XLedDevice("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_RIGHT)
-            )
-        )
-
         val sequence = XledSequence(
             fontName = "fonts/Only When I Do Fonts Regular.ttf",
             fontSize = 10,

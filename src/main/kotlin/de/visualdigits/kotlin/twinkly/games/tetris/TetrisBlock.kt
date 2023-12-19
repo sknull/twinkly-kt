@@ -2,8 +2,7 @@ package de.visualdigits.kotlin.twinkly.games.tetris
 
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
-import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -15,13 +14,13 @@ open class TetrisBlock(
     val pixelsToCheck: List<Pair<Int, Int>>
 ) : XledFrame(width, height, initialColor) {
 
-    private var xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed = XLedDevice("", DeviceOrigin.TOP_LEFT)
+    private var xled: XLed? = null
     private var board: XledFrame = XledFrame(0, 0)
     private var posX: Int = 0
     private var posY: Int = 0
     private var oldFrame: XledFrame = XledFrame(0, 0)
 
-    suspend fun start(xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed, board: XledFrame) {
+    suspend fun start(xled: XLed, board: XledFrame) {
         this.xled = xled
         this.board = board
         posX = Random(System.currentTimeMillis()).nextInt(0, board.width - width)
@@ -49,7 +48,7 @@ open class TetrisBlock(
             posY++
             oldFrame = this.board.subFrame(posX, posY, width, height)
             this.board.replaceSubFrame(this, posX, posY)
-            this.xled.showRealTimeFrame(this.board)
+            this.xled!!.showRealTimeFrame(this.board)
         }
     }
 

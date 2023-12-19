@@ -200,7 +200,7 @@ class XledSequence(
     }
 
     private fun showTransition(
-        xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed,
+        xled: XLed,
         source: Playable,
         target: Playable,
         transitionType: TransitionType?,
@@ -220,7 +220,7 @@ class XledSequence(
     }
 
     private fun showPlayable(
-        xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed,
+        xled: XLed,
         playable: Playable,
         repetitions: Long
     ) {

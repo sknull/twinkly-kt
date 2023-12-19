@@ -6,6 +6,7 @@ import de.visualdigits.kotlin.minim.fft.DetectMode
 import de.visualdigits.kotlin.minim.fft.FFT
 import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
@@ -23,7 +24,7 @@ import kotlin.math.roundToInt
  * @param xled The xled device to use.
  */
 class VUMeter(
-    private val xled: de.visualdigits.kotlin.twinkly.model.device.xled.XLed
+    private val xled: XLed
 ) {
 
     fun run() {
