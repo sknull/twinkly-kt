@@ -18,13 +18,17 @@ class XledArrayTest {
 
     private val xledArray = XledArray(listOf(
         XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
+        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT),
+        XLedDevice.getInstance("192.168.178.58", deviceOrigin = DeviceOrigin.TOP_LEFT),
+        XLedDevice.getInstance("192.168.178.60", deviceOrigin = DeviceOrigin.TOP_LEFT)
     ))
 
     val xledArrayLandscape = XledArray(
         xLedDevices = listOf(
             XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-            XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+            XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
+            XLedDevice.getInstance("192.168.178.58", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
+            XLedDevice.getInstance("192.168.178.60", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
         )
     )
 
@@ -221,7 +225,7 @@ class XledArrayTest {
 
     @Test
     fun testClock() {
-        val canvas = XledFrame(xledArrayLandscape.width, xledArrayLandscape.height)
+        val canvas = XledFrame(xledArray.width, xledArray.height)
         val bgColor = RGBColor(0, 0, 0)
         val digitColor = RGBColor(255, 0, 0)
         val doubleColonColor = RGBColor(0, 0, 128)
@@ -238,15 +242,15 @@ class XledArrayTest {
             )
 //            if (separator == ":") separator = " " else separator = ":"
             canvas.replaceSubFrame(frame)
-            val dayMarker = (now.hour / 24.0 * xledArrayLandscape.width).roundToInt()
+            val dayMarker = (now.hour / 24.0 * xledArray.width).roundToInt()
             for (x in 0 until dayMarker) {
                 canvas[x, 0] = RGBColor(0, 255, 0)
             }
-            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArrayLandscape.width).roundToInt()
+            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArray.width).roundToInt()
             for (x in 0 until yearMarker) {
-                canvas[x, xledArrayLandscape.height - 1] = RGBColor(255, 255, 0)
+                canvas[x, xledArray.height - 1] = RGBColor(255, 255, 0)
             }
-            canvas.play(xledArrayLandscape, 1)
+            canvas.play(xledArray, 1)
             Thread.sleep(1000)
         }
     }
@@ -276,15 +280,15 @@ class XledArrayTest {
 
     @Test
     fun testLandscape() {
-        val canvas = XledFrame(xledArrayLandscape.width, xledArrayLandscape.height, RGBWColor(255,0, 0, 0))
-        val green = XledFrame(2, xledArrayLandscape.height, RGBWColor(0,255, 0, 0))
+        val canvas = XledFrame(xledArray.width, xledArray.height, RGBWColor(255,0, 0, 0))
+        val green = XledFrame(2, xledArray.height, RGBWColor(0,255, 0, 0))
         canvas.replaceSubFrame(green, 0, 0)
-        val blue = XledFrame(2, xledArrayLandscape.height, RGBWColor(0,0, 255, 0))
-        canvas.replaceSubFrame(blue, xledArrayLandscape.width - 2, 0)
+        val blue = XledFrame(2, xledArray.height, RGBWColor(0,0, 255, 0))
+        canvas.replaceSubFrame(blue, xledArray.width - 2, 0)
 
         println(canvas)
 
-        canvas.play(xledArrayLandscape)
+        canvas.play(xledArray)
     }
 
     @Test

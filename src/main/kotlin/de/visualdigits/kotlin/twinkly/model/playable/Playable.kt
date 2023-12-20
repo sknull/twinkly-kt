@@ -62,7 +62,7 @@ interface Playable {
 
     fun play(
         xled: XLed,
-        loop: Int = -1, // endless loop
+        loop: Int = 1, // One shot
         random: Boolean = false,
         transitionType: TransitionType? = TransitionType.STRAIGHT,
         transitionDirection: TransitionDirection? = TransitionDirection.LEFT_RIGHT,
