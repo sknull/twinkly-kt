@@ -12,8 +12,8 @@ import java.time.OffsetDateTime
 
 interface XLed {
 
-    val width: Int
-    val height: Int
+    var width: Int
+    var height: Int
     val bytesPerLed: Int
 
     fun logout()
@@ -22,9 +22,9 @@ interface XLed {
 
     fun powerOff()
 
-    fun getMode(): DeviceMode
+    fun getMode(): DeviceMode?
 
-    fun setMode(mode: DeviceMode): JsonObject
+    fun setMode(mode: DeviceMode): JsonObject?
 
     fun ledReset()
 

@@ -15,7 +15,7 @@ class DevicesHolder {
     @Autowired
     private lateinit var properties: ApplicationProperties
 
-    var xledArray: XledArray = XledArray(listOf())
+    var xledArray: XledArray = XledArray(arrayOf())
     var xledDevices: Map<String, XLedDevice> = mapOf()
 
     @PostConstruct
@@ -23,9 +23,11 @@ class DevicesHolder {
         log.info("XledArrayController TwinklyController...")
         xledDevices = properties.devices.map {
             val value = it.value
-            Pair(it.key.substringAfter('.'), XLedDevice.getInstance(value.ipAddress!!, value.deviceOrigin!!))
+            Pair(it.key.substringAfter('.'), XLedDevice(value.ipAddress!!, width = 0, height = 0))
         }.toMap()
         log.info("Using devices '${xledDevices.keys}'")
-        xledArray = XledArray(xledDevices.values.toList())
+
+        // todo
+//        xledArray = XledArray(xledDevices.values.toList())
     }
 }

@@ -13,11 +13,8 @@ class XMusic(host: String): Session(
     "http://$host/xmusic/v1"
 ) {
 
-    var tokenExpires: Long = 0
-
     init {
-        tokenExpires = System.currentTimeMillis() + login() - 5000
-        log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
+        login()
     }
 
     fun musicConfig(): MusicConfig {

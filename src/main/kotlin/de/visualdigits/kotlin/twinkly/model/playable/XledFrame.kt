@@ -90,7 +90,7 @@ open class XledFrame(
         fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontName: String,
         fontSize: Int,
-        vararg texts: Triple<String, Color<*>, Color<*>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ): this() {
         join(texts.map { entry ->
             XledFrame(
@@ -126,7 +126,7 @@ open class XledFrame(
      */
     constructor(
         fontName: String = "6x10",
-        vararg texts: Triple<String, Color<*>, Color<*>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ): this() {
         join(texts.map { entry ->
             XledFrame(
@@ -152,10 +152,18 @@ open class XledFrame(
     }
 
     operator fun set(x: Int, y: Int, color: Color<*>) {
-        frame[x][y] = color
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            frame[x][y] = color
+        }
     }
 
-    operator fun get(x: Int, y: Int): Color<*> = frame[x][y]
+    operator fun get(x: Int, y: Int): Color<*> {
+        return if (x >= 0 && x < width && y >= 0 && y < height) {
+            frame[x][y]
+        } else {
+            RGBColor(0, 0, 0)
+        }
+    }
 
     override fun toString(): String {
         val sb = StringBuilder()
@@ -214,11 +222,17 @@ open class XledFrame(
 
         val n = max(1, frameDelay / 5000)
         var loopCount = loop
+        var t = System.currentTimeMillis()
         while (loopCount == -1 || loopCount > 0) {
             for (j in 0 until n) {
                 xled.showRealTimeFrame(this)
                 if (loopCount != -1) loopCount--
                 if (loopCount > 0) Thread.sleep(kotlin.math.min(5000, frameDelay))
+            }
+            val now = System.currentTimeMillis()
+            if (t - now > 5000) {
+                t = now
+                xled.setMode(DeviceMode.rt)
             }
         }
     }

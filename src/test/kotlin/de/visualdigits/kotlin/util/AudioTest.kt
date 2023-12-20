@@ -12,15 +12,51 @@ import org.junit.jupiter.api.Test
 
 class AudioTest {
 
-    private val xledArray = XledArray(listOf(
-        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
-    ))
+    private val xledArray = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        )
+    )
+
+    private val xledArrayLandscapeLeft = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        ),
+        DeviceOrigin.BOTTOM_LEFT
+    )
+
+    private val xledArrayLandscapeRight = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        ),
+        DeviceOrigin.TOP_RIGHT
+    )
 
     @Test
     fun testSpectrumAnalyzer() {
         val analyzer = SpectrumAnalyzer(
-            xled = xledArray
+            xled = xledArrayLandscapeRight
         )
         analyzer.run()
     }
@@ -28,7 +64,7 @@ class AudioTest {
     @Test
     fun testSpectrumQuad() {
         val analyzer = SpectrumQuad(
-            xled = xledArray
+            xled = xledArrayLandscapeLeft
         )
         analyzer.run()
     }
@@ -36,7 +72,7 @@ class AudioTest {
     @Test
     fun testOscilloscope() {
         val oscilloscope = Oscilloscope(
-            xled = xledArray
+            xled = xledArrayLandscapeLeft
         )
         oscilloscope.run()
     }

@@ -28,33 +28,51 @@ abstract class Session(
 
     protected val mapper = jacksonObjectMapper()
 
-    protected var authToken: String? = null
+    companion object {
 
-    fun login(): Int {
-        val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
-        log.info("#### Logging into device at $host...")
-        val responseChallenge = post<Map<String, Any>>(
-            url = "$baseUrl/login",
-            body = "{\"challenge\":\"$challenge\"}".toByteArray(),
-            headers = mutableMapOf(
-                "Content-Type" to "application/json"
-            )
-        )
-        authToken = responseChallenge["authentication_token"]!! as String
-        val expireInSeconds = responseChallenge["authentication_token_expires_in"]!! as Int
-        val responseVerify = verify(responseChallenge["challenge-response"]!! as String)
-        if (responseVerify.responseCode != ResponseCode.Ok) throw IllegalStateException("Could not login to device")
-
-        return expireInSeconds * 1000
+        val tokens: MutableMap<String, AuthToken> = mutableMapOf()
     }
 
-    private fun verify(responseChallenge: String): JsonObject {
+    fun login() {
+        if (!tokens.containsKey(host)) {
+            val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
+            log.info("#### Logging into device at $host...")
+            val responseChallenge = post<Map<String, Any>>(
+                url = "$baseUrl/login",
+                body = "{\"challenge\":\"$challenge\"}".toByteArray(),
+                headers = mutableMapOf(
+                    "Content-Type" to "application/json"
+                )
+            )
+            val authToken = responseChallenge["authentication_token"]!! as String
+            val expireInSeconds = responseChallenge["authentication_token_expires_in"]!! as Int
+            val responseVerify = verify(responseChallenge["challenge-response"]!! as String, authToken)
+            if (responseVerify.responseCode != ResponseCode.Ok) throw IllegalStateException("Could not login to device")
+            val tokenExpires = System.currentTimeMillis() + expireInSeconds * 1000 - 5000
+            log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
+            tokens[host] = AuthToken(authToken, tokenExpires)
+        } else {
+            val t = tokens[host]
+            println()
+        }
+
+   }
+
+    fun refreshTokenIfNeeded() {
+        if (System.currentTimeMillis() > (tokens[host]?.tokenExpires?:0)) {
+            log.info("Refreshing token for device '$host'...")
+            login()
+        }
+    }
+
+    private fun verify(responseChallenge: String, authToken: String): JsonObject {
         return post<JsonObject>(
             url = "$baseUrl/verify",
             body = "{\"challenge_response\":\"${responseChallenge}\"}".toByteArray(),
             headers = mutableMapOf(
                 "Content-Type" to "application/json"
-            )
+            ),
+            authToken = authToken
         )
     }
 
@@ -78,10 +96,15 @@ abstract class Session(
         )
     }
 
-    protected inline fun <reified T> post(url: String, body: ByteArray = byteArrayOf(), headers: MutableMap<String, String> = mutableMapOf()): T {
+    protected inline fun <reified T> post(
+        url: String,
+        body: ByteArray = byteArrayOf(),
+        headers: MutableMap<String, String> = mutableMapOf(),
+        authToken: String? = null
+    ): T {
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "POST"
-        authToken?.let { at -> headers["X-Auth-Token"] = at }
+        (authToken?:tokens[host]?.authToken)?.let { at -> headers["X-Auth-Token"] = at }
         headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
         log.info("post '$url' body='${String(body)}' headers=$headers")
         connection.doOutput = true
@@ -102,10 +125,13 @@ abstract class Session(
         }
     }
 
-    protected inline fun <reified T> get(url: String, headers: Map<String, String> = mapOf()): T {
+    protected inline fun <reified T> get(
+        url: String,
+        headers: Map<String, String> = mapOf()
+    ): T {
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "GET"
-        authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
+        tokens[host]?.authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
         headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
         val response = try {
             connection.inputStream.use { ins ->
@@ -121,10 +147,13 @@ abstract class Session(
         }
     }
 
-    protected inline fun <reified T> delete(url: String, headers: Map<String, String> = mapOf()): T {
+    protected inline fun <reified T> delete(
+        url: String,
+        headers: Map<String, String> = mapOf()
+    ): T {
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "DELETE"
-        authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
+        tokens[host]?.authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
         headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
         val response = try {
             connection.inputStream.use { ins ->

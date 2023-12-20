@@ -1,7 +1,6 @@
 package de.visualdigits.kotlin.twinkly.games.tetris
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
@@ -16,10 +15,19 @@ import kotlin.reflect.full.createInstance
 
 class TetrisTest {
 
-    private val xledArray = XledArray(listOf(
-        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
-    ))
+
+    private val xledArray = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        )
+    )
 
     private val board = XledFrame(xledArray.width, xledArray.height)
 

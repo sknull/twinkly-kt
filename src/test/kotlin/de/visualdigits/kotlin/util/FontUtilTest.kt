@@ -11,17 +11,47 @@ import javax.imageio.ImageIO
 
 class FontUtilTest {
 
-    private val xledArray = XledArray(listOf(
-        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT)
-    ))
-
-    val xledArrayLandscape = XledArray(
-        xLedDevices = listOf(
-            XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-            XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+    private val xledArray = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
         )
     )
+
+    private val xledArrayLandscapeLeft = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        ),
+        DeviceOrigin.BOTTOM_LEFT
+    )
+
+    private val xledArrayLandscapeRight = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        ),
+        DeviceOrigin.TOP_RIGHT
+    )
+
     @Test
     fun writeBanner() {
         val image = FontUtil.drawText(
@@ -37,33 +67,37 @@ class FontUtilTest {
     @Test
     fun testText() {
         val sequence = XledSequence(
-            fontName = "fonts/Only When I Do Fonts Regular.ttf",
+            fontName = "Only When I Do Fonts Regular.ttf",
+            fontDirectory = File(ClassLoader.getSystemResource("fonts").toURI()),
             fontSize = 20,
-            targetWidth = xledArray.width,
-            targetHeight = xledArray.height,
-            frameDelay = 100,
-            Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
-            Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
-            Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
+            targetWidth = xledArrayLandscapeRight.width,
+            targetHeight = xledArrayLandscapeRight.height,
+            frameDelay = 30,
+            texts = listOf(
+                Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
+                Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
+                Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
+            )
         )
 
-        sequence.play(xledArray)
+        sequence.play(xledArrayLandscapeRight, -1)
     }
 
     @Test
     fun testFigletText() {
-
         val sequence = XledSequence(
             fontName = "6x10",
-            targetWidth = xledArrayLandscape.width,
-            targetHeight = xledArrayLandscape.height,
-            frameDelay = 100,
-            Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
-            Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
-            Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
+            targetWidth = xledArrayLandscapeRight.width,
+            targetHeight = xledArrayLandscapeRight.height,
+            frameDelay = 30,
+            texts = listOf(
+                Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
+                Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
+                Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
+            )
         )
 
-        sequence.play(xledArrayLandscape)
+        sequence.play(xledArrayLandscapeRight)
     }
 
     @Test
@@ -71,14 +105,15 @@ class FontUtilTest {
         val sequence = XledSequence(
             fontName = "fonts/Only When I Do Fonts Regular.ttf",
             fontSize = 10,
-            targetWidth = xledArrayLandscape.width,
-            targetHeight = xledArrayLandscape.height,
+            targetWidth = xledArrayLandscapeLeft.width,
+            targetHeight = xledArrayLandscapeLeft.height,
             frameDelay = 100,
-            Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
-            Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
-            Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
+            texts = listOf(
+                Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
+                Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
+                Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255)))
         )
 
-        sequence.play(xledArrayLandscape)
+        sequence.play(xledArrayLandscapeLeft)
     }
 }

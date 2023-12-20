@@ -10,6 +10,7 @@ import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirect
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.scene.Scene
 import de.visualdigits.kotlin.twinkly.model.scene.SceneType
+import org.apache.commons.lang3.SystemUtils
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -46,14 +47,16 @@ class XledSequence(
 
     constructor(
         fontName: String,
+        fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontSize: Int,
         targetWidth: Int,
         targetHeight: Int,
         frameDelay: Long = 100,
-        vararg texts: Triple<String, Color<*>, Color<*>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ) : this(frameDelay = frameDelay) {
         val banner = XledFrame(
             fontName = fontName,
+            fontDirectory = fontDirectory,
             fontSize = fontSize,
             texts = texts
         )
@@ -66,7 +69,7 @@ class XledSequence(
         targetWidth: Int,
         targetHeight: Int,
         frameDelay: Long = 100,
-        vararg texts: Triple<String, Color<*>, Color<*>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ) : this(frameDelay = frameDelay) {
         val banner = XledFrame(
             fontName = fontName,

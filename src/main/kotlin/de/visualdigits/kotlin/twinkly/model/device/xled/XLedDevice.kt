@@ -1,12 +1,12 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
-import de.visualdigits.kotlin.twinkly.model.device.Session
-import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
+import de.visualdigits.kotlin.twinkly.model.device.Session
+import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.MoviesCurrentRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
@@ -35,67 +35,50 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
 import de.visualdigits.kotlin.util.TimeUtil
-import java.lang.IllegalStateException
 import java.time.OffsetDateTime
 import java.util.Base64
 import kotlin.math.min
 
-class XLedDevice private constructor(
-    host: String,
-    val deviceOrigin: DeviceOrigin
+class XLedDevice(
+    host: String = "",
+    override var width: Int = 0,
+    override var height: Int = 0
 ): XLed, Session(
     host,
-    "http://$host/xled/v1"
+    "http://$host/xled/v1",
 ) {
 
     val deviceInfo: DeviceInfo
     val ledLayout: LedLayout
 
-    override val width: Int
-    override val height: Int
     override val bytesPerLed: Int
-
-    var tokenExpires: Long = 0
 
     init {
         if (host.isNotEmpty()) {
-            tokenExpires = System.currentTimeMillis() + login() - 5000
-            log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
+            login()
             deviceInfo = deviceInfo()
             ledLayout = getLayout()
-            width = if (deviceOrigin.isPortrait()) ledLayout.columns else ledLayout.rows
-            height = if (deviceOrigin.isPortrait()) ledLayout.rows else ledLayout.columns
             bytesPerLed = deviceInfo.bytesPerLed!!
         } else {
             deviceInfo = DeviceInfo()
             ledLayout = LedLayout()
-            width = 0
-            height = 0
             bytesPerLed = 0
         }
     }
 
-    companion object {
-
-        @Volatile
-        private var deviceMap: MutableMap<String, XLedDevice> = mutableMapOf()
-
-        fun getInstance(host: String, deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT): XLedDevice {
-            return deviceMap.get(host) ?: synchronized(this) {
-                XLedDevice(host, deviceOrigin).also {
-                    deviceMap[host] = it
-                }
-            }
-        }
-    }
-
-    fun refreshTokenIfNeeded() {
-        if (System.currentTimeMillis() > tokenExpires) {
-            log.info("Refreshing token for device '$host'...")
-            tokenExpires = System.currentTimeMillis() + login() - 5000
-            log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
-        }
-    }
+//    companion object {
+//
+//        @Volatile
+//        private var deviceMap: MutableMap<String, XLedDevice> = mutableMapOf()
+//
+//        fun getInstance(host: String, deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT): XLedDevice {
+//            return deviceMap.get(host) ?: synchronized(this) {
+//                XLedDevice(host, deviceOrigin).also {
+//                    deviceMap[host] = it
+//                }
+//            }
+//        }
+//    }
 
     override fun powerOn() {
         refreshTokenIfNeeded()
@@ -371,19 +354,13 @@ class XLedDevice private constructor(
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {
-        val translatedFrame = when (deviceOrigin) {
-            DeviceOrigin.TOP_LEFT -> frame
-            DeviceOrigin.TOP_RIGHT -> frame.rotateLeft()
-            DeviceOrigin.BOTTOM_LEFT -> frame.rotateRight()
-            DeviceOrigin.BOTTOM_RIGHT -> frame.rotate180()
-        }
         UdpClient(host, UDP_PORT_STREAMING).use { udpClient ->
-            translatedFrame.toByteArray(bytesPerLed)
+            frame.toByteArray(bytesPerLed)
                 .toList()
                 .chunked(900)
                 .mapIndexed { index, value ->
                     udpClient.send(byteArrayOf(0x03) +
-                        Base64.getDecoder().decode(authToken) +
+                        Base64.getDecoder().decode(tokens[host]?.authToken?:"") +
                         byteArrayOf(0x00, 0x00) +
                         byteArrayOf(index.toByte()) +
                         value.toByteArray()

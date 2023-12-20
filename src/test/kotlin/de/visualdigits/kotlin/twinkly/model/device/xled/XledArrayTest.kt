@@ -16,20 +16,45 @@ import kotlin.math.roundToInt
 
 class XledArrayTest {
 
-    private val xledArray = XledArray(listOf(
-        XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice.getInstance("192.168.178.58", deviceOrigin = DeviceOrigin.TOP_LEFT),
-        XLedDevice.getInstance("192.168.178.60", deviceOrigin = DeviceOrigin.TOP_LEFT)
-    ))
-
-    val xledArrayLandscape = XledArray(
-        xLedDevices = listOf(
-            XLedDevice.getInstance("192.168.178.35", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-            XLedDevice.getInstance("192.168.178.52", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-            XLedDevice.getInstance("192.168.178.58", deviceOrigin = DeviceOrigin.BOTTOM_LEFT),
-            XLedDevice.getInstance("192.168.178.60", deviceOrigin = DeviceOrigin.BOTTOM_LEFT)
+    private val xledArray = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
         )
+    )
+
+    private val xledArrayLandscapeLeft = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        ),
+        DeviceOrigin.BOTTOM_LEFT
+    )
+
+    private val xledArrayLandscapeRight = XledArray(
+        arrayOf(
+            arrayOf(
+                XLedDevice("192.168.178.35", 10, 21),
+                XLedDevice("192.168.178.58", 10, 21),
+            ),
+            arrayOf(
+                XLedDevice("192.168.178.52", 10, 21),
+                XLedDevice("192.168.178.60", 10, 21)
+            )
+        ),
+        DeviceOrigin.TOP_RIGHT
     )
 
     @Test
@@ -40,6 +65,57 @@ class XledArrayTest {
     @Test
     fun testPowerOff() {
         xledArray.powerOff()
+    }
+
+    @Test
+    fun testMovingStripes() {
+        // vertical
+        for (y in 0 until xledArray.height) {
+            val frame = XledFrame(xledArray.width, xledArray.height)
+            for (x in 0 until xledArray.width) {
+                frame[x, y] = RGBColor(255, 255, 255)
+            }
+            frame.play(xledArray)
+            Thread.sleep(30)
+        }
+
+        // horizontal
+        for (x in 0 until xledArray.width) {
+            val frame = XledFrame(xledArray.width, xledArray.height)
+            for (y in 0 until xledArray.height) {
+                frame[x, y] = RGBColor(255, 255, 255)
+            }
+            frame.play(xledArray)
+            Thread.sleep(30)
+        }
+    }
+
+    @Test
+    fun testPatternHorizontal() {
+        // vertical
+        val frame = XledFrame(xledArray.width, xledArray.height)
+        for (y in 0 until xledArray.height step 3) {
+            for (x in 0 until xledArray.width) {
+                frame[x, y] = RGBColor(255, 0, 0)
+                frame[x, y + 1] = RGBColor(255, 255, 255)
+                frame[x, y + 2] = RGBColor(0, 0, 255)
+            }
+        }
+        frame.play(xledArray)
+    }
+
+    @Test
+    fun testPatternVertical() {
+        // vertical
+        val frame = XledFrame(xledArray.width, xledArray.height)
+        for (y in 0 until xledArray.height) {
+            for (x in 0 until xledArray.width step 3) {
+                frame[x, y] = RGBColor(255, 0, 0)
+                frame[x + 1, y] = RGBColor(255, 255, 255)
+                frame[x + 2, y] = RGBColor(0, 0, 255)
+            }
+        }
+        frame.play(xledArray)
     }
 
     @Test
@@ -141,30 +217,6 @@ class XledArrayTest {
     }
 
     @Test
-    fun testMovingStripes() {
-        // vertical
-        xledArray.setMode(DeviceMode.rt)
-        for (y in 0 until 21) {
-            val frame = XledFrame(20, 21)
-            for (x in 0 until 20) {
-                frame[x, y] = RGBColor(255, 255, 255)
-            }
-            frame.play(xledArray)
-            Thread.sleep(100)
-        }
-
-        // horizontal
-        for (x in 0 until 20) {
-            val frame = XledFrame(20, 21)
-            for (y in 0 until 21) {
-                frame[x, y] = RGBColor(255, 255, 255)
-            }
-            frame.play(xledArray)
-            Thread.sleep(100)
-        }
-    }
-
-    @Test
     fun testSubFrame() {
         val frameRed = XledFrame(xledArray.width, xledArray.height, RGBColor(255,0, 0))
         val frameGreen = XledFrame(10, 10, RGBColor(0,255, 0))
@@ -191,7 +243,7 @@ class XledArrayTest {
     @Test
     fun testSanta() {
         val frame = XledFrame(File(ClassLoader.getSystemResource("images/christmas-scenes/09_santa/frame_001.png").toURI()))
-        frame.play(xled = xledArray,)
+        frame.play(xled = xledArray)
     }
 
     @Test
@@ -225,7 +277,7 @@ class XledArrayTest {
 
     @Test
     fun testClock() {
-        val canvas = XledFrame(xledArray.width, xledArray.height)
+        val canvas = XledFrame(xledArrayLandscapeRight.width, xledArrayLandscapeRight.height)
         val bgColor = RGBColor(0, 0, 0)
         val digitColor = RGBColor(255, 0, 0)
         val doubleColonColor = RGBColor(0, 0, 128)
@@ -234,23 +286,25 @@ class XledArrayTest {
             val now = LocalTime.now()
             val frame = XledFrame(
                 fontName = "xttyb",
-                Triple(now.format(DateTimeFormatter.ofPattern("HH")), bgColor, digitColor),
-                Triple(separator, bgColor, doubleColonColor),
-                Triple(now.format(DateTimeFormatter.ofPattern("mm")), bgColor, digitColor),
-                Triple(separator, bgColor, doubleColonColor),
-                Triple(now.format(DateTimeFormatter.ofPattern("ss")), bgColor, digitColor),
+                texts = listOf(
+                    Triple(now.format(DateTimeFormatter.ofPattern("HH")), bgColor, digitColor),
+                    Triple(separator, bgColor, doubleColonColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("mm")), bgColor, digitColor),
+                    Triple(separator, bgColor, doubleColonColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("ss")), bgColor, digitColor),
+                )
             )
 //            if (separator == ":") separator = " " else separator = ":"
             canvas.replaceSubFrame(frame)
-            val dayMarker = (now.hour / 24.0 * xledArray.width).roundToInt()
+            val dayMarker = (now.hour / 24.0 * xledArrayLandscapeRight.width).roundToInt()
             for (x in 0 until dayMarker) {
                 canvas[x, 0] = RGBColor(0, 255, 0)
             }
-            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArray.width).roundToInt()
+            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArrayLandscapeRight.width).roundToInt()
             for (x in 0 until yearMarker) {
-                canvas[x, xledArray.height - 1] = RGBColor(255, 255, 0)
+                canvas[x, xledArrayLandscapeRight.height - 1] = RGBColor(255, 255, 0)
             }
-            canvas.play(xledArray, 1)
+            canvas.play(xledArrayLandscapeRight, 1)
             Thread.sleep(1000)
         }
     }
@@ -263,8 +317,11 @@ class XledArrayTest {
 
     @Test
     fun testChristmasScenes() {
+        val blackout = XledFrame(xledArray.width, xledArray.height)
+        blackout.play(xledArray)
         val sequence = XledSequence(
             File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()),
+            initialColor = RGBColor(0, 0, 0),
             frameDelay = 5000
         )
         sequence.play(
@@ -280,15 +337,15 @@ class XledArrayTest {
 
     @Test
     fun testLandscape() {
-        val canvas = XledFrame(xledArray.width, xledArray.height, RGBWColor(255,0, 0, 0))
-        val green = XledFrame(2, xledArray.height, RGBWColor(0,255, 0, 0))
+        val canvas = XledFrame(xledArrayLandscapeLeft.width, xledArrayLandscapeLeft.height, RGBWColor(255,0, 0, 0))
+        val green = XledFrame(2, xledArrayLandscapeLeft.height, RGBWColor(0,255, 0, 0))
         canvas.replaceSubFrame(green, 0, 0)
-        val blue = XledFrame(2, xledArray.height, RGBWColor(0,0, 255, 0))
-        canvas.replaceSubFrame(blue, xledArray.width - 2, 0)
+        val blue = XledFrame(2, xledArrayLandscapeLeft.height, RGBWColor(0,0, 255, 0))
+        canvas.replaceSubFrame(blue, xledArrayLandscapeLeft.width - 2, 0)
 
         println(canvas)
 
-        canvas.play(xledArray)
+        canvas.play(xledArrayLandscapeLeft)
     }
 
     @Test

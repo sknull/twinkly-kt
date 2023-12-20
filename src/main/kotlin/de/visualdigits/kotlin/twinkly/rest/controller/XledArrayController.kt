@@ -92,7 +92,8 @@ class XledArrayController {
         if (playable != null && playable?.running == true) {
             stopLoop()
         }
-        currentMode = devicesHolder.xledArray.getMode()
+// todo
+//        currentMode = devicesHolder.xledArray.getMode()
         devicesHolder.xledArray.setMode(DeviceMode.rt)
         playable = XledFrame(bytes)
         playable?.playAsync(
@@ -114,7 +115,8 @@ class XledArrayController {
         if (playable != null && playable?.running == true) {
             stopLoop()
         }
-        currentMode = devicesHolder.xledArray.getMode()
+// todo
+//        currentMode = devicesHolder.xledArray.getMode()
         devicesHolder.xledArray.setMode(DeviceMode.rt)
         playable = XledSequence(frameDelay = frameDelay,
             directory = File(ClassLoader.getSystemResource(directory).toURI()))
