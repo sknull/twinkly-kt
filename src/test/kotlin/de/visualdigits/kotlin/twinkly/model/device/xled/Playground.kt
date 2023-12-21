@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
+import de.visualdigits.kotlin.XledArrayTest
 import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
@@ -9,67 +10,8 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Test
 import java.io.File
-import java.time.LocalTime
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.math.roundToInt
 
-class XledArrayTest {
-
-    private val xledArray = XledArray(
-        arrayOf(
-            arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
-            ),
-            arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
-            )
-        )
-    )
-
-    private val xledArrayLandscapeLeft = XledArray(
-        arrayOf(
-            arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
-            ),
-            arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
-            )
-        ),
-        DeviceOrigin.BOTTOM_LEFT
-    )
-
-    private val xledArrayLandscapeRight = XledArray(
-        arrayOf(
-            arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
-            ),
-            arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
-            )
-        ),
-        DeviceOrigin.TOP_RIGHT
-    )
-
-    @Test
-    fun testDrawLine() {
-        val canvas = XledFrame(
-            width = xledArray.width,
-            height = xledArray.height,
-            initialColor = RGBColor(0, 0, 0)
-        )
-
-        canvas.drawLine(1, 2, 18,10, RGBColor(255, 0, 0))
-        canvas.drawLine(17, 3, 4,20, RGBColor(0, 255, 0))
-
-        canvas.play(xledArray)
-    }
+class Playground : XledArrayTest() {
 
     @Test
     fun testRGBColor() {

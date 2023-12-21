@@ -64,8 +64,8 @@ interface Playable {
         xled: XLed,
         loop: Int = 1, // One shot
         random: Boolean = false,
-        transitionType: TransitionType? = TransitionType.STRAIGHT,
-        transitionDirection: TransitionDirection? = TransitionDirection.LEFT_RIGHT,
+        transitionType: TransitionType? = null,
+        transitionDirection: TransitionDirection? = null,
         transitionBlendMode: BlendMode? = BlendMode.REPLACE,
         transitionDuration: Long = 2550,
         verbose: Boolean = false

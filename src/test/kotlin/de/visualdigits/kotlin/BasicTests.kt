@@ -4,6 +4,8 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import org.junit.jupiter.api.Test
+import kotlin.math.min
+import kotlin.random.Random
 
 class BasicTests : XledArrayTest() {
 
@@ -132,5 +134,52 @@ class BasicTests : XledArrayTest() {
         )
 
         frame.play(xledArray)
+    }
+
+    @Test
+    fun testDrawLines() {
+        val canvas = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(0, 0, 0)
+        )
+
+        canvas.drawLine(0, 0, xledArray.width - 1,xledArray.height - 1, RGBColor(255, 0, 0))
+        canvas.drawLine(xledArray.width / 4, xledArray.height - 3, xledArray.width - 3,3, RGBColor(0, 255, 0))
+
+        canvas.play(xledArray)
+    }
+
+    @Test
+    fun testDrawRectangles() {
+        val canvas = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(0, 0, 0)
+        )
+
+        canvas.drawRect(0, 0, xledArray.width - 1, xledArray.height - 1, RGBColor(255, 0, 0))
+        canvas.drawRect(5, 5, xledArray.width - 6, xledArray.height - 6, RGBColor(0, 255, 0))
+
+        canvas.play(xledArray)
+    }
+
+    @Test
+    fun testDrawCircles() {
+        val canvas = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(0, 0, 0)
+        )
+
+        val random = Random(System.currentTimeMillis())
+        val cx = xledArray.width / 2
+        val cy = xledArray.height / 2
+        for (r in 3 until min(xledArray.width / 2, xledArray.height / 2) step 3) {
+            val color = RGBColor(random.nextInt(0, 256), random.nextInt(0, 256), random.nextInt(0, 256))
+            canvas.drawCircle(cx, cy, r, r, color)
+        }
+
+        canvas.play(xledArray)
     }
 }

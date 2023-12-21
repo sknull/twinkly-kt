@@ -51,11 +51,7 @@ abstract class Session(
             val tokenExpires = System.currentTimeMillis() + expireInSeconds * 1000 - 5000
             log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
             tokens[host] = AuthToken(authToken, tokenExpires)
-        } else {
-            val t = tokens[host]
-            println()
         }
-
    }
 
     fun refreshTokenIfNeeded() {

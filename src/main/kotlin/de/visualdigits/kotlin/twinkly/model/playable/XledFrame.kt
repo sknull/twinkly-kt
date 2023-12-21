@@ -17,8 +17,12 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import javax.imageio.ImageIO
+import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 
 open class XledFrame(
@@ -114,7 +118,12 @@ open class XledFrame(
         backgroundColor: Color<*> = RGBColor(0, 0, 0),
         textColor: Color<*> = RGBColor(255, 0, 0)
     ) : this() {
-        val figletFrame = FontUtil.drawFigletText(text, fontName, backgroundColor, textColor)
+        val figletFrame = FontUtil.drawFigletText(
+            text = text,
+            fontName = fontName,
+            backgroundColor = backgroundColor,
+            textColor = textColor
+        )
         this.frame = figletFrame.frame
         this.width = figletFrame.width
         this.height = figletFrame.height
@@ -419,6 +428,24 @@ open class XledFrame(
         }
 
         return newFrame
+    }
+
+    fun drawCircle(cx: Int, cy: Int, rx: Int, ry: Int, color: Color<*>): XledFrame {
+        for (a in 0 until 360) {
+            val x = (cx + rx * cos(a * PI / 180.0)).roundToInt()
+            val y = (cy + ry * sin(a * PI / 180.0)).roundToInt()
+            this[x, y] = color
+        }
+
+        return this
+    }
+
+    fun drawRect(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
+        drawLine(x0, y0, x1, y0, color)
+        drawLine(x1, y0, x1, y1, color)
+        drawLine(x1, y1, x0, y1, color)
+        drawLine(x0, y1, x0, y0, color)
+        return this
     }
 
     fun drawLine(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
