@@ -11,7 +11,7 @@ import java.lang.IllegalStateException
 import java.time.OffsetDateTime
 
 class XledArray(
-    var xLedDevices: Array<Array<XLedDevice>>,
+    var xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
     val deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
     override var width: Int = 0,
     override var height: Int = 0

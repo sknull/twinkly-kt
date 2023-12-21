@@ -64,7 +64,7 @@ class VUMeter(
         val frameGreen = XledFrame(width, max(0, vu - 3), RGBColor(0, 255, 0))
         val frameYellow = XledFrame(width, min(2, vu), RGBColor(255, 255, 0))
         val frameRed = XledFrame(width, 1, RGBColor(255, 0, 0))
-        val frameBlack = XledFrame(width, xled.height - vu, RGBColor(0, 0, 0))
+        val frameBlack = XledFrame(width, max(0, xled.height - vu), RGBColor(0, 0, 0))
         canvas.replaceSubFrame(frameGreen, offsetX, max(0, xled.height - vu + 3))
         canvas.replaceSubFrame(frameYellow, offsetX, max(0, xled.height - vu + 1))
         canvas.replaceSubFrame(frameRed, offsetX, max(0, xled.height - vu))

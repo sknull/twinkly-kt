@@ -58,67 +58,6 @@ class XledArrayTest {
     )
 
     @Test
-    fun testPowerOn() {
-        xledArray.powerOn()
-    }
-
-    @Test
-    fun testPowerOff() {
-        xledArray.powerOff()
-    }
-
-    @Test
-    fun testMovingStripes() {
-        // vertical
-        for (y in 0 until xledArray.height) {
-            val frame = XledFrame(xledArray.width, xledArray.height)
-            for (x in 0 until xledArray.width) {
-                frame[x, y] = RGBColor(255, 255, 255)
-            }
-            frame.play(xledArray)
-            Thread.sleep(30)
-        }
-
-        // horizontal
-        for (x in 0 until xledArray.width) {
-            val frame = XledFrame(xledArray.width, xledArray.height)
-            for (y in 0 until xledArray.height) {
-                frame[x, y] = RGBColor(255, 255, 255)
-            }
-            frame.play(xledArray)
-            Thread.sleep(30)
-        }
-    }
-
-    @Test
-    fun testPatternHorizontal() {
-        // vertical
-        val frame = XledFrame(xledArray.width, xledArray.height)
-        for (y in 0 until xledArray.height step 3) {
-            for (x in 0 until xledArray.width) {
-                frame[x, y] = RGBColor(255, 0, 0)
-                frame[x, y + 1] = RGBColor(255, 255, 255)
-                frame[x, y + 2] = RGBColor(0, 0, 255)
-            }
-        }
-        frame.play(xledArray)
-    }
-
-    @Test
-    fun testPatternVertical() {
-        // vertical
-        val frame = XledFrame(xledArray.width, xledArray.height)
-        for (y in 0 until xledArray.height) {
-            for (x in 0 until xledArray.width step 3) {
-                frame[x, y] = RGBColor(255, 0, 0)
-                frame[x + 1, y] = RGBColor(255, 255, 255)
-                frame[x + 2, y] = RGBColor(0, 0, 255)
-            }
-        }
-        frame.play(xledArray)
-    }
-
-    @Test
     fun testDrawLine() {
         val canvas = XledFrame(
             width = xledArray.width,
@@ -130,17 +69,6 @@ class XledArrayTest {
         canvas.drawLine(17, 3, 4,20, RGBColor(0, 255, 0))
 
         canvas.play(xledArray)
-    }
-
-    @Test
-    fun testWhites() {
-        val frame = XledFrame(
-            width = xledArray.width,
-            height = xledArray.height,
-            initialColor = RGBColor(255, 255, 255)
-        )
-
-        frame.play(xledArray)
     }
 
     @Test
@@ -273,66 +201,6 @@ class XledArrayTest {
         frame.expandTop(cyan)
         frame.expandBottom(yellow)
         println(frame)
-    }
-
-    @Test
-    fun testClock() {
-        val canvas = XledFrame(xledArrayLandscapeRight.width, xledArrayLandscapeRight.height)
-        val bgColor = RGBColor(0, 0, 0)
-        val digitColor = RGBColor(255, 0, 0)
-        val doubleColonColor = RGBColor(0, 0, 128)
-        var separator = ":"
-        while (true) {
-            val now = LocalTime.now()
-            val frame = XledFrame(
-                fontName = "xttyb",
-                texts = listOf(
-                    Triple(now.format(DateTimeFormatter.ofPattern("HH")), bgColor, digitColor),
-                    Triple(separator, bgColor, doubleColonColor),
-                    Triple(now.format(DateTimeFormatter.ofPattern("mm")), bgColor, digitColor),
-                    Triple(separator, bgColor, doubleColonColor),
-                    Triple(now.format(DateTimeFormatter.ofPattern("ss")), bgColor, digitColor),
-                )
-            )
-//            if (separator == ":") separator = " " else separator = ":"
-            canvas.replaceSubFrame(frame)
-            val dayMarker = (now.hour / 24.0 * xledArrayLandscapeRight.width).roundToInt()
-            for (x in 0 until dayMarker) {
-                canvas[x, 0] = RGBColor(0, 255, 0)
-            }
-            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArrayLandscapeRight.width).roundToInt()
-            for (x in 0 until yearMarker) {
-                canvas[x, xledArrayLandscapeRight.height - 1] = RGBColor(255, 255, 0)
-            }
-            canvas.play(xledArrayLandscapeRight, 1)
-            Thread.sleep(1000)
-        }
-    }
-
-    @Test
-    fun testChristmasTree() {
-        val sequence = XledSequence(File(ClassLoader.getSystemResource("images/christmas-scenes/03_glitter").toURI()))
-        sequence.play(xled = xledArray)
-    }
-
-    @Test
-    fun testChristmasScenes() {
-        val blackout = XledFrame(xledArray.width, xledArray.height)
-        blackout.play(xledArray)
-        val sequence = XledSequence(
-            File(ClassLoader.getSystemResource("images/christmas-scenes").toURI()),
-            initialColor = RGBColor(0, 0, 0),
-            frameDelay = 5000
-        )
-        sequence.play(
-            xled = xledArray,
-            loop = -1,
-            random = true,
-//            transitionType = TransitionType.CURTAIN_CLOSE,
-//            transitionDirection = TransitionDirection.HORIZONTAL,
-            transitionBlendMode = BlendMode.REPLACE,
-            transitionDuration = 1000
-        )
     }
 
     @Test

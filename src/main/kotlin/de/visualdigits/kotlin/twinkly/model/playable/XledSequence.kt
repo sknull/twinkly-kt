@@ -79,6 +79,16 @@ class XledSequence(
         addScrollingBanner(banner, targetWidth, targetHeight)
     }
 
+    fun addImagesFromDirectory(directory: File): XledSequence {
+        directory
+            .listFiles { file -> file.isFile && file.name.lowercase().endsWith(".png") }
+            ?.forEach { image -> add(XledFrame(image)) }
+        return this
+    }
+
+    /**
+     * Read subdirectory nested in a presentation.
+     */
     private fun readSceneDirectory(sceneDirectory: File, initialColor: Color<*>): Boolean {
         val sceneFile = File(sceneDirectory, "scene.json")
         val exists = sceneFile.exists()
@@ -233,6 +243,7 @@ class XledSequence(
                     xled.showRealTimeFrame(playable)
                     if (!running) break
                     Thread.sleep(min(5000, frameDelay))
+                    xled.setMode(DeviceMode.rt)
                 }
             }
 
