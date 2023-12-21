@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.rest.configuration
+package de.visualdigits.kotlin.twinklycontroller.configuration
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.filter.AbstractRequestLoggingFilter

@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.rest.configuration
+package de.visualdigits.kotlin.twinklycontroller.configuration
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

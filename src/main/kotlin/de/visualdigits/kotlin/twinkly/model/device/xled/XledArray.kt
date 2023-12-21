@@ -18,7 +18,7 @@ class XledArray(
 ) : XLed {
 
     val columns = xLedDevices.size
-    val rows = xLedDevices.minOf { column -> column.size }
+    val rows = if (xLedDevices.isNotEmpty()) xLedDevices.minOf { column -> column.size } else 0
     override val bytesPerLed: Int = xLedDevices.flatten().firstOrNull()?.bytesPerLed?:0
 
     constructor(width: Int, height: Int): this(
@@ -32,12 +32,14 @@ class XledArray(
     }
 
     private fun init() {
-        if(deviceOrigin.isPortrait()) {
-            width = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
-            height = (0 until columns ).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
-        } else {
-            width = (0 until columns ).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
-            height = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+        if (xLedDevices.isNotEmpty()) {
+            if(deviceOrigin.isPortrait()) {
+                width = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+                height = (0 until columns ).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
+            } else {
+                width = (0 until columns ).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
+                height = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+            }
         }
     }
 

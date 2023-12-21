@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.twinkly.rest.configuration
+package de.visualdigits.kotlin.twinklycontroller.configuration
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
@@ -24,16 +24,18 @@ class DevicesHolder {
         xledArray = properties.array?.let {
             XledArray(
                 deviceOrigin = it.deviceOrigin,
-                xLedDevices = properties.array?.devices?.map { column ->
-                    column.map { config ->
+                xLedDevices = properties.array?.columns?.map { column ->
+                    column.devices.map { config ->
                         XLedDevice(host = config.ipAddress, config.width.toInt(), config.height.toInt())
                     }.toTypedArray()
                 }?.toTypedArray() ?: arrayOf()
             )
         } ?: XledArray()
-        xledDevices = properties.array?.devices?.flatten()?.map { config ->
-            Pair(config.name, XLedDevice(host = config.ipAddress, config.width.toInt(), config.height.toInt()))
-        }?.toMap()?:mapOf()
+        xledDevices = properties.array?.columns?.flatMap { column ->
+            column.devices.map { config ->
+                Pair(config.name, XLedDevice(host = config.ipAddress, config.width.toInt(), config.height.toInt()))
+            }
+        }?.toMap()?: mapOf()
         log.info("Using devices '${xledDevices.keys}'")
     }
 }

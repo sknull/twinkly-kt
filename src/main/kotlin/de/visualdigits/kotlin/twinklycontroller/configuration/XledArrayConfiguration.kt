@@ -1,10 +1,14 @@
-package de.visualdigits.kotlin.twinkly.rest.configuration
+package de.visualdigits.kotlin.twinklycontroller.configuration
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 
 class XledArrayConfiguration(
     val deviceOrigin: DeviceOrigin,
-    val devices: Array<Array<XledDeviceConfiguration>>
+    val columns: Array<XledDeviceColummn>
+)
+
+class XledDeviceColummn(
+    val devices: Array<XledDeviceConfiguration>
 )
 
 class XledDeviceConfiguration(
