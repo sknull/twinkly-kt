@@ -7,13 +7,13 @@
   <artifactId>twinkly-kt</artifactId>
   <version>${revision}</version>
 
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.1.0</version>
-  </parent>
+  <modules>
+    <module>twinkly-minim</module>
+    <module>twinkly-api</module>
+    <module>twinkly-rest</module>
+  </modules>
 
   <properties>
     <revision>1.0-SNAPSHOT</revision>
@@ -36,12 +36,12 @@
     <version.acme4j-client>2.16</version.acme4j-client>
   </properties>
 
-  <repositories>
+  <!--repositories>
     <repository>
       <id>mavenCentral</id>
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
-  </repositories>
+  </repositories-->
 
   <dependencies>
     <!-- kotlin -->
@@ -61,122 +61,7 @@
       <version>1.7.2</version>
     </dependency>
 
-    <!-- common stuff -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
-      <version>1.10.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-math3</artifactId>
-      <version>3.6.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.imgscalr</groupId>
-      <artifactId>imgscalr-lib</artifactId>
-      <version>4.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.madgag</groupId>
-      <artifactId>animated-gif-lib</artifactId>
-      <version>1.4</version>
-    </dependency>
-
-    <!-- springboot -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-tomcat</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-    <!--dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency-->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-logging</artifactId>
-    </dependency>
-
-    <!-- jackson -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>${version.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${version.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${version.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <version>${version.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-kotlin</artifactId>
-      <version>${version.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>${version.jackson}</version>
-    </dependency>
-
-    <!-- Crypto stuff -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15to18</artifactId>
-      <version>1.72</version>
-    </dependency>
-    <dependency>
-      <groupId>org.shredzone.acme4j</groupId>
-      <artifactId>acme4j-client</artifactId>
-      <version>${version.acme4j-client}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.shredzone.acme4j</groupId>
-      <artifactId>acme4j-utils</artifactId>
-      <version>${version.acme4j-client}</version>
-    </dependency>
-
-    <!-- Ajax -->
-    <!--dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>jquery</artifactId>
-      <version>3.6.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>bootstrap</artifactId>
-      <version>5.2.3</version>
-    </dependency-->
-
     <!-- testing -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -186,8 +71,8 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-    <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+    <sourceDirectory>src/main/kotlin</sourceDirectory>
+    <testSourceDirectory>src/test/kotlin</testSourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -268,14 +153,6 @@
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.1.2</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <executable>true</executable>
-        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -7,7 +7,7 @@
 :toc-title: Contents
 :toclevels: 5
 
-== About
+== Description
 
 This my attempt to bring control of twinkly devices to the kotlin world.
 
@@ -35,129 +35,8 @@ Because of that fact that I cannot get the movie features to work properly for m
 
 This project is far from feature complete, but I think it`s now good enough to see the light of the world :)
 
-== Documentation
+== Modules
 
-=== Known Endpoints
-
-==== XLed Devices
-
-Most of these endpoints are determined using the xled python module.
-
-I currently have two twinkly curtain 210.
-That device type does not appear in the lists found within the code of android app.
-I am sure that some things are swallowed during the decompilation process as the device is definitely supported by that app.
-
-Furthermore I want to note that it seems that devices which are connected into an area inside the app are behaving as one thing when using the api. F.e. if you switch the mode on one device which is part of an area all of the participating devices will switch off.
-The only exception to that seems to be the saturation level which can be set separately for all the devices.
-
-===== brightness
-get + post
-
-http://$host/xled/v1/led/out/brightness
-
-===== color
-get + post
-
-http://$host/xled/v1/led/color
-
-===== config
-get
-
-http://$host/xled/v1/led/config
-
-===== deviceInfo
-get
-
-http://$host/xled/v1/gestalt
-
-===== effects
-get
-
-http://$host/xled/v1/led/effects
-
-===== effectsCurrent
-get
-
-http://$host/xled/v1/led/effects/current
-
-===== layout
-get
-
-http://$host/xled/v1/led/layout/full
-
-===== ledReset
-return get("http://$host/xled/v1/led/reset")
-
-===== login
-post
-
-http://$host/xled/v1/login
-
-===== verify
-post
-
-http://$host/xled/v1/verify
-
-===== mode
-get + post
-
-http://$host/xled/v1/led/mode
-
-===== movie
-post
-
-http://$host/xled/v1/led/movie/full
-
-===== movieConfig
-get + post
-
-http://$host/xled/v1/led/movie/config
-
-===== movies
-get
-
-http://$host/xled/v1/movies
-
-===== moviesCurrent
-get
-
-http://$host/xled/v1/movies/current
-
-===== playlist
-get
-
-http://$host/xled/v1/playlist
-
-===== playlistCurrent
-get
-
-http://$host/xled/v1/playlist/current
-
-===== saturation
-get + post
-
-http://$host/xled/v1/led/out/saturation
-
-==== XMusic Microphone
-
-These endpoints differ from what I have found in the code of the android app.
-
-===== musicConfig
-get
-
-http://$host/xmusic/v1/music/config
-
-===== musicMode
-get
-
-http://$host/xmusic/v1/music/mode
-
-===== musicMicEnabled
-get
-
-http://$host/xmusic/v1/music/mic_enabled
-
-===== musicStats
-get
-
-http://$host/xmusic/v1/music/stats
+- link:twinkly-api/Readme.adoc[twinkly-api]
+- link:twinkly-minim/Readme.adoc[twinkly-minim]
+- link:twinkly-rest/Readme.adoc[twinkly-rest]

@@ -1,0 +1,12 @@
+= twinkly-rest
+:doctype: article
+:description: Project Documentation for twinkly-rest
+:keywords: twinkly, kotlin, audio, processing
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 5
+
+== Description
+
+This module wraps the api features into a REST service.
