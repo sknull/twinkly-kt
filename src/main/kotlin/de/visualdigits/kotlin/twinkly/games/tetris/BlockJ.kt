@@ -6,12 +6,10 @@ class BlockJ : TetrisBlock(
     width = 2,
     height = 3,
     initialColor = RGBColor(0, 0, 255),
-    pixelsToCheck = listOf(Pair(0, 3), Pair(1, 3))
-) {
-
-// todo
-//    init {
-//        frame[0][0] = RGBColor(0, 0, 0, 0)
-//        frame[0][1] = RGBColor(0, 0, 0, 0)
-//    }
-}
+    opaquePixels = listOf(
+        Pair(1, 0),
+        Pair(1, 1),
+        Pair(0, 2),
+        Pair(1, 2),
+    )
+)

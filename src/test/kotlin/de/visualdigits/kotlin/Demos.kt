@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin
 
+import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
@@ -11,6 +12,7 @@ import de.visualdigits.kotlin.twinkly.visualization.Visualizer
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -28,13 +30,8 @@ class Demos : XledArrayTest() {
         val doubleColonColor = RGBColor(0, 0, 128)
         val separatorTime = ":"
         val separatorDate = "."
+
         while (true) {
-            var t = System.currentTimeMillis()
-            var n = System.currentTimeMillis()
-            while (n - t < 1000) {
-                n = System.currentTimeMillis()
-                Thread.sleep(10)
-            }
             var now = LocalDateTime.now()
             val frameTime = XledFrame(
                 fontName = "xttyb",
@@ -68,7 +65,18 @@ class Demos : XledArrayTest() {
                 canvas[x, xledArrayLandscapeRight.height - 1] = RGBColor(255, 255, 0)
             }
             canvas.play(xledArrayLandscapeRight, 1)
+
+            Thread.sleep(100)
         }
+    }
+
+    @Test
+    fun testConwaysGameOfLife() {
+        val conway = Conway(
+            preset = File(ClassLoader.getSystemResource("conway/conway_diehard.png").toURI()),
+            xled = xledArray
+        )
+        conway.run()
     }
 
     @Test

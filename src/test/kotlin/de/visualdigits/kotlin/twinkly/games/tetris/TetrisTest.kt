@@ -1,8 +1,7 @@
 package de.visualdigits.kotlin.twinkly.games.tetris
 
+import de.visualdigits.kotlin.XledArrayTest
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlinx.coroutines.Dispatchers
@@ -10,26 +9,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import java.awt.AWTEvent
+import java.awt.Toolkit
+import java.awt.event.AWTEventListener
+import java.awt.event.KeyEvent
 import kotlin.random.Random
 import kotlin.reflect.full.createInstance
 
-class TetrisTest {
 
-
-    private val xledArray = XledArray(
-        arrayOf(
-            arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
-            ),
-            arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
-            )
-        )
-    )
-
-    private val board = XledFrame(xledArray.width, xledArray.height)
+class TetrisTest : XledArrayTest() {
 
     private val blocks = listOf(
         BlockI::class,
@@ -44,14 +32,79 @@ class TetrisTest {
     private val n = blocks.size
 
     @Test
+    fun testKeyEvents() {
+        val listener = AWTEventListener { event ->
+            val evt = event as KeyEvent
+            if (evt.id == KeyEvent.KEY_PRESSED) {
+                println("key pressed: ${evt.keyCode}")
+            }
+        }
+        Toolkit.getDefaultToolkit().addAWTEventListener(listener, AWTEvent.KEY_EVENT_MASK)
+
+        while (true) {
+            Thread.sleep(10)
+        }
+    }
+
+
+    @Test
+    fun testBlock() {
+        xledArray.setMode(DeviceMode.rt)
+
+        val board = XledFrame(xledArray.width, xledArray.height)
+
+        val block = BlockJ()
+
+        block.draw(board, 1, 1)
+
+        board.play(xledArray)
+    }
+
+    @Test
     fun testBlocks() {
         xledArray.setMode(DeviceMode.rt)
+
+        val board = XledFrame(xledArray.width, xledArray.height)
 
         for (x in 0 until xledArray.width) {
             board[x, xledArray.height - 1] = RGBColor(255, 255, 255)
         }
 
-        blockFountain()
+        var y = 0
+        blocks.forEach { b ->
+            val block = b.createInstance()
+            block.draw(board, 0, y)
+            y += block.height + 1
+        }
+
+        y = 0
+        blocks
+            .map { b ->
+                b.createInstance().rotateLeft()
+            }.forEach { block ->
+                block.draw(board, 5, y)
+                y += block.height + 1
+            }
+
+        y = 0
+        blocks
+            .map { b ->
+                b.createInstance().rotateRight()
+            }.forEach { block ->
+                block.draw(board, 10, y)
+                y += block.height + 1
+            }
+
+        y = 0
+        blocks
+            .map { b ->
+                b.createInstance().rotate180()
+            }.forEach { block ->
+                block.draw(board, 15, y)
+                y += block.height + 1
+            }
+
+        board.play(xledArray)
     }
 
     fun blockFountain() {
@@ -61,7 +114,7 @@ class TetrisTest {
                 val block = blocks[b].createInstance()
                 println("starting block '${block::class.simpleName}'")
                 async(Dispatchers.Default) {
-                    block.start(xledArray, board)
+//                    block.start(xledArray, board)
                 }
                 delay(2000)
             }

@@ -1,55 +1,81 @@
 package de.visualdigits.kotlin.twinkly.games.tetris
 
-import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
-import kotlinx.coroutines.delay
-import kotlin.random.Random
 
 open class TetrisBlock(
     width: Int,
     height: Int,
     initialColor: Color<*>,
-    val pixelsToCheck: List<Pair<Int, Int>>
-) : XledFrame(width, height, initialColor) {
+    var opaquePixels: List<Pair<Int, Int>> = listOf()
+) : XledFrame(width, height) {
 
-    private var xled: XLed? = null
-    private var board: XledFrame = XledFrame(0, 0)
-    private var posX: Int = 0
-    private var posY: Int = 0
-    private var oldFrame: XledFrame = XledFrame(0, 0)
+    protected var transparentPixels: List<Pair<Int, Int>> = listOf()
 
-    suspend fun start(xled: XLed, board: XledFrame) {
-        this.xled = xled
-        this.board = board
-        posX = Random(System.currentTimeMillis()).nextInt(0, board.width - width)
-        oldFrame = board.subFrame(posX, posY, width, height)
-// todo
-//        if (oldFrame.frame.any { row -> row.any { color -> !color.isBlack() } }) {
-//            println("#### all blocked - not starting block '${this::class.simpleName}'")
-//            return
-//        }
-        board.replaceSubFrame(this, posX, posY)
+    init {
+        opaquePixels.forEach { (px, py) ->
+            this[px, py] = initialColor
+        }
+        calculateTransparentPixels()
+    }
 
-        xled.showRealTimeFrame(board)
-
-        running = true
-        while (running) {
-            val collision = pixelsToCheck.any { p -> !this.board[posX + p.first, posY + p.second].isBlack() }
-            if (collision) {
-                println("collision - stopping block '${this::class.simpleName}'")
-                running = false
-                break
+    private fun calculateTransparentPixels(): TetrisBlock {
+        val tp = mutableListOf<Pair<Int, Int>>()
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                if (this[x, y].isBlack()) {
+                    tp.add(Pair(x, y))
+                }
             }
-            delay(300)
-            println("moving block '${this::class.simpleName}'")
-            this.board.replaceSubFrame(oldFrame, posX, posY, BlendMode.REPLACE)
-            posY++
-            oldFrame = this.board.subFrame(posX, posY, width, height)
-            this.board.replaceSubFrame(this, posX, posY)
-            this.xled!!.showRealTimeFrame(this.board)
+        }
+        transparentPixels = tp.toList()
+
+        return this
+    }
+
+    override fun rotateRight(): TetrisBlock {
+        val newFrame = TetrisBlock(height, width, initialColor)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[height - y - 1, x] = this[x, y]
+            }
+        }
+
+        return newFrame.calculateTransparentPixels()
+    }
+
+    override fun rotateLeft(): TetrisBlock {
+        val newFrame = TetrisBlock(height, width, initialColor)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[y, width - x - 1] = this[x, y]
+            }
+        }
+        return newFrame.calculateTransparentPixels()
+    }
+
+    override fun rotate180(): TetrisBlock {
+        val newFrame = TetrisBlock(width, height, initialColor)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                newFrame[width - x - 1, height - y - 1] = this[x, y]
+            }
+        }
+
+        return newFrame.calculateTransparentPixels()
+    }
+
+    fun draw(frame: XledFrame, x: Int, y: Int) {
+        for (by in 0 until height) {
+            for (bx in 0 until width) {
+                if (!this[bx, by].isBlack()) {
+                    frame[x + bx, y + by] = this[bx, by]
+                }
+            }
         }
     }
 
+//    fun opaquePixels(): List<Pair<Int, Int>> {
+//        return opaquePixels.filter { pixel -> pixel.second ==  }
+//    }
 }
