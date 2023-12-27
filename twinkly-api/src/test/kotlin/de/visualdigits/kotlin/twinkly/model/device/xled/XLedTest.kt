@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
-import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.MoviesCurrentRequest
@@ -36,15 +35,6 @@ class XLedTest {
             println(xled.getMusicStats())
             Thread.sleep(100)
         }
-    }
-
-    @Test
-    fun testConwaysGameOfLife() {
-        val conway = Conway(
-            preset = File(ClassLoader.getSystemResource("conway/conway_diehard.png").toURI()),
-            xled = xled
-        )
-        conway.run()
     }
 
     @Disabled("Adding a new movie does not really work but might mess up an existing movie.")

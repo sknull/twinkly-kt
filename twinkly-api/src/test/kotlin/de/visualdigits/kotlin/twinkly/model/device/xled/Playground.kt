@@ -1,7 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.XledArrayTest
-import de.visualdigits.kotlin.twinkly.games.conway.Conway
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
@@ -217,14 +216,5 @@ class Playground : XledArrayTest() {
     @Test
     fun testColors() {
         xledArray.setColor(RGBWColor(0, 0, 0, 255))
-    }
-
-    @Test
-    fun testConwaysGameOfLife() {
-        val conway = Conway(
-            preset = File(ClassLoader.getSystemResource("conway/conway_gosper.png").toURI()),
-            xled = xledArray
-        )
-        conway.run()
     }
 }
