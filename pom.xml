@@ -12,6 +12,8 @@
   <modules>
     <module>klanglicht-module-dmx</module>
     <module>klanglicht-module-audioprocessing</module>
+    <module>klanglicht-module-yamaha</module>
+    <module>klanglicht-module-yamahaadvantage</module>
     <module>klanglicht-module-twinkly</module>
     <module>klanglicht-rest</module>
     <module>twinkly-games</module>

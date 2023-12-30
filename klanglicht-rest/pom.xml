@@ -31,6 +31,16 @@
       <artifactId>klanglicht-module-dmx</artifactId>
       <version>${revision}</version>
     </dependency>
+    <dependency>
+      <groupId>de.visualdigits</groupId>
+      <artifactId>klanglicht-module-yamahaadvantage</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.visualdigits</groupId>
+      <artifactId>klanglicht-module-yamaha</artifactId>
+      <version>${revision}</version>
+    </dependency>
 
     <!-- common stuff -->
     <dependency>

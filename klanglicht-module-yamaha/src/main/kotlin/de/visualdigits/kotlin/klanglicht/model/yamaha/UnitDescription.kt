@@ -8,7 +8,7 @@ import java.io.IOException
 import java.io.InputStream
 
 @JacksonXmlRootElement(localName = "Unit_Description")
-class UnitDescription : AbstractMenuProvider() {
+class UnitDescription : de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider() {
 
     @JacksonXmlProperty(localName = "Version", isAttribute = true)
     val version: String? = null
