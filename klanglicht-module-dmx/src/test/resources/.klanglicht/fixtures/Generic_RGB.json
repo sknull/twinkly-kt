@@ -1,0 +1,34 @@
+{
+	"manufacturer": "Generic", 
+	"model": "RGB", 
+	"calibration": {
+		"red": 1.0, 
+		"green": 1.0, 
+		"blue": 1.0
+	}, 
+
+	"channels": {
+		"RGB Mode": [{
+				"name": "Red", 
+				"function": "Red (0%-100%)", 
+				"type": "RED", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Green", 
+				"function": "Green (0%-100%)", 
+				"type": "GREEN", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Blue", 
+				"function": "Blue (0%-100%)", 
+				"type": "BLUE", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255
+			}]
+	}
+}

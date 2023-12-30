@@ -23,12 +23,12 @@
     <!-- project -->
     <dependency>
       <groupId>de.visualdigits</groupId>
-      <artifactId>twinkly-api</artifactId>
+      <artifactId>klanglicht-module-twinkly</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>de.visualdigits</groupId>
-      <artifactId>klanglicht-dmx</artifactId>
+      <artifactId>klanglicht-module-dmx</artifactId>
       <version>${revision}</version>
     </dependency>
 

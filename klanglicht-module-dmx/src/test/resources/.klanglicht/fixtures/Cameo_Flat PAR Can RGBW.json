@@ -1,0 +1,547 @@
+{
+	"manufacturer": "Cameo", 
+	"model": "Flat PAR Can RGBW", 
+	"calibration": {
+		"red": 1.0, 
+		"green": 1.0, 
+		"blue": 1.0
+	}, 
+    
+    "colorPresets": {
+        "Red": {
+            "red": 255, 
+            "green": 0, 
+            "blue": 0
+        },
+        "Amber": {
+            "red": 255, 
+            "green": 191, 
+            "blue": 0
+        },
+        "YellowWarm": {
+            "red": 220, 
+            "green": 200, 
+            "blue": 120
+        },
+        "Yellow": {
+            "red": 255, 
+            "green": 255, 
+            "blue": 0
+        },
+        "Green": {
+            "red": 0, 
+            "green": 255, 
+            "blue": 0
+        },
+        "Turqouise": {
+            "red": 0, 
+            "green": 255, 
+            "blue": 140
+        },
+        "Cyan": {
+            "red": 0, 
+            "green": 255, 
+            "blue": 255
+        },
+        "Blue": {
+            "red": 0, 
+            "green": 0, 
+            "blue": 255
+        }, 
+        "Lavender": {
+            "red": 245, 
+            "green": 180, 
+            "blue": 255
+        },
+        "Magenta": {
+            "red": 255, 
+            "green": 0, 
+            "blue": 120
+        },
+        "Pink": {
+            "red": 255, 
+            "green": 150, 
+            "blue": 220
+        },
+        "Mauve": {
+            "red": 255, 
+            "green": 0, 
+            "blue": 255
+        },
+        "WarmWhite": {
+            "red": 200, 
+            "green": 150, 
+            "blue": 0,
+            "white": 255
+        },
+        "White": {
+            "white": 255
+        },
+        "ColdWhite": {
+            "red": 0, 
+            "green": 245, 
+            "blue": 250,
+            "white": 255
+        }
+    },
+
+	"channels": {
+		"2-Channel Mode": [{
+				"name": "MasterDimmer", 
+				"function": "Master Dimmer (0%-100%)", 
+				"type": "MASTER_DIMMER", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Macro", 
+				"function": "Colour Macro", 
+				"type": "RANGES", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "MacroOff", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "Red", 
+						"minValue": 6, 
+						"type": "SWITCH"
+					}, {
+						"name": "Amber", 
+						"minValue": 14, 
+						"type": "SWITCH"
+					}, {
+						"name": "YellowWarm", 
+						"minValue": 22, 
+						"type": "SWITCH"
+					}, {
+						"name": "Yellow", 
+						"minValue": 30, 
+						"type": "SWITCH"
+					}, {
+						"name": "Green", 
+						"minValue": 38, 
+						"type": "SWITCH"
+					}, {
+						"name": "Turqouise", 
+						"minValue": 46, 
+						"type": "SWITCH"
+					}, {
+						"name": "Cyan", 
+						"minValue": 54, 
+						"type": "SWITCH"
+					}, {
+						"name": "Blue", 
+						"minValue": 62, 
+						"type": "SWITCH"
+					}, {
+						"name": "Lavender", 
+						"minValue": 70, 
+						"type": "SWITCH"
+					}, {
+						"name": "Mauve", 
+						"minValue": 78, 
+						"type": "SWITCH"
+					}, {
+						"name": "Magenta", 
+						"minValue": 86, 
+						"type": "SWITCH"
+					}, {
+						"name": "Pink", 
+						"minValue": 94, 
+						"type": "SWITCH"
+					}, {
+						"name": "WarmWhite", 
+						"minValue": 102, 
+						"type": "SWITCH"
+					}, {
+						"name": "White", 
+						"minValue": 111, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColdWhite", 
+						"minValue": 118, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpStop", 
+						"minValue": 126, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpSpeed", 
+						"minValue": 129, 
+						"type": "SPEED"
+					}, {
+						"name": "ColorFadeSpeed", 
+						"minValue": 193, 
+						"type": "SPEED"
+					}]
+			}], 
+
+		"3-Channel Mode 1": [{
+				"name": "MasterDimmer", 
+				"function": "Master Dimmer (0%-100%)", 
+				"type": "MASTER_DIMMER", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Stroboscope", 
+				"function": "Stroboscope (rate 0%-100%)", 
+				"type": "STROBOSCOPE", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Macro", 
+				"function": "Colour Macro", 
+				"type": "RANGES", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "MacroOff", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "Red", 
+						"minValue": 5, 
+						"type": "SWITCH"
+					}, {
+						"name": "Green", 
+						"minValue": 16, 
+						"type": "SWITCH"
+					}, {
+						"name": "Blue", 
+						"minValue": 27, 
+						"type": "SWITCH"
+					}, {
+						"name": "Yellow", 
+						"minValue": 38, 
+						"type": "SWITCH"
+					}, {
+						"name": "Magenta", 
+						"minValue": 49, 
+						"type": "SWITCH"
+					}, {
+						"name": "Cyan", 
+						"minValue": 60, 
+						"type": "SWITCH"
+					}, {
+						"name": "White", 
+						"minValue": 71, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpSpeed", 
+						"minValue": 81, 
+						"type": "SPEED"
+					}, {
+						"name": "ColorFadeSpeed", 
+						"minValue": 151, 
+						"type": "SPEED"
+					}, {
+						"name": "SoundToLight", 
+						"minValue": 221, 
+						"type": "SENSITIVITY"
+					}]
+			}], 
+
+		"3-Channel Mode 2": [{
+				"name": "Red", 
+				"function": "Red (0%-100%)", 
+				"type": "RED", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Green", 
+				"function": "Green (0%-100%)", 
+				"type": "GREEN", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Blue", 
+				"function": "Blue (0%-100%)", 
+				"type": "BLUE", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255
+			}], 
+
+		"3-Channel Mode 3": [{
+				"name": "MasterDimmer", 
+				"function": "Master Dimmer (0%-100%)", 
+				"type": "MASTER_DIMMER", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Stroboscope", 
+				"function": "Stroboscope (rate 0%-100%)", 
+				"type": "STROBOSCOPE", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Macro", 
+				"function": "Colour Macro", 
+				"type": "RANGES", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "MacroOff", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "Red", 
+						"minValue": 6, 
+						"type": "SWITCH"
+					}, {
+						"name": "Amber", 
+						"minValue": 14, 
+						"type": "SWITCH"
+					}, {
+						"name": "YellowWarm", 
+						"minValue": 22, 
+						"type": "SWITCH"
+					}, {
+						"name": "Yellow", 
+						"minValue": 30, 
+						"type": "SWITCH"
+					}, {
+						"name": "Green", 
+						"minValue": 38, 
+						"type": "SWITCH"
+					}, {
+						"name": "Turqouise", 
+						"minValue": 46, 
+						"type": "SWITCH"
+					}, {
+						"name": "Cyan", 
+						"minValue": 54, 
+						"type": "SWITCH"
+					}, {
+						"name": "Blue", 
+						"minValue": 62, 
+						"type": "SWITCH"
+					}, {
+						"name": "Lavender", 
+						"minValue": 70, 
+						"type": "SWITCH"
+					}, {
+						"name": "Mauve", 
+						"minValue": 78, 
+						"type": "SWITCH"
+					}, {
+						"name": "Magenta", 
+						"minValue": 86, 
+						"type": "SWITCH"
+					}, {
+						"name": "Pink", 
+						"minValue": 94, 
+						"type": "SWITCH"
+					}, {
+						"name": "WarmWhite", 
+						"minValue": 102, 
+						"type": "SWITCH"
+					}, {
+						"name": "White", 
+						"minValue": 111, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColdWhite", 
+						"minValue": 118, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpStop", 
+						"minValue": 126, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpSpeed", 
+						"minValue": 129, 
+						"type": "SPEED"
+					}, {
+						"name": "ColorFadeSpeed", 
+						"minValue": 193, 
+						"type": "SPEED"
+					}]
+			}], 
+
+		"4-Channel Mode": [{
+				"name": "Red", 
+				"function": "Red (0-100%)", 
+				"type": "RED", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Green", 
+				"function": "Green (0-100%)", 
+				"type": "GREEN", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Blue", 
+				"function": "Blue (0-100%)", 
+				"type": "BLUE", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "White", 
+				"function": "White (0-100%)", 
+				"type": "WHITE", 
+				"channelOffset": 3, 
+				"minValue": 0, 
+				"maxValue": 255
+			}], 
+
+		"8-Channel Mode": [{
+				"name": "MasterDimmer", 
+				"function": "Master Dimmer (0%-100%)", 
+				"type": "MASTER_DIMMER", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Stroboscope", 
+				"function": "Stroboscope (rate 0%-100%)", 
+				"type": "STROBOSCOPE", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Red", 
+				"function": "Red (0-100%)", 
+				"type": "RED", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Green", 
+				"function": "Green (0-100%)", 
+				"type": "GREEN", 
+				"channelOffset": 3, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Blue", 
+				"function": "Blue (0-100%)", 
+				"type": "BLUE", 
+				"channelOffset": 4, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "White", 
+				"function": "White (0-100%)", 
+				"type": "WHITE", 
+				"channelOffset": 5, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Macro", 
+				"function": "Colour Macro", 
+				"type": "RANGES", 
+				"channelOffset": 6, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "MacroOff", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "Red", 
+						"minValue": 6, 
+						"type": "SWITCH"
+					}, {
+						"name": "Amber", 
+						"minValue": 14, 
+						"type": "SWITCH"
+					}, {
+						"name": "YellowWarm", 
+						"minValue": 22, 
+						"type": "SWITCH"
+					}, {
+						"name": "Yellow", 
+						"minValue": 30, 
+						"type": "SWITCH"
+					}, {
+						"name": "Green", 
+						"minValue": 38, 
+						"type": "SWITCH"
+					}, {
+						"name": "Turqouise", 
+						"minValue": 46, 
+						"type": "SWITCH"
+					}, {
+						"name": "Cyan", 
+						"minValue": 54, 
+						"type": "SWITCH"
+					}, {
+						"name": "Blue", 
+						"minValue": 62, 
+						"type": "SWITCH"
+					}, {
+						"name": "Lavender", 
+						"minValue": 70, 
+						"type": "SWITCH"
+					}, {
+						"name": "Mauve", 
+						"minValue": 78, 
+						"type": "SWITCH"
+					}, {
+						"name": "Magenta", 
+						"minValue": 86, 
+						"type": "SWITCH"
+					}, {
+						"name": "Pink", 
+						"minValue": 94, 
+						"type": "SWITCH"
+					}, {
+						"name": "WarmWhite", 
+						"minValue": 102, 
+						"type": "SWITCH"
+					}, {
+						"name": "White", 
+						"minValue": 111, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColdWhite", 
+						"minValue": 118, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpStop", 
+						"minValue": 126, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorJumpSpeed", 
+						"minValue": 129, 
+						"type": "SPEED"
+					}, {
+						"name": "ColorFadeSpeed", 
+						"minValue": 193, 
+						"type": "SPEED"
+					}]
+			}, {
+				"name": "SoundToLight", 
+				"function": "Sound to light", 
+				"type": "RANGES", 
+				"channelOffset": 7, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "Off", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "SoundToLight", 
+						"minValue": 6, 
+						"type": "SENSITIVITY"
+					}]
+			}]
+	}
+}

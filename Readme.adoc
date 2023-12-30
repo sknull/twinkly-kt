@@ -37,6 +37,6 @@ This project is far from feature complete, but I think it`s now good enough to s
 
 == Modules
 
-- link:twinkly-api/Readme.adoc[twinkly-api]
-- link:twinkly-minim/Readme.adoc[twinkly-minim]
+- link:klanglicht-module-twinkly/Readme.adoc[klanglicht-module-twinkly]
+- link:klanglicht-module-audioprocessing/Readme.adoc[klanglicht-module-audioprocessing]
 - link:klanglicht-rest/Readme.adoc[twinkly-rest]

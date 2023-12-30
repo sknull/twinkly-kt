@@ -1,0 +1,181 @@
+{
+	"manufacturer": "Renkforce", 
+	"model": "Moving Head GM107", 
+	"parameters": {
+		"maxPano": 540, 
+		"maxTilt": 180
+	}, 
+
+	"calibration": {
+		"red": 1.0, 
+		"green": 1.0, 
+		"blue": 1.0
+	}, 
+
+	"channels": {
+		"5-Channel Mode": [{
+				"name": "Pan", 
+				"function": "Pano movement (0%-100%)", 
+				"type": "PAN", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Tilt", 
+				"function": "Tilt movement (0%-100%)", 
+				"type": "TILT", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Speed", 
+				"function": "Speed for movements (0%-100%)", 
+				"type": "SPEED", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Stroboscope", 
+				"function": "Stroboscope slow -> fast (0%-100%)", 
+				"type": "STROBOSCOPE", 
+				"channelOffset": 3, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Macro", 
+				"function": "Colour Macro", 
+				"type": "VALUE", 
+				"channelOffset": 4, 
+				"minValue": 0, 
+				"maxValue": 255
+			}], 
+
+		"13-Channel Mode": [{
+				"name": "Pan", 
+				"function": "Pano movement (0%-100%)", 
+				"type": "PAN", 
+				"channelOffset": 0, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "PanFine", 
+				"function": "Pano fine adjustment (0%-100%)", 
+				"type": "PAN_FINE", 
+				"channelOffset": 1, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Tilt", 
+				"function": "Tilt movement (0%-100%)", 
+				"type": "TILT", 
+				"channelOffset": 2, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "TiltFine", 
+				"function": "Tilt fine adjustment (0%-100%)", 
+				"type": "TILT_FINE", 
+				"channelOffset": 3, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Speed", 
+				"function": "Speed for movements fast -> slow (0%-100%)", 
+				"type": "MOVEMENT_SPEED", 
+				"channelOffset": 4, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Stroboscope", 
+				"function": "Stroboscope slow -> fast (0%-100%)", 
+				"type": "STROBOSCOPE", 
+				"channelOffset": 5, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Red", 
+				"function": "Red (0%-100%)", 
+				"type": "RED", 
+				"channelOffset": 6, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Green", 
+				"function": "Green (0%-100%)", 
+				"type": "GREEN", 
+				"channelOffset": 7, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "Blue", 
+				"function": "Blue (0%-100%)", 
+				"type": "BLUE", 
+				"channelOffset": 8, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "White", 
+				"function": "White (0%-100%)", 
+				"type": "WHITE", 
+				"channelOffset": 9, 
+				"minValue": 0, 
+				"maxValue": 255
+			}, {
+				"name": "ColorMode", 
+				"function": "Colour Mode", 
+				"type": "RANGES", 
+				"channelOffset": 10, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "MacroOff", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "ColorMacro", 
+						"minValue": 1, 
+						"type": "VALUE"
+					}]
+			}, {
+				"name": "AutoMode", 
+				"function": "Auto Mode", 
+				"type": "RANGES", 
+				"channelOffset": 11, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "AutoOff", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "AutoSlow", 
+						"minValue": 1, 
+						"type": "SWITCH"
+					}, {
+						"name": "AutoFast", 
+						"minValue": 85, 
+						"type": "SWITCH"
+					}, {
+						"name": "SoundToLight", 
+						"minValue": 170, 
+						"type": "SENSITIVITY"
+					}]
+			}, {
+				"name": "Reset", 
+				"function": "Reset Device", 
+				"type": "RANGES", 
+				"channelOffset": 12, 
+				"minValue": 0, 
+				"maxValue": 255, 
+				"ranges": [{
+						"name": "NOP", 
+						"minValue": 0, 
+						"type": "SWITCH"
+					}, {
+						"name": "Reset", 
+						"minValue": 255, 
+						"type": "SWITCH"
+					}]
+			}]
+	}
+}

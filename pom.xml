@@ -10,11 +10,11 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>klanglicht-dmx</module>
-    <module>twinkly-minim</module>
-    <module>twinkly-api</module>
-    <module>twinkly-games</module>
+    <module>klanglicht-module-dmx</module>
+    <module>klanglicht-module-audioprocessing</module>
+    <module>klanglicht-module-twinkly</module>
     <module>klanglicht-rest</module>
+    <module>twinkly-games</module>
   </modules>
 
   <properties>

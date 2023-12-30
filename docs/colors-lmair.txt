@@ -1,0 +1,64 @@
+red				ff0000
+green			00ff00
+blue			0000ff
+		
+yellow			ffff00
+magenta			ff00ff
+cyan			00ffff
+
+orange			ff8000
+purple			8000ff
+
+dark red		400000
+dark green		004000
+dark blue		000040
+
+dark yellow		404000
+dark magenta	400040
+dark cyan		004040
+
+
+Background Rainbow Blue-Red {group:background;color:#0000ff,#00ffff,#00ff00,#ffff00,#ff8000,#ff0000}	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=0000ff,00ffff,00ff00,80ff00,ffff00,ff3000,ff0000&turnOn=true&
+Background Rainbow Red-Blue {group:background;color:#ff0000,#ff8000,#ffff00,#00ff00,#00ffff,#0000ff}	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff0000,ff3000,ffff00,80ff00,00ff00,00ffff,0000ff&turnOn=true&
+
+Background Rainbow Dark Blue-Red {group:background;color:#000080,#008080,#008000,#808000,#808000,#800000}	Hybrid Rainbow Dark Blue-Red	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=000080,008080,008000,808000,808000,803000,800000&turnOn=true&
+Background Rainbow Dark Red-Blue {group:background;color:#800000,#808000,#808000,#008000,#008080,#000080}	Hybrid Rainbow Dark Red-Blue	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=800000,803000,808000,808000,008000,008080,000080&turnOn=true&
+
+Background purple-green {group:background;color:#8000ff,#004000,#8000ff,#004000,#8000ff}	bicolor purple-green	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=8000ff,004000,8000ff,004000,8000ff,004000,8000ff&turnOn=true&
+Background green-purple {group:background;color:#004000,#8000ff,#004000,#8000ff,#004000}	bicolor green-purple	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=004000,8000ff,004000,8000ff,004000,8000ff,004000&turnOn=true&
+
+Background blue-green {group:background;color:#0000ff,#004000,#0000ff,#004000,#0000ff}		bicolor blue-green		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=0000ff,00ff00,0000ff,00ff00,0000ff,00ff00,0000ff&turnOn=true&
+Background green-blue {group:background;color:#004000,#0000ff,#004000,#0000ff,#004000}		bicolor green-blue		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=00ff00,0000ff,00ff00,0000ff,00ff00,0000ff,00ff00&turnOn=true&
+
+Background blue-cyan {group:background;color:#0000ff,#00ffff,#0000ff,#00ffff,#0000ff}		bicolor blue-cyan		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=0000ff,00ffff,0000ff,00ffff,0000ff,00ffff,0000ff&turnOn=true&
+Background cyan-blue {group:background;color:#00ffff,#0000ff,#00ffff,#0000ff,#00ffff}		bicolor cyan-blue		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=00ffff,0000ff,00ffff,0000ff,00ffff,0000ff,00ffff&turnOn=true&
+
+Background blue-yellow {group:background;color:#0000ff,#ffff00,#0000ff,#ffff00,#0000ff}		bicolor blue-yellow		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=0000ff,ffff00,0000ff,ffff00,0000ff,ffff00,0000ff&turnOn=true&
+Background yellow-blue {group:background;color:#ffff00,#0000ff,#ffff00,#0000ff,#ffff00}		bicolor yellow-blue		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ffff00,0000ff,ffff00,0000ff,ffff00,0000ff,ffff00&turnOn=true&
+
+Background blue-white {group:background;color:#0000ff,#ffffff,#0000ff,#ffffff,#0000ff}		bicolor blue-white		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=0000ff,ffffff,0000ff,ffffff,0000ff,ffffff,0000ff&turnOn=true&
+Background white-blue {group:background;color:#ffffff,#0000ff,#ffffff,#0000ff,#ffffff}		bicolor white-blue		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ffffff,0000ff,ffffff,0000ff,ffffff,0000ff,ffffff&turnOn=true&
+
+Background green-yellow {group:background;color:#00ff00,#ffff00,#00ff00,#ffff00,#00ff00}	bicolor green-yellow	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=00ff00,ffff00,00ff00,ffff00,00ff00,ffff00,00ff00&turnOn=true&
+Background yellow-green {group:background;color:#ffff00,#00ff00,#ffff00,#00ff00,#ffff00}	bicolor yellow-green	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ffff00,00ff00,ffff00,00ff00,ffff00,00ff00,ffff00&turnOn=true&
+
+Background purple-yellow {group:background;color:#8000ff,#ffff00,#8000ff,#ffff00,#8000ff}	bicolor purple-yellow	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=8000ff,ffff00,8000ff,ffff00,8000ff,ffff00,8000ff&turnOn=true&
+Background yellow-purple {group:background;color:#ffff00,#8000ff,#ffff00,#8000ff,#ffff00}	bicolor yellow-purple	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ffff00,8000ff,ffff00,8000ff,ffff00,8000ff,ffff00&turnOn=true&
+
+Background purple-orange {group:background;color:#8000ff,#ff8000,#8000ff,#ff8000,#8000ff}	bicolor purple-yellow	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=8000ff,ff8000,8000ff,ff8000,8000ff,ff8000,8000ff&turnOn=true&
+Background orange-purple {group:background;color:#ff8000,#8000ff,#ff8000,#8000ff,#ff8000}	bicolor yellow-purple	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff8000,8000ff,ff8000,8000ff,ff8000,8000ff,ff8000&turnOn=true&
+
+Background red-orange {group:background;color:#ff0000,#ff8000,#ff0000,#ff8000,#ff0000}		bicolor purple-yellow	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff0000,ff8000,ff0000,ff8000,ff0000,ff8000,ff0000&turnOn=true&
+Background orange-red {group:background;color:#ff8000,#ff0000,#ff8000,#ff0000,#ff8000}		bicolor yellow-purple	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff8000,ff0000,ff8000,ff0000,ff8000,ff0000,ff8000&turnOn=true&
+
+Background yellow-orange {group:background;color:#ffff00,#ff8000,#ffff00,#ff8000,#ffff00}	bicolor purple-yellow	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ffff00,ff8000,ffff00,ff8000,ffff00,ff8000,ffff00&turnOn=true&
+Background orange-yellow {group:background;color:#ff8000,#ffff00,#ff8000,#ffff00,#ff8000}	bicolor yellow-purple	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff8000,ffff00,ff8000,ffff00,ff8000,ffff00,ff8000&turnOn=true&
+
+Background red-green {group:background;color:#ff0000,#00ff00,#ff0000,#00ff00,#ff0000}		bicolor red-green		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff0000,00ff00,ff0000,00ff00,ff0000,00ff00,ff0000&turnOn=true&
+Background green-red {group:background;color:#00ff00,#ff0000,#00ff00,#ff0000,#00ff00}		bicolor green-red		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=00ff00,ff0000,00ff00,ff0000,00ff00,ff0000,00ff00&turnOn=true&
+
+Background red-blue {group:background;color:#ff0000,#0000ff,#ff0000,#0000ff,#ff0000}		bicolor red-blue		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff0000,0000ff,ff0000,0000ff,ff0000,0000ff,ff0000&turnOn=true&
+Background blue-red {group:background;color:#0000ff,#ff0000,#0000ff,#ff0000,#0000ff}		bicolor blue-red		192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=0000ff,ff0000,0000ff,ff0000,0000ff,ff0000,0000ff&turnOn=true&
+
+Background green-orange {group:background;color:#00ff00,#ff8000,#00ff00,#ff8000,#00ff00}	bicolor green-orange	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=00ff00,ff8000,00ff00,ff8000,00ff00,ff8000,00ff00&turnOn=true&
+Background orange-green {group:background;color:#ff8000,#00ff00,#ff8000,#00ff00,#ff8000}	bicolor orange-green	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff8000,00ff00,ff8000,00ff00,ff8000,00ff00,ff8000&turnOn=true&

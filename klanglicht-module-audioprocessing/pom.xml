@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>klanglicht-module-audioprocessing</artifactId>
+  <version>${revision}</version>
+
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>de.visualdigits</groupId>
+    <artifactId>twinkly-kt</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <dependencies>
+    <!-- common stuff -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.7</version>
+    </dependency>
+  </dependencies>
+</project>

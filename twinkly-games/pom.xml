@@ -18,14 +18,14 @@
     <!-- project -->
     <dependency>
       <groupId>de.visualdigits</groupId>
-      <artifactId>twinkly-api</artifactId>
+      <artifactId>klanglicht-module-twinkly</artifactId>
       <version>${revision}</version>
     </dependency>
 
     <!-- tests -->
     <dependency>
       <groupId>de.visualdigits</groupId>
-      <artifactId>twinkly-api</artifactId>
+      <artifactId>klanglicht-module-twinkly</artifactId>
       <version>${revision}</version>
       <type>test-jar</type>
       <scope>test</scope>
