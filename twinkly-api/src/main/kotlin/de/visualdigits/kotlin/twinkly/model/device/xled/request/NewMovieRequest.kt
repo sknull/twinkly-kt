@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xled.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import java.util.*
+import java.util.UUID
 
 class NewMovieRequest(
     val name: String? = null,

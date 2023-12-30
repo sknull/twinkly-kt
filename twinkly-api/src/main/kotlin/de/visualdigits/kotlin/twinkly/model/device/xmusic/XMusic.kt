@@ -14,31 +14,32 @@ class XMusic(host: String): Session(
 ) {
 
     init {
-        login()
+        // ensure we are logged in up to here to avoid unneeded requests
+        if (!tokens.containsKey(host)) login()
     }
 
-    fun musicConfig(): MusicConfig {
+    fun musicConfig(): MusicConfig? {
         val response = get<MusicConfig>(
             url = "$baseUrl/music/config",
         )
         return response
     }
 
-    fun musicMode(): MusicMode {
+    fun musicMode(): MusicMode? {
         val response = get<MusicMode>(
             url = "$baseUrl/music/mode",
         )
         return response
     }
 
-    fun musicMicEnabled(): MicEnabled {
+    fun musicMicEnabled(): MicEnabled? {
         val response = get<MicEnabled>(
             url = "$baseUrl/music/mic_enabled",
         )
         return response
     }
 
-    fun musicStats(): MusicStats {
+    fun musicStats(): MusicStats? {
         val response = get<MusicStats>(
             url = "$baseUrl/music/stats",
         )

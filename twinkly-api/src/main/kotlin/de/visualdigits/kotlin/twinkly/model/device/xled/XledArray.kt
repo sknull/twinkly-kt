@@ -7,7 +7,6 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
-import java.lang.IllegalStateException
 import java.time.OffsetDateTime
 
 class XledArray(
@@ -85,19 +84,19 @@ class XledArray(
         xLedDevices.flatten().forEach { it.setColor(color) }
     }
 
-    override fun getTimer(): Timer {
+    override fun getTimer(): Timer? {
         return xLedDevices.flatten().firstOrNull()?.getTimer()?:throw IllegalStateException("No device")
     }
 
-    override fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer {
+    override fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer? {
         return xLedDevices.flatten().firstOrNull()?.setTimer(timeOn, timeOff)?:throw IllegalStateException("No device")
     }
 
-    override fun setTimer(timer: Timer): Timer {
+    override fun setTimer(timer: Timer): Timer? {
         return xLedDevices.flatten().firstOrNull()?.setTimer(timer)?:throw IllegalStateException("No device")
     }
 
-    override fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer {
+    override fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer? {
         return xLedDevices.flatten().firstOrNull()?.setTimer(timeOnHour, timeOnMinute, timeOffHour, timeOffMinute)?:throw IllegalStateException("No device")
     }
 

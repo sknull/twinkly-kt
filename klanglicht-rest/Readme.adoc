@@ -1,0 +1,41 @@
+= klanglicht-kt
+:doctype: book
+:description: Documentation for klanglicht-kt
+:keywords: kotlin, dmx, serial-usb
+:icons: font
+:toc:
+:toc-title: Inhalt
+:toclevels: 10
+
+== History and current state of the project (April 2023)
+
+=== History
+
+This project started as a simple proof of concept if it would be possible to get some simple RGB light working
+using a DMX interface.
+
+After researching about possible interfaces I decided for the Eurolite DMX Pro 512 for which I was able to find some information about it's link:/resources/hardware/Eurolite_USB-DMX512-PRO_serial-protocol_discussion-thread.pdf[serial protocol].
+
+Another challenge was to find a reliable serial port library which is also available on other platforms as Windows which I use to develop the software. Here I decided for the fazecast jSerialComm library which also is playing well on the raspberry pi mini computers (which was mandatory as I wanted to set up a little raspy applicance lighting in the living room).
+
+After playing around a bit a first prototype was implemented which was able to fade in a color from black and vice versa (wow!).
+
+In the meantime (and about four years later) the project went through different stages ranging from kind of modular approach to pure chaos messing up UI code with logic.
+In between the UI was also capable of reading and playing time code. But this turned out
+not to be reliable enough to use it in production environments so I tossed it.
+
+The current flavor of the project which you have in front of you now has a layered approach which strictly separates the technical stuff needed to talk with the DMX interface from the client code. The interface to the outside world such as a JAva-FX UI which still exists and a web interface which is not fully implemented yet is the REST module.
+With this approach it is possible to run the server component in form a little shaded jar on a mini computer such as the raspberry pi while running a complex user interface elsewhere.
+
+This is a complete rewrite in kotlin as I no longer want to write java code.
+To make my life easier a bit and because I only have access to one DMX interface which I anaged to find documentation for, I have
+boiled down everything to be dedicated to this which is the Eurolite DMX 512 Pro.
+
+A printout of the thread with those golden informations which kick started me once back and the original hardware manual are attached to this project
+
+* link:docs/hardware/eurolite/Eurolite_USB-DMX512-PRO_serial-protocol_discussion-thread.pdf[Discussion Thread (German)]
+* link:docs/hardware/eurolite/Eurolite_USB-DMX512_PRO_manual_german.pdf[Manual (German)]
+
+== Current State
+
+For now things here are pretty basic as I start with implementing all models needed and basic interface access.

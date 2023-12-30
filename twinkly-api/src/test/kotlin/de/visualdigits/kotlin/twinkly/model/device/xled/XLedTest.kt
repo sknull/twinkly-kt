@@ -49,7 +49,7 @@ class XLedTest {
             NewMovieRequest(
                 name = "FooBar",
                 descriptorType = "rgbw_raw",
-                ledsPerFrame = deviceInfo.numberOfLed,
+                ledsPerFrame = deviceInfo?.numberOfLed?:4,
                 framesNumber = 1,
                 fps = 1
             )
@@ -59,7 +59,7 @@ class XLedTest {
         xled.movieConfig(
             MovieConfig(
                 frameDelay = 1000 / 1,
-                ledsNumber = deviceInfo.numberOfLed,
+                ledsNumber = deviceInfo?.numberOfLed?:4,
                 framesNumber = 1,
             )
         )
@@ -82,7 +82,7 @@ class XLedTest {
     @Test
     fun testTimer2() {
         val timer = xled.getTimer()
-        val t = TimeUtil.offsetDateTimeOfSecondsFromMidnight(timer.timeNow)
+        val t = timer?.timeNow?.let { TimeUtil.offsetDateTimeOfSecondsFromMidnight(it) }
         println(t)
     }
 
@@ -178,7 +178,7 @@ class XLedTest {
             NewMovieRequest(
                 name = "Foo",
                 descriptorType = "rgbw_raw",
-                ledsPerFrame = xled.deviceInfo.numberOfLed,
+                ledsPerFrame = xled.deviceInfo?.numberOfLed?:4,
                 framesNumber = numberOfFrames,
                 fps = fps
             )
@@ -187,13 +187,13 @@ class XLedTest {
         xled.movieConfig(
             MovieConfig(
                 frameDelay = 1000 / fps,
-                ledsNumber = xled.deviceInfo.numberOfLed,
+                ledsNumber = xled.deviceInfo?.numberOfLed?:4,
                 framesNumber = numberOfFrames,
             )
         )
         xled.setMoviesCurrent(
             MoviesCurrentRequest(
-                id = newMovie.id
+                id = newMovie?.id
             )
         )
         xled.setMode(DeviceMode.movie)

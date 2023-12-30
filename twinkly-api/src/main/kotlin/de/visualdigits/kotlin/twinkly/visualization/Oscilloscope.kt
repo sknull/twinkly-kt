@@ -1,8 +1,8 @@
 package de.visualdigits.kotlin.twinkly.visualization
 
 import de.visualdigits.kotlin.minim.Minim
-import de.visualdigits.kotlin.minim.fft.BeatDetect
 import de.visualdigits.kotlin.minim.audio.AudioInputType
+import de.visualdigits.kotlin.minim.fft.BeatDetect
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed

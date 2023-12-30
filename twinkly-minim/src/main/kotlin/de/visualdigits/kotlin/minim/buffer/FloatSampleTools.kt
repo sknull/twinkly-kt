@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.minim.buffer
 
-import java.util.*
+import java.util.Random
 import javax.sound.sampled.AudioFormat
 import kotlin.math.pow
 

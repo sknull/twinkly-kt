@@ -37,18 +37,18 @@ interface XLed {
     /**
      * Returns the current timer of the device.
      */
-    fun getTimer(): Timer
+    fun getTimer(): Timer?
 
-    fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer
+    fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer?
 
     /**
      * Sets the timer of the device to the given hours and minutes.
      * Hour and minute are assumed to be in the current time zone of the machine and will be converted to UTC time zone
      * as xled device to be in zulu time.
      */
-    fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer
+    fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer?
 
-    fun setTimer(timer: Timer): Timer
+    fun setTimer(timer: Timer): Timer?
 
     fun showRealTimeSequence(frameSequence: XledSequence, loop: Int = 1) {
         val frames = frameSequence

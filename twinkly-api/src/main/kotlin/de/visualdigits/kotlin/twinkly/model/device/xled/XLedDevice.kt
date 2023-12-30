@@ -48,17 +48,24 @@ class XLedDevice(
     "http://$host/xled/v1",
 ) {
 
-    val deviceInfo: DeviceInfo
-    val ledLayout: LedLayout
+    val deviceInfo: DeviceInfo?
+    val ledLayout: LedLayout?
 
     override val bytesPerLed: Int
 
     init {
         if (host.isNotEmpty()) {
-            login()
-            deviceInfo = deviceInfo()
-            ledLayout = getLayout()
-            bytesPerLed = deviceInfo.bytesPerLed!!
+            // ensure we are logged in up to here to avoid unneeded requests
+            if (!tokens.containsKey(host)) login()
+            if (tokens[host]?.loggedIn == true) {
+                deviceInfo = deviceInfo()
+                ledLayout = getLayout()
+                bytesPerLed = deviceInfo?.bytesPerLed?:4 // fallback to rgbw assuming gen 2 device
+            } else {
+                deviceInfo = null
+                ledLayout = null
+                bytesPerLed = 0
+            }
         } else {
             deviceInfo = DeviceInfo()
             ledLayout = LedLayout()
@@ -66,26 +73,12 @@ class XLedDevice(
         }
     }
 
-//    companion object {
-//
-//        @Volatile
-//        private var deviceMap: MutableMap<String, XLedDevice> = mutableMapOf()
-//
-//        fun getInstance(host: String, deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT): XLedDevice {
-//            return deviceMap.get(host) ?: synchronized(this) {
-//                XLedDevice(host, deviceOrigin).also {
-//                    deviceMap[host] = it
-//                }
-//            }
-//        }
-//    }
-
     override fun powerOn() {
         refreshTokenIfNeeded()
         listOf(DeviceMode.playlist, DeviceMode.movie, DeviceMode.effect)
             .forEach { mode ->
                 val responseCode = setMode(mode)
-                if (responseCode.responseCode == ResponseCode.Ok) {
+                if (responseCode?.responseCode == ResponseCode.Ok) {
                     return
                 }
             }
@@ -96,15 +89,15 @@ class XLedDevice(
         setMode(DeviceMode.off)
     }
 
-    override fun getMode(): DeviceMode {
+    override fun getMode(): DeviceMode? {
         refreshTokenIfNeeded()
         val response = get<Mode>(
             url = "$baseUrl/led/mode",
         )
-        return response.deviceMode
+        return response?.deviceMode
     }
 
-    override fun setMode(mode: DeviceMode): JsonObject {
+    override fun setMode(mode: DeviceMode): JsonObject? {
         refreshTokenIfNeeded()
         val body = "{\"mode\":\"${mode.name}\"}"
         log.info("Setting mode for device '$host' to ${mode.name}...")
@@ -119,45 +112,45 @@ class XLedDevice(
 
     override fun ledReset() {
         refreshTokenIfNeeded()
-        return get("$baseUrl/led/reset")
+        get<String>("$baseUrl/led/reset")
     }
 
-    fun getMusicStats(): MusicStats {
+    fun getMusicStats(): MusicStats? {
         refreshTokenIfNeeded()
         return get<MusicStats>(
             url = "$baseUrl/music/stats",
         )
     }
 
-    fun getMusicEnabled(): MusicEnabled {
+    fun getMusicEnabled(): MusicEnabled? {
         refreshTokenIfNeeded()
         return get<MusicEnabled>(
             url = "$baseUrl/music/enabled",
         )
     }
 
-    fun getMusicDriversCurrent(): MusicDriversCurrent {
+    fun getMusicDriversCurrent(): MusicDriversCurrent? {
         refreshTokenIfNeeded()
         return get<MusicDriversCurrent>(
             url = "$baseUrl/music/drivers/current",
         )
     }
 
-    fun getMusicDriversSets(): MusicDriversSets {
+    fun getMusicDriversSets(): MusicDriversSets? {
         refreshTokenIfNeeded()
         return get<MusicDriversSets>(
             url = "$baseUrl/music/drivers/sets",
         )
     }
 
-    fun getCurrentMusicDriversSet(): CurrentMusicDriverSet {
+    fun getCurrentMusicDriversSet(): CurrentMusicDriverSet? {
         refreshTokenIfNeeded()
         return get<CurrentMusicDriverSet>(
             url = "$baseUrl/music/drivers/sets/current",
         )
     }
 
-    fun getBrightness(): Brightness {
+    fun getBrightness(): Brightness? {
         refreshTokenIfNeeded()
         return get<Brightness>(
             url = "$baseUrl/led/out/brightness",
@@ -175,7 +168,7 @@ class XLedDevice(
         )
     }
 
-    fun getSaturation(): Saturation {
+    fun getSaturation(): Saturation? {
         refreshTokenIfNeeded()
         return get<Saturation>(
             url = "$baseUrl/led/out/saturation",
@@ -198,27 +191,31 @@ class XLedDevice(
         val response = get<Map<String, Any>>(
             url = "$baseUrl/led/color",
         )
-        return if (response["red"] as Int > 0 || response["green"] as Int > 0 || response["blue"] as Int > 0 || response["white"] as Int > 0) {
-            if (response["white"] as Int > 0) {
-                RGBWColor(
-                    red = response["red"] as Int,
-                    green = response["green"] as Int,
-                    blue = response["blue"] as Int,
-                    white = response["white"] as Int,
+        return if (response != null) {
+            if (response["red"] as Int > 0 || response["green"] as Int > 0 || response["blue"] as Int > 0 || response["white"] as Int > 0) {
+                if (response["white"] as Int > 0) {
+                    RGBWColor(
+                        red = response["red"] as Int,
+                        green = response["green"] as Int,
+                        blue = response["blue"] as Int,
+                        white = response["white"] as Int,
+                    )
+                } else {
+                    RGBColor(
+                        red = response["red"] as Int,
+                        green = response["green"] as Int,
+                        blue = response["blue"] as Int
+                    )
+                }
+            } else if (response["hue"] as Int > 0 || response["saturation"] as Int > 0 || response["value"] as Int > 0) {
+                HSVColor(
+                    h = response["hue"] as Int,
+                    s = ((response["saturation"] as Int) / 255.0 * 100.0).toInt(),
+                    v = ((response["value"] as Int) / 255.0 * 100.0).toInt()
                 )
             } else {
-                RGBColor(
-                    red = response["red"] as Int,
-                    green = response["green"] as Int,
-                    blue = response["blue"] as Int
-                )
+                RGBColor()
             }
-        } else if (response["hue"] as Int > 0 || response["saturation"] as Int > 0 || response["value"] as Int > 0) {
-            HSVColor(
-                h = response["hue"] as Int,
-                s = ((response["saturation"] as Int) / 255.0 * 100.0).toInt(),
-                v = ((response["value"] as Int) / 255.0 * 100.0).toInt()
-            )
         } else {
             RGBColor()
         }
@@ -245,50 +242,50 @@ class XLedDevice(
         )
     }
 
-    fun getConfig(): LedConfig {
+    fun getConfig(): LedConfig? {
         refreshTokenIfNeeded()
         return get<LedConfig>(
             url = "$baseUrl/led/config",
         )
     }
 
-    fun getLayout(): LedLayout {
+    fun getLayout(): LedLayout? {
         return get<LedLayout>(
             url = "$baseUrl/led/layout/full",
         )
     }
 
-    fun getEffects(): Effects {
+    fun getEffects(): Effects? {
         return get<Effects>(
             url = "$baseUrl/led/effects",
         )
     }
 
-    fun getEffectsCurrent(): EffectsCurrent {
+    fun getEffectsCurrent(): EffectsCurrent? {
         return get<EffectsCurrent>(
             url = "$baseUrl/led/effects/current",
         )
     }
 
-    fun getMovies(): Movies {
+    fun getMovies(): Movies? {
         return get<Movies>(
             url = "$baseUrl/movies",
         )
     }
 
-    fun deleteMovies(): JsonObject {
+    fun deleteMovies(): JsonObject? {
         return delete<JsonObject>(
             url = "$baseUrl/movies",
         )
     }
 
-    fun getMoviesCurrent(): MoviesCurrentResponse {
+    fun getMoviesCurrent(): MoviesCurrentResponse? {
         return get<MoviesCurrentResponse>(
             url = "$baseUrl/movies/current",
         )
     }
 
-    fun setMoviesCurrent(moviesCurrentRequest: MoviesCurrentRequest): JsonObject {
+    fun setMoviesCurrent(moviesCurrentRequest: MoviesCurrentRequest): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/movies/current",
             body = moviesCurrentRequest.marshallToBytes(),
@@ -298,13 +295,13 @@ class XLedDevice(
         )
     }
 
-    fun getPlaylist(): PlayList {
+    fun getPlaylist(): PlayList? {
         return get<PlayList>(
             url = "$baseUrl/playlist",
         )
     }
 
-    fun getPlaylistCurrent(): String {
+    fun getPlaylistCurrent(): String? {
         return get<String>(
             url = "$baseUrl/playlist/current",
         )
@@ -326,16 +323,13 @@ class XLedDevice(
         setMode(DeviceMode.color)
         deleteMovies()
 
-        val deviceInfo = deviceInfo()
-        val numberOfLed = deviceInfo.numberOfLed
-
         val numberOfFrames = sequence.size
 
         val newMovie = newMovie(
             NewMovieRequest(
                 name = name.substring(0, min(name.length, 32)),
                 descriptorType = "rgbw_raw",
-                ledsPerFrame = numberOfLed,
+                ledsPerFrame = bytesPerLed,
                 framesNumber = numberOfFrames,
                 fps = fps
             )
@@ -344,11 +338,11 @@ class XLedDevice(
         movieConfig(
             MovieConfig(
                 frameDelay = 1000 / fps,
-                ledsNumber = numberOfLed,
+                ledsNumber = bytesPerLed,
                 framesNumber = numberOfFrames,
             )
         )
-        setMoviesCurrent(MoviesCurrentRequest(id = newMovie.id))
+        setMoviesCurrent(MoviesCurrentRequest(id = newMovie?.id))
 
         setMode(DeviceMode.movie)
     }
@@ -369,12 +363,12 @@ class XLedDevice(
         }
     }
 
-    fun uploadMovie(frame: XledFrame): Movie {
+    fun uploadMovie(frame: XledFrame): Movie? {
         val bytes = frame.toByteArray(bytesPerLed)
         return uploadMovie(bytes)
     }
 
-    fun uploadMovie(bytes: ByteArray): Movie {
+    fun uploadMovie(bytes: ByteArray): Movie? {
         return post<Movie>(
             url = "$baseUrl/led/movie/full",
             body = bytes,
@@ -384,13 +378,13 @@ class XLedDevice(
         )
     }
 
-    fun movieConfig(): MovieConfig {
+    fun movieConfig(): MovieConfig? {
         return get<MovieConfig>(
             url = "$baseUrl/led/movie/config",
         )
     }
 
-    fun movieConfig(movieConfig: MovieConfig): JsonObject {
+    fun movieConfig(movieConfig: MovieConfig): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.marshallToBytes(),
@@ -400,7 +394,7 @@ class XLedDevice(
         )
     }
 
-    fun newMovie(newMovie: NewMovieRequest): NewMovieResponse {
+    fun newMovie(newMovie: NewMovieRequest): NewMovieResponse? {
         return post<NewMovieResponse>(
             url = "$baseUrl/movies/new",
             body = newMovie.marshallToBytes(),
@@ -410,7 +404,7 @@ class XLedDevice(
         )
     }
 
-    override fun getTimer(): Timer {
+    override fun getTimer(): Timer? {
         return get<Timer>(
             url = "$baseUrl/timer"
         )
@@ -419,7 +413,7 @@ class XLedDevice(
     override fun setTimer(
         timeOn: OffsetDateTime,
         timeOff: OffsetDateTime
-    ): Timer {
+    ): Timer? {
         return setTimer(
             timeOnHour = timeOn.hour,
             timeOnMinute = timeOn.minute,
@@ -433,7 +427,7 @@ class XLedDevice(
         timeOnMinute: Int,
         timeOffHour: Int,
         timeOffMinute: Int
-    ): Timer {
+    ): Timer? {
         val timer = Timer(
             timeNow = TimeUtil.utcSecondsAfterMidnight(),
             timeOn =  TimeUtil.utcSecondsAfterMidnight(timeOnHour, timeOnMinute),
@@ -442,7 +436,7 @@ class XLedDevice(
         return setTimer(timer)
     }
 
-    override fun setTimer(timer: Timer): Timer {
+    override fun setTimer(timer: Timer): Timer? {
         val result = post<JsonObject>(
             url = "$baseUrl/timer",
             body = timer.marshallToBytes(),
@@ -450,11 +444,11 @@ class XLedDevice(
                 "Content-Type" to "application/json"
             )
         )
-        return if (result.responseCode == ResponseCode.Ok) {
+        return if (result?.responseCode == ResponseCode.Ok) {
             getTimer()
-        }
-        else {
-            throw IllegalStateException("Could not set timer")
+        } else {
+            log.warn("Could not set timer")
+            null
         }
     }
 }

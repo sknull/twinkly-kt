@@ -1,0 +1,18 @@
+{
+  "ison": true,
+  "source": "http",
+  "has_timer": false,
+  "timer_started": 0,
+  "timer_duration": 0,
+  "timer_remaining": 0,
+  "mode": "color",
+  "red": 255,
+  "green": 255,
+  "blue": 0,
+  "white": 0,
+  "gain": 100,
+  "effect": 0,
+  "transition": 0,
+  "power": 22.90,
+  "overpower": false
+}

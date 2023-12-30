@@ -39,4 +39,4 @@ This project is far from feature complete, but I think it`s now good enough to s
 
 - link:twinkly-api/Readme.adoc[twinkly-api]
 - link:twinkly-minim/Readme.adoc[twinkly-minim]
-- link:twinkly-rest/Readme.adoc[twinkly-rest]
+- link:klanglicht-rest/Readme.adoc[twinkly-rest]
