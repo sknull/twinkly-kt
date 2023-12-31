@@ -3,8 +3,6 @@ package de.visualdigits.kotlin.klanglicht.rest.twinkly.controller
 import de.visualdigits.kotlin.klanglicht.rest.configuration.ConfigHolder
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.Playable
@@ -56,18 +54,18 @@ class XledArrayController {
 
     @PutMapping("/brightness/{brightness}")
     fun setBrightness(
-        @PathVariable brightness: Int,
+        @PathVariable brightness: Float,
     ) {
         log.info("Setting brightness to $brightness")
-        configHolder?.xledArray?.setBrightness(Brightness(value = brightness))
+        configHolder?.xledArray?.setBrightness(brightness)
     }
 
     @PutMapping("/saturation/{saturation}")
     fun setSaturation(
-        @PathVariable saturation: Int,
+        @PathVariable saturation: Float,
     ) {
         log.info("Setting saturation to $saturation")
-        configHolder?.xledArray?.setSaturation(Saturation(value = saturation))
+        configHolder?.xledArray?.setSaturation(saturation)
     }
 
     @PutMapping("/mode/{mode}")

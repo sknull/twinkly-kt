@@ -8,6 +8,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.time.OffsetDateTime
+import kotlin.math.roundToInt
 
 class XledArray(
     var xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
@@ -72,11 +73,11 @@ class XledArray(
         return xLedDevices.flatten().map { it.setMode(mode) }.firstOrNull()
     }
 
-    override fun setBrightness(brightness: Brightness) {
-        xLedDevices.flatten().firstOrNull()?.setBrightness(brightness)
+    override fun setBrightness(brightness: Float) {
+        xLedDevices.flatten().forEach { it.setBrightness(brightness) }
     }
 
-    override fun setSaturation(saturation: Saturation) {
+    override fun setSaturation(saturation: Float) {
         xLedDevices.flatten().forEach { it.setSaturation(saturation) }
     }
 

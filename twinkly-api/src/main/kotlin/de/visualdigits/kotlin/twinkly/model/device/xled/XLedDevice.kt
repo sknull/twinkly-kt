@@ -38,6 +38,7 @@ import de.visualdigits.kotlin.util.TimeUtil
 import java.time.OffsetDateTime
 import java.util.Base64
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 class XLedDevice(
     host: String = "",
@@ -157,11 +158,11 @@ class XLedDevice(
         )
     }
 
-    override fun setBrightness(brightness: Brightness) {
+    override fun setBrightness(brightness: Float) {
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/brightness",
-            body = brightness.marshallToBytes(),
+            body = Brightness(value = (100 * brightness).roundToInt()).marshallToBytes(),
             headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )
@@ -175,11 +176,11 @@ class XLedDevice(
         )
     }
 
-    override fun setSaturation(saturation: Saturation) {
+    override fun setSaturation(saturation: Float) {
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/saturation",
-            body = saturation.marshallToBytes(),
+            body = Saturation(value = (100 * saturation).roundToInt()).marshallToBytes(),
             headers = mutableMapOf(
                 "Content-Type" to "application/json"
             )

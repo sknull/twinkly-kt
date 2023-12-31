@@ -2,6 +2,8 @@ package de.visualdigits.kotlin
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -19,6 +21,31 @@ class BasicTests : XledArrayTest() {
     @Test
     fun testPowerOff() {
         xledArray.powerOff()
+    }
+
+    @Test
+    fun testBrightness() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(255, 255, 255)
+        )
+
+        xledArray.setBrightness(1.0f)
+        frame.play(xledArray)
+    }
+
+    @Test
+    fun testSaturation() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = RGBColor(255, 0, 0)
+        )
+
+        xledArray.setBrightness(1.0f)
+        xledArray.setSaturation(1.0f)
+        frame.play(xledArray)
     }
 
     @Test

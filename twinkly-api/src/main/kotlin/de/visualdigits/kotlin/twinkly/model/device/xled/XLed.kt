@@ -28,9 +28,9 @@ interface XLed {
 
     fun ledReset()
 
-    fun setBrightness(brightness: Brightness)
+    fun setBrightness(brightness: Float)
 
-    fun setSaturation(saturation: Saturation)
+    fun setSaturation(saturation: Float)
 
     fun setColor(color: Color<*>)
 
