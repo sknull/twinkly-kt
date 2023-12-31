@@ -3,10 +3,12 @@ package de.visualdigits.kotlin
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.math.min
 import kotlin.random.Random
 
+@Disabled("for local testing only")
 class BasicTests : XledArrayTest() {
 
     @Test

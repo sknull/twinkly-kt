@@ -9,6 +9,7 @@ import de.visualdigits.kotlin.twinkly.visualization.Oscilloscope
 import de.visualdigits.kotlin.twinkly.visualization.SpectrumAnalyzer
 import de.visualdigits.kotlin.twinkly.visualization.VUMeter
 import de.visualdigits.kotlin.twinkly.visualization.Visualizer
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDateTime
@@ -16,6 +17,7 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
+@Disabled("for local testing only")
 class Demos : XledArrayTest() {
 
     /**

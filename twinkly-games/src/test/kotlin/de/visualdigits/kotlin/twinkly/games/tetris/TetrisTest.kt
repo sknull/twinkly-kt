@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.awt.AWTEvent
 import java.awt.Toolkit
@@ -17,6 +18,7 @@ import kotlin.random.Random
 import kotlin.reflect.full.createInstance
 
 
+@Disabled("for local testing only")
 class TetrisTest : XledArrayTest() {
 
     private val blocks = listOf(
