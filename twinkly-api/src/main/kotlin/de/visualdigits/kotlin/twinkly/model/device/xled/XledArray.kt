@@ -2,13 +2,10 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.time.OffsetDateTime
-import kotlin.math.roundToInt
 
 class XledArray(
     var xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
@@ -28,10 +25,10 @@ class XledArray(
     )
 
     init {
-        init()
+        initalize()
     }
 
-    private fun init() {
+    private fun initalize() {
         if (xLedDevices.isNotEmpty()) {
             if(deviceOrigin.isPortrait()) {
                 width = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
@@ -42,6 +39,8 @@ class XledArray(
             }
         }
     }
+
+    fun isLoggedIn(): Boolean = xLedDevices.all { column -> column.all { device -> device.isLoggedIn() } }
 
     operator fun set(x: Int, y: Int, device: XLedDevice) {
         xLedDevices[x][y] = device
@@ -108,7 +107,7 @@ class XledArray(
                 newArray[y, columns - x - 1] = this[x, y]
             }
         }
-        newArray.init()
+        newArray.initalize()
 
         return newArray
     }
@@ -120,7 +119,7 @@ class XledArray(
                 newArray[rows - y - 1, x] = this[x, y]
             }
         }
-        newArray.init()
+        newArray.initalize()
 
         return newArray
     }
@@ -132,7 +131,7 @@ class XledArray(
                 newArray[columns - x - 1, rows - y - 1] = this[x, y]
             }
         }
-        newArray.init()
+        newArray.initalize()
 
         return newArray
     }

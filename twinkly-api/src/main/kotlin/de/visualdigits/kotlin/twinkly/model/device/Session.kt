@@ -35,7 +35,7 @@ abstract class Session(
     }
 
     fun login() {
-        if (!tokens.containsKey(host)) { // avoid additional attempts from other instances if we already know that we cannot talk to the host
+        if (!isLoggedIn()) { // avoid additional attempts from other instances if we already know that we cannot talk to the host
             log.debug("#### Logging into device at $host...")
             val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
             val responseChallenge = post<Map<String, Any>>(
@@ -79,6 +79,8 @@ abstract class Session(
             authToken = authToken
         )
     }
+
+    fun isLoggedIn(): Boolean = tokens.containsKey(host)
 
     open fun logout() {
         post<JsonObject>("$baseUrl/logout")
