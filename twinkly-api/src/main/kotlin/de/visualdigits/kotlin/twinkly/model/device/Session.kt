@@ -36,7 +36,7 @@ abstract class Session(
 
     fun login() {
         if (!tokens.containsKey(host)) { // avoid additional attempts from other instances if we already know that we cannot talk to the host
-            log.info("#### Logging into device at $host...")
+            log.debug("#### Logging into device at $host...")
             val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
             val responseChallenge = post<Map<String, Any>>(
                 url = "$baseUrl/login",
@@ -53,7 +53,7 @@ abstract class Session(
                     log.warn("Could not login to device")
                 }
                 val tokenExpires = System.currentTimeMillis() + expireInSeconds * 1000 - 5000
-                log.info("#### Token expires '${formatEpoch(tokenExpires)}'")
+                log.debug("#### Token expires '${formatEpoch(tokenExpires)}'")
                 tokens[host] = AuthToken(authToken, tokenExpires, true)
             } else {
                 tokens[host] = AuthToken(loggedIn = false)
@@ -63,7 +63,7 @@ abstract class Session(
 
     fun refreshTokenIfNeeded() {
         if (System.currentTimeMillis() > (tokens[host]?.tokenExpires?:0)) {
-            log.info("Refreshing token for device '$host'...")
+            log.debug("Refreshing token for device '$host'...")
             tokens.remove(host)
             login()
         }
@@ -106,7 +106,7 @@ abstract class Session(
         headers: MutableMap<String, String> = mutableMapOf(),
         authToken: String? = null
     ): T? {
-        log.info("POST '$url' body='${String(body)}' headers=$headers")
+        log.debug("POST '$url' body='${String(body)}' headers=$headers")
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "POST"
         connection.connectTimeout = CONNECTION_TIMEOUT
@@ -134,7 +134,7 @@ abstract class Session(
         url: String,
         headers: Map<String, String> = mapOf()
     ): T? {
-        log.info("GET '$url' headers=$headers")
+        log.debug("GET '$url' headers=$headers")
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "GET"
         connection.connectTimeout = CONNECTION_TIMEOUT
@@ -158,7 +158,7 @@ abstract class Session(
         url: String,
         headers: Map<String, String> = mapOf()
     ): T? {
-        log.info("DELETE '$url' headers=$headers")
+        log.debug("DELETE '$url' headers=$headers")
         val connection = (URL(url).openConnection() as HttpURLConnection)
         connection.requestMethod = "DELETE"
         connection.connectTimeout = CONNECTION_TIMEOUT

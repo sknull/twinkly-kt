@@ -42,13 +42,13 @@ class XledArrayController {
 
     @PutMapping("/power/on")
     fun powerOn() {
-        log.info("Powering on")
+        log.debug("Powering on")
         configHolder?.xledArray?.powerOn()
     }
 
     @PutMapping("/power/off")
     fun powerOff() {
-        log.info("Powering off")
+        log.debug("Powering off")
         configHolder?.xledArray?.powerOff()
     }
 
@@ -56,7 +56,7 @@ class XledArrayController {
     fun setBrightness(
         @PathVariable brightness: Float,
     ) {
-        log.info("Setting brightness to $brightness")
+        log.debug("Setting brightness to $brightness")
         configHolder?.xledArray?.setBrightness(brightness)
     }
 
@@ -64,7 +64,7 @@ class XledArrayController {
     fun setSaturation(
         @PathVariable saturation: Float,
     ) {
-        log.info("Setting saturation to $saturation")
+        log.debug("Setting saturation to $saturation")
         configHolder?.xledArray?.setSaturation(saturation)
     }
 
@@ -72,7 +72,7 @@ class XledArrayController {
     fun setMode(
         @PathVariable mode: String,
     ) {
-        log.info("Setting saturation to $mode")
+        log.debug("Setting saturation to $mode")
         currentMode = DeviceMode.valueOf(mode)
         configHolder?.xledArray?.setMode(currentMode)
     }
@@ -85,7 +85,7 @@ class XledArrayController {
         @PathVariable white: Int,
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
-        log.info("Showing color ${rgbwColor.ansiColor()}")
+        log.debug("Showing color ${rgbwColor.ansiColor()}")
         configHolder?.xledArray?.setMode(DeviceMode.color)
         configHolder?.xledArray?.setColor(rgbwColor)
     }

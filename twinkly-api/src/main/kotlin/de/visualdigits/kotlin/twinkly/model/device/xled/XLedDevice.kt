@@ -101,7 +101,7 @@ class XLedDevice(
     override fun setMode(mode: DeviceMode): JsonObject? {
         refreshTokenIfNeeded()
         val body = "{\"mode\":\"${mode.name}\"}"
-        log.info("Setting mode for device '$host' to ${mode.name}...")
+        log.debug("Setting mode for device '$host' to ${mode.name}...")
         return post<Mode>(
             url = "$baseUrl/led/mode",
             body = body.toByteArray(),
