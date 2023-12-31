@@ -80,7 +80,7 @@ abstract class Session(
         )
     }
 
-    fun isLoggedIn(): Boolean = tokens.containsKey(host)
+    fun isLoggedIn(): Boolean = tokens.containsKey(host) && tokens[host]?.loggedIn == true
 
     open fun logout() {
         post<JsonObject>("$baseUrl/logout")
