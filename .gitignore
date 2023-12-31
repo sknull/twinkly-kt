@@ -11,4 +11,6 @@ build/
 .settings
 **/dependency-reduced-pom.xml
 **/*.log
+**/*.flattened-pom.xml
+
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.visualdigits</groupId>
+  <artifactId>twinkly-audioprocessing</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <version.acme4j-client>2.16</version.acme4j-client>
+    <java-version>17</java-version>
+    <project.build.target>17</project.build.target>
+    <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
+    <project.build.source>17</project.build.source>
+    <revision>0.0.1-SNAPSHOT</revision>
+    <version.jackson>2.15.2</version.jackson>
+    <version.log4j>1.2.17</version.log4j>
+    <version.junit.jupiter>5.10.0</version.junit.jupiter>
+    <kotlin.code.style>official</kotlin.code.style>
+    <version.slf4j>2.0.5</version.slf4j>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <compilerVersion>17</compilerVersion>
+    <version.kotlin.language>1.9</version.kotlin.language>
+    <version.kotlin.maven>1.9.20</version.kotlin.maven>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.7</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
