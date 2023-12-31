@@ -28,7 +28,7 @@ class LightmanagerClient(
         if (StringUtils.isEmpty(lightmanagerUrl)) {
             lightmanagerUrl = configHolder!!.preferences?.serviceMap?.get("lmair")?.url
         }
-        client = LightmanagerFeignClient.Companion.client(lightmanagerUrl)
+        client = LightmanagerFeignClient.client(lightmanagerUrl)
     }
 
     fun params(): LMParams {

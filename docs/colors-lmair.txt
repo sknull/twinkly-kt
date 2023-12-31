@@ -62,3 +62,48 @@ Background blue-red {group:background;color:#0000ff,#ff0000,#0000ff,#ff0000,#000
 
 Background green-orange {group:background;color:#00ff00,#ff8000,#00ff00,#ff8000,#00ff00}	bicolor green-orange	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=00ff00,ff8000,00ff00,ff8000,00ff00,ff8000,00ff00&turnOn=true&
 Background orange-green {group:background;color:#ff8000,#00ff00,#ff8000,#00ff00,#ff8000}	bicolor orange-green	192.168.178.30:8888/v1/hybrid/json/hexColor?hexColors=ff8000,00ff00,ff8000,00ff00,ff8000,00ff00,ff8000&turnOn=true&
+
+
+blue-cyan 0000ff,0000ff,00ffff,00ffff,00ffff,00ffff,0000ff
+blue-green 0000ff,0000ff,00ff00,00ff00,00ff00,00ff00,0000ff
+blue-red 0000ff,0000ff,ff0000,ff0000,ff0000,ff0000,0000ff
+blue-white 0000ff,0000ff,ffffff,ffffff,ffffff,ffffff,0000ff
+blue-yellow 0000ff,0000ff,ffff00,ffff00,ffff00,ffff00,0000ff
+cyan-blue 00ffff,00ffff,0000ff,0000ff,0000ff,0000ff,00ffff
+green-blue 00ff00,00ff00,0000ff,0000ff,0000ff,0000ff,00ff00
+green-magenta 00ff00,00ff00,ff00ff,ff00ff,ff00ff,ff00ff,00ff00
+green-orange 00ff00,00ff00,ff8000,ff8000,ff8000,ff8000,00ff00
+green-red 00ff00,00ff00,ff0000,ff0000,ff0000,ff0000,00ff00
+green-yellow 00ff00,00ff00,ffff00,ffff00,ffff00,ffff00,00ff00
+magenta-green ff00ff,ff00ff,00ff00,00ff00,00ff00,00ff00,ff00ff
+magenta-purple ff00ff,ff00ff,8000ff,8000ff,8000ff,8000ff,ff00ff
+magenta-yellow ff00ff,ff00ff,ffff00,ffff00,ffff00,ffff00,ff00ff
+orange-green ff8000,ff8000,00ff00,00ff00,00ff00,00ff00,ff8000
+orange-purple ff8000,ff8000,8000ff,8000ff,8000ff,8000ff,ff8000
+orange-red ff8000,ff8000,ff0000,ff0000,ff0000,ff0000,ff8000
+orange-teal ff8000,ff8000,2388ad,2388ad,2388ad,2388ad,ff8000
+orange-yellow ff8000,ff8000,ffff00,ffff00,ffff00,ffff00,ff8000
+purple-magenta 8000ff,8000ff,ff00ff,ff00ff,ff00ff,ff00ff,8000ff
+purple-orange 8000ff,8000ff,ff8000,ff8000,ff8000,ff8000,8000ff
+purple-yellow 8000ff,8000ff,ffff00,ffff00,ffff00,ffff00,8000ff
+red-blue ff0000,ff0000,0000ff,0000ff,0000ff,0000ff,ff0000
+red-green ff0000,ff0000,00ff00,00ff00,00ff00,00ff00,ff0000
+red-orange ff0000,ff0000,ff8000,ff8000,ff8000,ff8000,ff0000
+red-white ff0000,ff0000,ffffff,ffffff,ffffff,ffffff,ff0000
+teal-orange 2388ad,2388ad,ff8000,ff8000,ff8000,ff8000,2388ad
+white-blue ffffff,ffffff,0000ff,0000ff,0000ff,0000ff,ffffff
+white-red ffffff,ffffff,ff0000,ff0000,ff0000,0000ff,ffffff
+yellow-blue ffff00,ffff00,0000ff,0000ff,0000ff,0000ff,ffff00
+yellow-green ffff00,ffff00,00ff00,00ff00,00ff00,00ff00,ffff00
+yellow-magenta ffff00,ffff00,ff00ff,ff00ff,ff00ff,ff00ff,ffff00
+yellow-orange ffff00,ffff00,ff8000,ff8000,ff8000,ff8000,ffff00
+yellow-purple ffff00,ffff00,8000ff,8000ff,8000ff,8000ff,ffff00
+
+dark-blue-cyan 000088,000088,008888,008888,008888,008888,000088
+dark-blue-green 000088,000088,008800,008800,008800,008800,000088
+dark-blue-red 000088,000088,880000,880000,880000,880000,000088
+dark-cyan-blue 008888,008888,000088,000088,000088,000088,008888
+dark-green-blue 008800,008800,000088,000088,000088,000088,008800
+dark-green-red 008800,008800,880000,880000,880000,880000,008800
+dark-red-blue 880000,880000,000088,000088,000088,000088,880000
+dark-red-green 880000,880000,008800,008800,008800,008800,880000

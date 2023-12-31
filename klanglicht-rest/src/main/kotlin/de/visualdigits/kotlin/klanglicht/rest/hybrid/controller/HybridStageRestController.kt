@@ -15,7 +15,7 @@ class HybridStageRestController {
     @Autowired
     val hybridStageHandler: HybridStageHandler? = null
 
-    @GetMapping(value = ["/hexColor"])
+    @GetMapping("hexColor")
     fun hexColor(
         @RequestParam(value = "ids", required = false, defaultValue = "") ids: String,
         @RequestParam(value = "hexColors") hexColors: String,

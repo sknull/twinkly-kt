@@ -34,7 +34,7 @@ class DmxInterfaceTest {
             )
         )
         scene.write(preferences,)
-        preferences.dmxInterface.write()
+        preferences.dmxInterface?.write()
     }
 
     @Test
@@ -53,7 +53,7 @@ class DmxInterfaceTest {
             )
         )
         scene.write(preferences,)
-        preferences.dmxInterface.write()
+        preferences.dmxInterface?.write()
     }
 
 //    @Test

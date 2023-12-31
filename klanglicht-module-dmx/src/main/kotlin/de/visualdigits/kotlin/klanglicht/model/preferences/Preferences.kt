@@ -12,6 +12,8 @@ import de.visualdigits.kotlin.klanglicht.model.fixture.Fixtures
 import de.visualdigits.kotlin.klanglicht.model.hybrid.HybridDevice
 import de.visualdigits.kotlin.klanglicht.model.shelly.ShellyDevice
 import de.visualdigits.kotlin.klanglicht.model.twinkly.TwinklyConfiguration
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Paths
 
@@ -27,9 +29,11 @@ data class Preferences(
     val dmx: Dmx? = null
 ) {
 
+    private val log: Logger = LoggerFactory.getLogger(javaClass)
+
     var klanglichtDir: File = File(".")
 
-    var dmxInterface: DmxInterface = DmxInterfaceDummy()
+    var dmxInterface: DmxInterface? = null
 
     /** contains the list of channels for a given base dmx channel. */
     var fixtures: Map<Int, List<Channel>> = mapOf()
@@ -86,7 +90,11 @@ data class Preferences(
 
         shellyMap = shelly?.associateBy { it.name }?:mapOf()
 
-        dmxInterface = dmx?.interfaceType?.let { DmxInterface.load(it) }?:DmxInterface.load(DmxInterfaceType.Dummy)
-        dmx?.port?.let { dmxInterface.open(it) }
+        dmxInterface = dmx?.interfaceType?.let { DmxInterface.load(it) }
+        dmx?.port?.let { dmxInterface?.open(it) }
+        if (dmxInterface?.isOpen() == false) {
+            log.warn("Could not load dmx interface - falling back to dummy")
+            dmxInterface = DmxInterface.load(DmxInterfaceType.Dummy)
+        }
     }
 }

@@ -5,22 +5,22 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import java.util.function.Consumer
 
-abstract class AbstractMenuProvider : de.visualdigits.kotlin.klanglicht.model.yamaha.XmlEntity() {
+abstract class AbstractMenuProvider : XmlEntity() {
 
     @JacksonXmlProperty(localName = "Menu")
     @JacksonXmlElementWrapper(localName = "Menu", useWrapping = false)
-    var menus: List<de.visualdigits.kotlin.klanglicht.model.yamaha.Menu> = listOf()
+    var menus: List<Menu> = listOf()
 
     @JsonIgnore
-    var parent: de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider? = null
+    var parent: AbstractMenuProvider? = null
 
     @JsonIgnore
-    val tree: MutableMap<String?, de.visualdigits.kotlin.klanglicht.model.yamaha.Menu> = mutableMapOf()
+    val tree: MutableMap<String?, Menu> = mutableMapOf()
 
     abstract val key: String?
 
-    fun <T : de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider> getMenu(path: String): T {
-        var provider: de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider? = this
+    fun <T : AbstractMenuProvider> getMenu(path: String): T {
+        var provider: AbstractMenuProvider? = this
         for (key in path.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
             provider = provider!!.tree[key]
         }
@@ -29,7 +29,7 @@ abstract class AbstractMenuProvider : de.visualdigits.kotlin.klanglicht.model.ya
 
     fun initializeTree() {
         if (menus != null) {
-            menus.forEach(Consumer { menu: de.visualdigits.kotlin.klanglicht.model.yamaha.Menu ->
+            menus.forEach(Consumer { menu: Menu ->
                 menu.parent = this
                 tree[menu.name] = menu
                 menu.initializeTree()
@@ -38,7 +38,7 @@ abstract class AbstractMenuProvider : de.visualdigits.kotlin.klanglicht.model.ya
     }
 
     protected fun renderTree(indent: String, sb: StringBuilder) {
-        tree.forEach { (key: String?, subMenu: de.visualdigits.kotlin.klanglicht.model.yamaha.Menu) ->
+        tree.forEach { (key: String?, subMenu: Menu) ->
             sb.append(indent).append(key).append("\n")
             subMenu.renderTree("$indent  ", sb)
         }

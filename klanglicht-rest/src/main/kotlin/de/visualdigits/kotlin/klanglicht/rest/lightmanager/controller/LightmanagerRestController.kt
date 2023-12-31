@@ -21,18 +21,18 @@ class LightmanagerRestController {
     @Autowired
     var client: LightmanagerClient? = null
 
-    @GetMapping(value = ["/params"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("params", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun params(): LMParams? = client?.params()
 
-    @GetMapping(value = ["/zones"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("zones", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun zones(): LMZones? = client?.zones()
 
-    @GetMapping(value = ["/knownActors"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("knownActors", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun knownActors(): Map<Int, String>? = client?.knownActors()
 
-    @GetMapping(value = ["/scenes"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("scenes", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun scenes(): LMScenes? = client?.scenes()
 
-    @GetMapping(value = ["/markers"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("markers", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun markers(): LMMarkers? = client?.markers()
 }

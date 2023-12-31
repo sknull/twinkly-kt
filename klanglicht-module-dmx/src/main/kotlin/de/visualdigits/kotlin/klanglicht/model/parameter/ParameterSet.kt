@@ -2,22 +2,26 @@ package de.visualdigits.kotlin.klanglicht.model.parameter
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import de.visualdigits.kotlin.klanglicht.model.color.RGBColor
+import de.visualdigits.kotlin.klanglicht.model.preferences.Preferences
 import kotlin.math.roundToInt
 
 @JsonIgnoreProperties("parameterValues")
 class ParameterSet(
     val baseChannel: Int = 0,
-    val parameters: MutableList<Parameter<*>> = mutableListOf(),
+    val parameters: List<Parameter<*>> = listOf(),
 ) : Fadeable<ParameterSet> {
 
     val parameterMap: MutableMap<String, Int> = mutableMapOf()
 
     init {
-        updateParameterValues(parameters)
+        updateParameterMap()
     }
 
-    private fun updateParameterValues(parameters: MutableList<Parameter<*>>) {
-        parameterMap.putAll(parameters.flatMap { param -> param.parameterMap().toList() }.toMap().toMutableMap())
+    private fun updateParameterMap() {
+        parameterMap.clear()
+        parameters.forEach { param ->
+            parameterMap.putAll(param.parameterMap())
+        }
     }
 
     override fun getId(): String = baseChannel.toString()
@@ -35,32 +39,41 @@ class ParameterSet(
             .filter { it.name == "MasterDimmer" }
             .firstOrNull()
             ?.let { it.value = (255 * gain).roundToInt() }
+        updateParameterMap()
     }
 
     override fun getRgbColor(): RGBColor? = parameters.filterIsInstance<RGBColor>().firstOrNull()
 
     override fun setRgbColor(rgbColor: RGBColor) {
         getRgbColor()?.setRgbColor(rgbColor)
+        updateParameterMap()
     }
 
-    /**
-     * Puts all parameters from the given parameter set.
-     */
-    fun join(other: ParameterSet): ParameterSet {
-        parameters.addAll(other.parameters)
-        updateParameterValues(other.parameters)
-        return this
+    fun toBytes(preferences: Preferences): ByteArray {
+        return (preferences.fixtures[baseChannel]?.map { channel ->
+            (parameterMap[channel.name] ?: 0).toByte()
+        } ?: listOf()).toByteArray()
+    }
+
+    override fun write(preferences: Preferences, write: Boolean, transitionDuration: Long) {
+        val bytes = toBytes(preferences)
+        preferences.dmxInterface?.dmxFrame?.set(baseChannel, bytes)
+        if (write) preferences.dmxInterface?.write()
     }
 
     override fun fade(other: Any, factor: Double): ParameterSet {
         return if (other is ParameterSet) {
-            ParameterSet(
+            val parameters1 = parameters
+                .zip(other.parameters)
+                .map {
+                    val fade = it.first.fade(it.second, factor)
+                    fade
+                }.toMutableList()
+            val parameterSet = ParameterSet(
                 baseChannel = baseChannel,
-                parameters = parameters
-                    .zip(other.parameters)
-                    .map { it.first.fade(it.second, factor) }
-                    .toMutableList()
+                parameters = parameters1
             )
+            parameterSet
         } else throw IllegalArgumentException("Cannot not fade another type")
     }
 }

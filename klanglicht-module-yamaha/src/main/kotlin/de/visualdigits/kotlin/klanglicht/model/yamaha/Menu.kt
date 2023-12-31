@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(localName = "Menu")
-class Menu : de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider() {
+class Menu : AbstractMenuProvider() {
     @JacksonXmlProperty(localName = "Func", isAttribute = true)
     val function: String? = null
 
@@ -50,7 +50,7 @@ class Menu : de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider
 
     @JacksonXmlProperty(localName = "SKey")
     val skey: SKey? = null
-    val name: String?
+    val name: String
         get() {
             var name = key
             if (name.isNullOrEmpty()) {
@@ -61,7 +61,7 @@ class Menu : de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider
     val subUnitName: String?
         get() {
             var subUnitName: String? = null
-            var menu: de.visualdigits.kotlin.klanglicht.model.yamaha.AbstractMenuProvider? = this
+            var menu: AbstractMenuProvider? = this
             while (menu != null) {
                 if (menu is Menu && "Subunit" == menu.function) {
                     subUnitName = menu.yncTag

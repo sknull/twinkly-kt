@@ -26,7 +26,7 @@ class HybridScene() : Fadeable<HybridScene> {
         hexColors: String,
         gains: String,
         turnOns: String = "true",
-        preferences: Preferences?,
+        preferences: Preferences?
     ): this() {
         this.ids = ids
         this.hexColors = hexColors
@@ -35,10 +35,15 @@ class HybridScene() : Fadeable<HybridScene> {
         this.preferences = preferences
 
         initializeFromParameters()
+        initializeFromFadeables() // modify attributes after updating fadeables
     }
 
-    constructor(fadeables: MutableMap<String, Fadeable<*>>): this() {
+    constructor(
+        fadeables: MutableMap<String, Fadeable<*>>,
+        preferences: Preferences?
+    ): this() {
         this.fadeables.clear()
+        this.preferences = preferences
         update(fadeables)
     }
 
@@ -51,7 +56,7 @@ class HybridScene() : Fadeable<HybridScene> {
         initializeFromFadeables()
     }
 
-    fun fadeables(): List<Fadeable<*>> = fadeables().toList()
+    fun fadeables(): List<Fadeable<*>> = fadeables.values.toList()
 
     fun getFadeable(id: String): Fadeable<*>? = fadeables[id]
 
@@ -68,12 +73,14 @@ class HybridScene() : Fadeable<HybridScene> {
     }
 
     private fun initializeFromParameters() {
-        val lIds = ids
-            .split(",")
-            .filter { it.isNotEmpty() }
-            .map { it.trim() }
-        val nd = lIds.size - 1
-        var d = 0
+        val lIds = if (ids.isNotEmpty()) {
+            ids
+                .split(",")
+                .filter { it.isNotEmpty() }
+                .map { it.trim() }
+        } else {
+            preferences?.stage?.map { it.id }?:listOf()
+        }
 
         val lHexColors = hexColors
             .split(",")
@@ -97,22 +104,14 @@ class HybridScene() : Fadeable<HybridScene> {
 
         if (lIds.isNotEmpty()) {
             lIds.forEach { id ->
-                val device = preferences!!.stageMap[id]
-                val hexColor = lHexColors[min(nh, h++)]
-                val gain = lGains.getOrNull(min(ng, g++))
-                val turnOn = lTurnOns.getOrNull(min(nt, t++))?:false
-                device?.let { d ->
-                    processDevice(d, preferences, id, gain, turnOn, hexColor)
+                val device = preferences?.stageMap?.get(id)
+                if (device != null) {
+                    val hexColor = lHexColors[min(nh, h++)]
+                    val gain = lGains.getOrNull(min(ng, g++))
+                    val turnOn = lTurnOns.getOrNull(min(nt, t++))?:false
+                    processDevice(device, preferences, id, gain, turnOn, hexColor)
                         ?.let { dd -> fadeables[id] = dd }
                 }
-            }
-        } else {
-            preferences!!.stage.forEach { device ->
-                val hexColor = lHexColors[min(nh, h++)]
-                val gain = lGains.getOrNull(min(ng, g++))
-                val turnOn = lTurnOns.getOrNull(min(nt, t++))?:false
-                processDevice(device, preferences, device.id, gain, turnOn, hexColor)
-                    ?.let { dd -> fadeables[device.id] = dd }
             }
         }
     }
@@ -187,27 +186,46 @@ class HybridScene() : Fadeable<HybridScene> {
     }
 
     override fun write(preferences: Preferences, write: Boolean, transitionDuration: Long) {
-        Scene(
-            name = "HybridScene",
-            parameterSet = fadeables().filterIsInstance<ParameterSet>()
-        ).write(preferences, write,)
-        fadeables()
-            .filterIsInstance<ShellyColor>()
-            .forEach { shellyColor -> ShellyClient.setColor(shellyColor.ipAddress, shellyColor.getRgbColor(), shellyColor.getGain()) }
+        // first collect all frame data for the dmx frame to avoid lots of costly write operations to a serial interface
+        fadeables().filterIsInstance<ParameterSet>().forEach { parameterSet ->
+            val baseChannel = parameterSet.baseChannel
+            val bytes = parameterSet.toBytes(preferences)
+            preferences.dmxInterface?.dmxFrame?.set(baseChannel, bytes)
+        }
+        if (write) preferences.dmxInterface?.write()
+
+        // call shelly interface which is pretty fast
+        fadeables().filterIsInstance<ShellyColor>().forEach { it.write(preferences, true) }
     }
 
     override fun fade(other: Any, factor: Double): HybridScene {
         return if (other is HybridScene) {
+            val otherIds = other.fadeables().map { it.getId() } // ensure that we only fade elements which are in source and target scene
             val fadedHexColors = fadeables()
+                .filter { otherIds.contains(it.getId())  }
                 .zip(other.fadeables())
                 .mapNotNull {
                     when (val faded = it.first.fade(it.second, factor)) {
-                        is ShellyColor -> faded.getRgbColor().hex()
-                        is ParameterSet -> faded.getRgbColor()?.hex()
+                        is ShellyColor -> {
+                            Pair(faded.getId(), faded.getRgbColor())
+                        }
+                        is ParameterSet -> {
+                            val second = faded.getRgbColor()
+                            Pair(faded.getId(), second)
+                        }
                         else -> null
                     }
-                }.joinToString(",")
-            HybridScene(ids, fadedHexColors, gains, turnOns, preferences)
+                }.toMap()
+            val fadedScene = HybridScene(fadeables, preferences)
+            fadedHexColors.forEach { (id, hexColor) ->
+                hexColor?.let { hc ->
+                    fadedScene.setRgbColor(id, hc)
+                }
+            }
+
+            // fixme - at this point parameterMap contains default values - why?
+
+            fadedScene
         } else {
             throw IllegalArgumentException("Cannot not fade another type")
         }

@@ -32,11 +32,12 @@ interface Fadeable<T : Fadeable<T>> {
         var factor = 0.0
 
         while (factor < 1.0) {
-            fade(other, factor).write(preferences,)
+            val faded = fade(other, factor)
+            faded.write(preferences)
             factor += step
             Thread.sleep(dmxFrameTime)
         }
-        other.write(preferences,)
+        other.write(preferences)
     }
 
     fun write(preferences: Preferences, write: Boolean = true, transitionDuration: Long = 1) {

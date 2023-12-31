@@ -2,14 +2,11 @@ package de.visualdigits.kotlin.klanglicht.rest.shelly.handler
 
 import de.visualdigits.kotlin.klanglicht.model.color.RGBColor
 import de.visualdigits.kotlin.klanglicht.model.hybrid.HybridScene
-import de.visualdigits.kotlin.klanglicht.model.shelly.ShellyColor
 import de.visualdigits.kotlin.klanglicht.model.shelly.ShellyDevice
 import de.visualdigits.kotlin.klanglicht.model.shelly.client.ShellyClient
-import de.visualdigits.kotlin.klanglicht.model.shelly.status.Light
 import de.visualdigits.kotlin.klanglicht.model.shelly.status.Status
 import de.visualdigits.kotlin.klanglicht.rest.configuration.ConfigHolder
 import de.visualdigits.kotlin.klanglicht.rest.lightmanager.feign.LightmanagerClient
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

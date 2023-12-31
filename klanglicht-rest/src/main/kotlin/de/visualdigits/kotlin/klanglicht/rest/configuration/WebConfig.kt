@@ -1,7 +1,6 @@
 package de.visualdigits.kotlin.klanglicht.rest.configuration
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Description
@@ -22,8 +21,6 @@ open class WebConfig : WebMvcConfigurer {
     @Autowired
     val configHolder: ConfigHolder? = null
 
-    @Value("\${server.lightmanager.theme}")
-    var theme: String? = null
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
     }
@@ -36,7 +33,7 @@ open class WebConfig : WebMvcConfigurer {
             configHolder!!.klanglichtDirectory.absolutePath,
             "resources",
             "themes",
-            theme,
+            configHolder.preferences?.theme,
             "templates"
         ).toFile().absolutePath.replace("\\", "/") + "/"
         templateResolver.prefix = templatesPath

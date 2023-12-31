@@ -21,17 +21,17 @@ class Scene(
      * Writes the given scene into the internal dmx frame of the interface.
      */
     override fun write(preferences: Preferences, write: Boolean, transitionDuration: Long) {
+        // first collect all frame data for the dmx frame to avoid lots of costly write operations to a serial interface
         parameterSet
             .sortedBy { it.baseChannel }
             .forEach { parameterSet ->
                 val baseChannel = parameterSet.baseChannel
                 val bytes = (preferences.fixtures[baseChannel]?.map { channel ->
                     (parameterSet.parameterMap[channel.name] ?: 0).toByte()
-                } ?: listOf())
-                    .toByteArray()
-                preferences.dmxInterface.dmxFrame.set(baseChannel, bytes)
-                if (write) preferences.dmxInterface.write()
+                } ?: listOf()).toByteArray()
+                preferences.dmxInterface?.dmxFrame?.set(baseChannel, bytes)
             }
+        if (write) preferences.dmxInterface?.write()
     }
 
     override fun fade(
@@ -48,7 +48,6 @@ class Scene(
                         paramsFrom.fade(paramsTo, factor)
                     }
             )
-        }
-        else throw IllegalArgumentException("Cannot not fade another type")
+        } else throw IllegalArgumentException("Cannot not fade another type")
     }
 }
