@@ -25,7 +25,7 @@
     <!-- tests -->
     <dependency>
       <groupId>de.visualdigits</groupId>
-      <artifactId>klanglicht-module-twinkly</artifactId>
+      <artifactId>twinkly-api</artifactId>
       <version>${revision}</version>
       <type>test-jar</type>
       <scope>test</scope>
