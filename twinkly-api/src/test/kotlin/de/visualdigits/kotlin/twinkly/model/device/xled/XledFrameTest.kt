@@ -2,8 +2,10 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
+@Disabled("for local testing only")
 class XledFrameTest {
 
     private val xledArray = XledArray(

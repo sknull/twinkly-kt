@@ -50,7 +50,7 @@ abstract class Session(
                 val expireInSeconds = (responseChallenge["authentication_token_expires_in"] as Int)
                 val responseVerify = verify((responseChallenge["challenge-response"] as String), authToken)
                 if (responseVerify?.responseCode != ResponseCode.Ok) {
-                    log.warn("Could not login to device")
+                    log.warn("Could not login to device $host")
                 }
                 val tokenExpires = System.currentTimeMillis() + expireInSeconds * 1000 - 5000
                 log.debug("#### Token expires '${formatEpoch(tokenExpires)}'")
@@ -127,7 +127,7 @@ abstract class Session(
                 else -> mapper.readValue(response, T::class.java)
             }
         } catch (e: Exception) {
-            log.warn("Could not talk to server")
+            log.warn("Could not talk to server $host")
             null
         }
     }
@@ -151,7 +151,7 @@ abstract class Session(
                 else -> mapper.readValue(response, T::class.java)
             }
         } catch (e: Exception) {
-            log.warn("Could not talk to server")
+            log.warn("Could not talk to server $host")
             null
         }
     }
@@ -175,7 +175,7 @@ abstract class Session(
                 else -> mapper.readValue(response, T::class.java)
             }
         } catch (e: Exception) {
-            log.warn("Could not talk to server")
+            log.warn("Could not talk to server $host")
             null
         }
     }
