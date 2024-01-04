@@ -72,6 +72,25 @@ interface Color<T : Color<T>> {
                     )
                 }
             }
+            is HSVColor -> {
+                if (bytesPerLed == 4) {
+                    val rgbwColor = toRGBW()
+                    byteArrayOf(
+                        rgbwColor.white.toByte(),
+                        rgbwColor.red.toByte(),
+                        rgbwColor.green.toByte(),
+                        rgbwColor.blue.toByte()
+                    )
+                }
+                else {
+                    val rgbColor = toRGB()
+                    byteArrayOf(
+                        rgbColor.red.toByte(),
+                        rgbColor.green.toByte(),
+                        rgbColor.blue.toByte()
+                    )
+                }
+            }
             else -> byteArrayOf()
         }
     }

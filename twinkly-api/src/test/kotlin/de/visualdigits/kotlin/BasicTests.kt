@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin
 
+import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
@@ -127,6 +128,17 @@ class BasicTests : XledArrayTest() {
             width = xledArray.width,
             height = xledArray.height,
             initialColor = RGBColor(255, 255, 255)
+        )
+
+        frame.play(xledArray)
+    }
+
+    @Test
+    fun testHsv() {
+        val frame = XledFrame(
+            width = xledArray.width,
+            height = xledArray.height,
+            initialColor = HSVColor(0, 100, 100)
         )
 
         frame.play(xledArray)
