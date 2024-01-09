@@ -4,6 +4,7 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.time.OffsetDateTime
 
@@ -64,8 +65,12 @@ class XledArray(
         xLedDevices.flatten().forEach { it.ledReset() }
     }
 
-    override fun getMode(): DeviceMode? {
+    override fun getMode(): Mode? {
         return xLedDevices.flatten().firstOrNull()?.getMode()
+    }
+
+    override fun getDeviceMode(): DeviceMode? {
+        return xLedDevices.flatten().firstOrNull()?.getDeviceMode()
     }
 
     override fun setMode(mode: DeviceMode): JsonObject? {

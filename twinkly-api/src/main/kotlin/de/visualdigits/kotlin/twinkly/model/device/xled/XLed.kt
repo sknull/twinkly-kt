@@ -2,10 +2,9 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import java.time.OffsetDateTime
@@ -22,7 +21,9 @@ interface XLed {
 
     fun powerOff()
 
-    fun getMode(): DeviceMode?
+    fun getMode(): Mode?
+
+    fun getDeviceMode(): DeviceMode?
 
     fun setMode(mode: DeviceMode): JsonObject?
 

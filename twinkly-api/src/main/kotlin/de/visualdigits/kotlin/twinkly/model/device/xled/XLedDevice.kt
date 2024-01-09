@@ -90,12 +90,15 @@ class XLedDevice(
         setMode(DeviceMode.off)
     }
 
-    override fun getMode(): DeviceMode? {
+    override fun getMode(): Mode? {
         refreshTokenIfNeeded()
-        val response = get<Mode>(
+        return get<Mode>(
             url = "$baseUrl/led/mode",
         )
-        return response?.deviceMode
+    }
+
+    override fun getDeviceMode(): DeviceMode? {
+        return getMode()?.deviceMode
     }
 
     override fun setMode(mode: DeviceMode): JsonObject? {

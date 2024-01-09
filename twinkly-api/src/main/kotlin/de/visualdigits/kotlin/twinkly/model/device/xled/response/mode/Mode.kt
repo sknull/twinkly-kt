@@ -13,6 +13,8 @@ class Mode(
     @JsonProperty("color_config") val colorConfig: ColorConfig? = null,
     val id: Int? = null,
     @JsonProperty("unique_id") val uniqueId: String? = null,
+    @JsonProperty("effect_id") val effectId: Int? = null,
+    @JsonProperty("effect_config") val effectConfig: EffectConfig? = null,
     val name: String? = null,
     val deviceMode: DeviceMode = mode?.let { m -> DeviceMode.valueOf(m) }?: DeviceMode.off
 ) : JsonObject(code)

@@ -40,6 +40,12 @@
       <version>4.2</version>
     </dependency-->
 
+    <dependency>
+      <groupId>org.jetbrains.bio</groupId>
+      <artifactId>viktor</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+
     <!-- jackson -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
