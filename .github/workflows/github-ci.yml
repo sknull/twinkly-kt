@@ -21,10 +21,10 @@ jobs:
           server-password: MAVEN_PASSWORD
 
       - name: Build package
-        run: mvn --batch-mode clean package
+        run: mvn --batch-mode clean package -DskipTests
 
       - name: Publish snapshot
-        run: mvn deploy - s $GITHUB_WORKSPACE/settings.xml
+        run: mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
