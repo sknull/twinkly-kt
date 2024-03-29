@@ -17,6 +17,7 @@ jobs:
           java-version: '17'
           distribution: 'liberica'
       - name: Build and deploy package
-        run: mvn --batch-mode clean package deploy -DskipTests
         env:
+          GITHUB_USERNAME: x-access-token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn --batch-mode --settings settings.xml clean package deploy -DskipTests
