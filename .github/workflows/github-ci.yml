@@ -5,7 +5,8 @@ on:
     branches:
       - main
 permissions:
-  actions: write
+  contents: read
+  issues: write
 jobs:
   build-and-deploy-snapshot:
     runs-on: ubuntu-latest
