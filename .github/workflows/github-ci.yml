@@ -21,10 +21,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
-      - name: Build package
-        run: mvn --batch-mode clean package -DskipTests
-
-      - name: Publish snapshot
-        run: mvn deploy -DskipTests -Dregistry=https://maven.pkg.github.com/sknull -Dtoken=GH_TOKEN
+      - name: Build and deploy package
+        run: mvn --batch-mode clean package deploy -DskipTests
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
