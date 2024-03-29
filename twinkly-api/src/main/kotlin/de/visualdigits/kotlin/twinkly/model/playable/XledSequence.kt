@@ -6,12 +6,11 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
-import de.visualdigits.kotlin.twinkly.model.playable.transition.Transition
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.scene.Scene
 import de.visualdigits.kotlin.twinkly.model.scene.SceneType
-import org.apache.commons.lang3.SystemUtils
+import de.visualdigits.kotlin.util.SystemUtils
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File

@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.twinkly.model.color
 
-import org.apache.commons.lang3.StringUtils
 import java.lang.Long.decode
 import kotlin.math.max
 import kotlin.math.min
@@ -102,7 +101,7 @@ class RGBWColor(
 
     override fun value(): Long = (red.toLong() shl 24) or (green.toLong() shl 16) or (blue.toLong() shl 8) or white.toLong()
 
-    override fun hex(): String = StringUtils.leftPad(java.lang.Long.toHexString(value()), 8, '0')
+    override fun hex(): String = java.lang.Long.toHexString(value()).padStart(8, '0')
 
     override fun web(): String = "#${hex()}"
 

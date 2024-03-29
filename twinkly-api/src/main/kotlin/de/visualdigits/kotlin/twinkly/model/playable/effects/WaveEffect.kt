@@ -30,7 +30,6 @@ class WaveEffect(
         for (x in 0 until xled.width) {
             for (y in 0 until xled.height) {
                 var aux = intensity * (time * (2 * PI) + (intervalStep * y));
-                var ysin = sin((aux * 4.0) % (2.0 * PI));
                 var h = color.h / 360.0 + sin(aux % (2.0 * PI)) * maxShift;
                 if (h < 0.0)
                     h = h + 1.0;

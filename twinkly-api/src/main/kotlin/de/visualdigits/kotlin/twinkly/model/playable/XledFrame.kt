@@ -8,8 +8,8 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.util.FontUtil
+import de.visualdigits.kotlin.util.SystemUtils
 import kotlinx.coroutines.delay
-import org.apache.commons.lang3.SystemUtils
 import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream

@@ -25,20 +25,10 @@
     <!-- common stuff -->
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
-    </dependency>
-    <dependency>
       <groupId>com.madgag</groupId>
       <artifactId>animated-gif-lib</artifactId>
       <version>1.4</version>
     </dependency>
-    <!--dependency>
-      <groupId>org.imgscalr</groupId>
-      <artifactId>imgscalr-lib</artifactId>
-      <version>4.2</version>
-    </dependency-->
 
     <dependency>
       <groupId>org.jetbrains.bio</groupId>

@@ -7,7 +7,6 @@ import de.visualdigits.kotlin.twinkly.model.font.FigletFont
 import de.visualdigits.kotlin.twinkly.model.font.FigletSmusher
 import de.visualdigits.kotlin.twinkly.model.font.Justify
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
-import org.apache.commons.lang3.SystemUtils
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.GraphicsEnvironment
