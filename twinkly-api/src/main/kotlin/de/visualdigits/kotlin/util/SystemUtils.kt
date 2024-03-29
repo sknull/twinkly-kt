@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.util
 
+import java.io.File
 import kotlin.math.min
 
 
@@ -776,6 +777,38 @@ object SystemUtils {
      * @since Java 1.1
      */
     val USER_HOME: String? = getSystemProperty(USER_HOME_KEY)
+
+    /**
+     *
+     *
+     * Gets the user directory as a `File`.
+     *
+     *
+     * @return a directory
+     * @throws SecurityException if a security manager exists and its `checkPropertyAccess` method doesn't allow
+     * access to the specified system property.
+     * @see System.getProperty
+     * @since 2.1
+     */
+    fun getUserDir(): File {
+        return File(System.getProperty(USER_DIR_KEY))
+    }
+
+    /**
+     *
+     *
+     * Gets the user home directory as a `File`.
+     *
+     *
+     * @return a directory
+     * @throws SecurityException if a security manager exists and its `checkPropertyAccess` method doesn't allow
+     * access to the specified system property.
+     * @see System.getProperty
+     * @since 2.1
+     */
+    fun getUserHome(): File {
+        return File(System.getProperty(USER_HOME_KEY))
+    }
 
     /**
      * Decides if the operating system matches.
