@@ -16,7 +16,7 @@ jobs:
         with:
           distribution: 'liberica'
           java-version: '17'
-          server-id: ossrh
+          server-id: github
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
@@ -24,14 +24,4 @@ jobs:
         run: mvn --batch-mode clean package -DskipTests
 
       - name: Publish snapshot
-        run: mvn deploy -DskipTests
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: twinkly-kt
-          path: |
-            /home/runner/work/sknull/twinkly-kt/target/*.jar
-            !/home/runner/work/sknull/twinkly-kt/target/*sources.jar
-            !/home/runner/work/sknull/twinkly-kt/target/original*.jar
+        run: mvn deploy -DskipTests -Dregistry=https://maven.pkg.github.com/phanatic -Dtoken=GITHUB_TOKEN
