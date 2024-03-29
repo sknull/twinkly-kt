@@ -24,7 +24,7 @@ jobs:
         run: mvn --batch-mode clean package -DskipTests
 
       - name: Publish snapshot
-        run: mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml
+        run: mvn deploy -DskipTests
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
