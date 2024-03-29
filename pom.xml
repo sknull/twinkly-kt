@@ -38,12 +38,13 @@
     <version.acme4j-client>2.16</version.acme4j-client>
   </properties>
 
-  <!--repositories>
+  <distributionManagement>
     <repository>
-      <id>mavenCentral</id>
-      <url>https://repo1.maven.org/maven2/</url>
+      <id>ossrh</id>
+      <name>Central Repository OSSRH</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
-  </repositories-->
+  </distributionManagement>
 
   <dependencies>
     <!-- kotlin -->
@@ -203,4 +204,10 @@
       </plugin>
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:git@github.com:sknull/twinkly-kt.git</connection>
+    <developerConnection>scm:git@github.com:sknull/twinkly-kt.git</developerConnection>
+    <url>https://github.com/sknull/twinkly-kt</url>
+  </scm>
 </project>
