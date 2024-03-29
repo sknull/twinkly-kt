@@ -5,6 +5,18 @@
   <groupId>de.visualdigits</groupId>
   <artifactId>twinkly-audioprocessing</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <scm>
+    <connection>scm:git@github.com:sknull/twinkly-kt.git/twinkly-audioprocessing</connection>
+    <developerConnection>scm:git@github.com:sknull/twinkly-kt.git/twinkly-audioprocessing</developerConnection>
+    <url>https://github.com/sknull/twinkly-kt/twinkly-audioprocessing</url>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/sknull/twinkly-kt</url>
+    </repository>
+  </distributionManagement>
   <properties>
     <version.acme4j-client>2.16</version.acme4j-client>
     <java-version>17</java-version>
