@@ -1,23 +1,37 @@
 name: Twinkly API Kotlin
 
-on: [push]
-
+on:
+  push:
+    branches:
+      - main
+permissions:
+  actions: write
 jobs:
-  publish:
+  build-and-deploy-snapshot:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
+          distribution: 'liberica'
           java-version: '17'
-          distribution: 'temurin'
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: Publish package
-        run: mvn --batch-mode clean package deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
+      - name: Build package
+        run: mvn --batch-mode clean package
+
+      - name: Publish snapshot
+        run: mvn deploy - s $GITHUB_WORKSPACE/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: twinkly-kt
+          path: |
+            /home/runner/work/sknull/twinkly-kt/target/*.jar
+            !/home/runner/work/sknull/twinkly-kt/target/*sources.jar
+            !/home/runner/work/sknull/twinkly-kt/target/original*.jar
