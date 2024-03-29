@@ -24,4 +24,4 @@ jobs:
         run: mvn --batch-mode clean package -DskipTests
 
       - name: Publish snapshot
-        run: mvn deploy -DskipTests -Dregistry=https://maven.pkg.github.com/phanatic -Dtoken=GITHUB_TOKEN
+        run: mvn deploy -DskipTests -Dregistry=https://maven.pkg.github.com/phanatic -Dtoken=${{ secrets.GITHUB_TOKEN }}
