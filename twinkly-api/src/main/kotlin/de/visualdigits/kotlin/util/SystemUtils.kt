@@ -817,7 +817,7 @@ object SystemUtils {
      * @param osVersionPrefix the prefix for the version
      * @return true if matches, or false if not or can't determine
      */
-    private fun getOsMatches(osNamePrefix: String, osVersionPrefix: String): Boolean {
+    private fun getOsMatches(osNamePrefix: String?, osVersionPrefix: String?): Boolean {
         return isOSMatch(OS_NAME, OS_VERSION, osNamePrefix, osVersionPrefix)
     }
 
@@ -834,7 +834,7 @@ object SystemUtils {
      * @param osVersionPrefix the prefix for the expected OS version
      * @return true if matches, or false if not or can't determine
      */
-    fun isOSMatch(osName: String, osVersion: String, osNamePrefix: String, osVersionPrefix: String): Boolean {
+    fun isOSMatch(osName: String?, osVersion: String?, osNamePrefix: String?, osVersionPrefix: String?): Boolean {
         if (osName == null || osVersion == null) {
             return false
         }
@@ -852,17 +852,16 @@ object SystemUtils {
      * @param osVersionPrefix the prefix for the expected OS version
      * @return true if matches, or false if not or can't determine
      */
-    fun isOSVersionMatch(osVersion: String, osVersionPrefix: String): Boolean {
-        if (osVersion.isEmpty()) {
+    fun isOSVersionMatch(osVersion: String?, osVersionPrefix: String?): Boolean {
+        if (osVersion?.isEmpty() == true) {
             return false
         }
         // Compare parts of the version string instead of using String.startsWith(String) because otherwise
         // osVersionPrefix 10.1 would also match osVersion 10.10
-        val versionPrefixParts = osVersionPrefix.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
-        val versionParts = osVersion.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        for (i in 0 until min(versionPrefixParts.size.toDouble(), versionParts.size.toDouble()).toInt()) {
-            if (versionPrefixParts[i] != versionParts[i]) {
+        val versionPrefixParts = osVersionPrefix?.split("\\.".toRegex())?.dropLastWhile { it.isEmpty() }
+        val versionParts = osVersion?.split("\\.".toRegex())?.dropLastWhile { it.isEmpty() }
+        for (i in 0 until min(versionPrefixParts?.size?:0, versionParts?.size?:0)) {
+            if (versionPrefixParts?.get(i) != versionParts?.get(i)) {
                 return false
             }
         }
@@ -875,7 +874,7 @@ object SystemUtils {
      * @param osNamePrefix the prefix for the OS name
      * @return true if matches, or false if not or can't determine
      */
-    private fun getOsMatchesName(osNamePrefix: String): Boolean {
+    private fun getOsMatchesName(osNamePrefix: String?): Boolean {
         return isOSNameMatch(OS_NAME, osNamePrefix)
     }
 
@@ -890,11 +889,11 @@ object SystemUtils {
      * @param osNamePrefix the prefix for the expected OS name
      * @return true if matches, or false if not or can't determine
      */
-    fun isOSNameMatch(osName: String, osNamePrefix: String): Boolean {
+    fun isOSNameMatch(osName: String?, osNamePrefix: String?): Boolean {
         if (osName == null) {
             return false
         }
-        return osName.startsWith(osNamePrefix!!)
+        return osNamePrefix?.let { osName.startsWith(it) }?:false
     }
     // -----------------------------------------------------------------------
     /**
@@ -911,7 +910,7 @@ object SystemUtils {
      * @param property the system property name
      * @return the system property value or `null` if a security problem occurs
      */
-    private fun getSystemProperty(property: String): String? {
+    fun getSystemProperty(property: String): String? {
         return try {
             System.getProperty(property)
         } catch (ex: SecurityException) {
