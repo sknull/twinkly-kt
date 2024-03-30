@@ -8,6 +8,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
+const val HEADER_X_AUTH_TOKEN = "X-Auth-Token"
+
 open class UrlClient(
     val host: String
 ) {
@@ -27,23 +29,9 @@ open class UrlClient(
         authToken: String? = null
     ): T? {
         log.debug("POST '{}' body='{}' headers={}", url, String(body), headers)
-        val connection = (URL(url).openConnection() as HttpURLConnection)
-        connection.requestMethod = "POST"
-        connection.connectTimeout = CONNECTION_TIMEOUT
-        (authToken?: tokens[host]?.authToken)?.let { at -> headers["X-Auth-Token"] = at }
-        headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
-        connection.doOutput = true
+        (authToken?: tokens[host]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return try {
-            connection.outputStream.use { os ->
-                os.write(body, 0, body.size)
-            }
-            val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
-                ins.readAllBytes()
-            }
-            when (T::class) {
-                String::class -> String(response) as T
-                else -> mapper.readValue(response, T::class.java)
-            }
+            URL(url).post<T>(body, headers)
         } catch (e: Exception) {
             log.warn("Could not talk to server $host")
             null
@@ -52,22 +40,13 @@ open class UrlClient(
 
     inline fun <reified T> get(
         url: String,
-        headers: Map<String, String> = mapOf()
+        headers: MutableMap<String, String> = mutableMapOf(),
+        authToken: String? = null
     ): T? {
         log.debug("GET '{}' headers={}", url, headers)
-        val connection = (URL(url).openConnection() as HttpURLConnection)
-        connection.requestMethod = "GET"
-        connection.connectTimeout = CONNECTION_TIMEOUT
-        tokens[host]?.authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
-        headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
+        (authToken?: tokens[host]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return try {
-            val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
-                ins.readAllBytes()
-            }
-            when (T::class) {
-                String::class -> String(response) as T
-                else -> mapper.readValue(response, T::class.java)
-            }
+            URL(url).get<T>(headers)
         } catch (e: Exception) {
             log.warn("Could not talk to server $host")
             null
@@ -76,22 +55,13 @@ open class UrlClient(
 
     inline fun <reified T> delete(
         url: String,
-        headers: Map<String, String> = mapOf()
+        headers: MutableMap<String, String> = mutableMapOf(),
+        authToken: String? = null
     ): T? {
         log.debug("DELETE '{}' headers={}", url, headers)
-        val connection = (URL(url).openConnection() as HttpURLConnection)
-        connection.requestMethod = "DELETE"
-        connection.connectTimeout = CONNECTION_TIMEOUT
-        tokens[host]?.authToken?.let { at -> connection.setRequestProperty("X-Auth-Token", at) }
-        headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
+        (authToken?: tokens[host]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return try {
-            val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
-                ins.readAllBytes()
-            }
-            when (T::class) {
-                String::class -> String(response) as T
-                else -> mapper.readValue(response, T::class.java)
-            }
+            URL(url).delete<T>(headers)
         } catch (e: Exception) {
             log.warn("Could not talk to server $host")
             null
