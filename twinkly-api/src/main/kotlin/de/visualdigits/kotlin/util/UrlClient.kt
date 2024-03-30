@@ -2,11 +2,8 @@ package de.visualdigits.kotlin.util
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.visualdigits.kotlin.twinkly.model.device.AuthToken
-import de.visualdigits.kotlin.twinkly.model.device.CONNECTION_TIMEOUT
 import org.slf4j.LoggerFactory
-import java.net.HttpURLConnection
 import java.net.URL
-import java.util.zip.GZIPInputStream
 
 const val HEADER_X_AUTH_TOKEN = "X-Auth-Token"
 
@@ -15,8 +12,6 @@ open class UrlClient(
 ) {
 
     val log = LoggerFactory.getLogger(javaClass)
-
-    val mapper = jacksonObjectMapper()
 
     companion object {
         val tokens: MutableMap<String, AuthToken> = mutableMapOf()
