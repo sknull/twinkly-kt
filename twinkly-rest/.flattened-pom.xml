@@ -25,7 +25,7 @@
     <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
     <project.build.source>17</project.build.source>
     <revision>0.0.1-SNAPSHOT</revision>
-    <version.jackson>2.15.2</version.jackson>
+    <version.jackson>2.16.1</version.jackson>
     <version.log4j>1.2.17</version.log4j>
     <version.junit.jupiter>5.10.0</version.junit.jupiter>
     <kotlin.code.style>official</kotlin.code.style>
@@ -34,7 +34,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compilerVersion>17</compilerVersion>
     <version.kotlin.language>1.9</version.kotlin.language>
-    <version.kotlin.maven>1.9.20</version.kotlin.maven>
+    <version.kotlin.maven>1.9.22</version.kotlin.maven>
   </properties>
   <dependencies>
     <dependency>
