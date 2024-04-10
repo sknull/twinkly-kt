@@ -2,15 +2,20 @@ package de.visualdigits.kotlin.util
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import de.visualdigits.kotlin.twinkly.model.device.CONNECTION_TIMEOUT
+import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
+object UrlExtensions {
+    val log = LoggerFactory.getLogger(javaClass)
+}
 
-val mapper = jacksonMapperBuilder()
+val mapper: JsonMapper = jacksonMapperBuilder()
     .disable(SerializationFeature.INDENT_OUTPUT)
     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     .addModule(JavaTimeModule())
@@ -37,6 +42,7 @@ inline fun <reified T> URL.post(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
+        UrlExtensions.log.error("Could not post to '${this.toString()}'", e)
         null
     }
 }
@@ -57,6 +63,7 @@ inline fun <reified T> URL.get(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
+        UrlExtensions.log.error("Could not get from '${this.toString()}'", e)
         null
     }
 }
@@ -77,6 +84,7 @@ inline fun <reified T> URL.delete(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
+        UrlExtensions.log.error("Could not delete from '${this.toString()}'", e)
         null
     }
 }
