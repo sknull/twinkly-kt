@@ -63,7 +63,7 @@ inline fun <reified T> URL.get(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
-        UrlExtensions.log.error("Could not get from '${this}': {}", e.message)
+        UrlExtensions.log.warn("Could not get from '${this}': {}", e.message)
         null
     }
 }
@@ -84,7 +84,7 @@ inline fun <reified T> URL.delete(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
-        UrlExtensions.log.error("Could not delete from '${this}': {}", e.message)
+        UrlExtensions.log.warn("Could not delete from '${this}': {}", e.message)
         null
     }
 }
