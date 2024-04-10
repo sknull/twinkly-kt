@@ -42,7 +42,7 @@ inline fun <reified T> URL.post(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
-        UrlExtensions.log.error("Could not post to '${this.toString()}'", e)
+        UrlExtensions.log.warn("Could not post to '${this}': {}", e.message)
         null
     }
 }
@@ -63,7 +63,7 @@ inline fun <reified T> URL.get(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
-        UrlExtensions.log.error("Could not get from '${this.toString()}'", e)
+        UrlExtensions.log.error("Could not get from '${this}': {}", e.message)
         null
     }
 }
@@ -84,7 +84,7 @@ inline fun <reified T> URL.delete(
             else -> mapper.readValue(response, T::class.java)
         }
     } catch (e: Exception) {
-        UrlExtensions.log.error("Could not delete from '${this.toString()}'", e)
+        UrlExtensions.log.error("Could not delete from '${this}': {}", e.message)
         null
     }
 }
