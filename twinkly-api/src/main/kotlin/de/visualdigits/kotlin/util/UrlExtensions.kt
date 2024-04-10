@@ -1,13 +1,20 @@
 package de.visualdigits.kotlin.util
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import de.visualdigits.kotlin.twinkly.model.device.CONNECTION_TIMEOUT
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
 
-val mapper = jacksonObjectMapper()
+val mapper = jacksonMapperBuilder()
+    .disable(SerializationFeature.INDENT_OUTPUT)
+    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    .addModule(JavaTimeModule())
+    .build()
 
 inline fun <reified T> URL.post(
     body: ByteArray = byteArrayOf(),
