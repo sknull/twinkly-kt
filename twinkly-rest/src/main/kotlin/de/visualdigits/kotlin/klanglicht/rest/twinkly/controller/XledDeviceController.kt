@@ -2,8 +2,6 @@ package de.visualdigits.kotlin.klanglicht.rest.twinkly.controller
 
 import de.visualdigits.kotlin.klanglicht.rest.configuration.ConfigHolder
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

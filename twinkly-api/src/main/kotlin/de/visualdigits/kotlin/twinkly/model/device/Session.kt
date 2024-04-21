@@ -5,7 +5,6 @@ import de.visualdigits.kotlin.twinkly.model.common.networkstatus.NetworkStatus
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import de.visualdigits.kotlin.util.UrlClient
-import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId

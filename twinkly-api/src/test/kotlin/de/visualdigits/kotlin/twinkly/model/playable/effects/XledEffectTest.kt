@@ -2,13 +2,11 @@ package de.visualdigits.kotlin.twinkly.model.playable.effects
 
 import de.visualdigits.kotlin.XledArrayTest
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
-import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Test
 import kotlin.math.PI
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
 

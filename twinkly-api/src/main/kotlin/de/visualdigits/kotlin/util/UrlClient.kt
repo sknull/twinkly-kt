@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.util
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.visualdigits.kotlin.twinkly.model.device.AuthToken
 import org.slf4j.LoggerFactory
 import java.net.URL
