@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package de.visualdigits.kotlin.twinkly.model.device.xled.response
 
 enum class ResponseCode(val code: Int) {

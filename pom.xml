@@ -30,7 +30,7 @@
     <kotlin.code.style>official</kotlin.code.style>
 
     <version.jackson>2.16.1</version.jackson>
-    <version.kotlin.maven>1.9.22</version.kotlin.maven>
+    <version.kotlin.maven>1.9.23</version.kotlin.maven>
     <version.kotlin.language>1.9</version.kotlin.language>
     <version.junit.jupiter>5.10.0</version.junit.jupiter>
     <version.acme4j-client>2.16</version.acme4j-client>

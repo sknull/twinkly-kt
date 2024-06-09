@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package de.visualdigits.kotlin.twinkly.model.playable.transition
 
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
