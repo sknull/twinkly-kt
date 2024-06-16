@@ -2,6 +2,7 @@ package de.visualdigits.kotlin
 
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
@@ -11,6 +12,7 @@ import de.visualdigits.kotlin.twinkly.visualization.VUMeter
 import de.visualdigits.kotlin.twinkly.visualization.Visualizer
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.openqa.selenium.chrome.ChromeDriver
 import java.io.File
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -19,6 +21,76 @@ import kotlin.math.roundToInt
 
 @Disabled("for local testing only")
 class Demos : XledArrayTest() {
+
+    @Test
+    fun liveScoreBoard() {
+        while (true) {
+            val scoreFrame = createScoreFrame()
+            scoreFrame.play(xled = xledArray)
+
+            for (i in 1 .. 6) {
+                Thread.sleep(5000)
+                xledArray.setMode(DeviceMode.rt)
+            }
+        }
+    }
+
+    private fun createScoreFrame(): XledFrame {
+        val score = getLiveScore()
+        val canvas = XledFrame(xledArray.width, xledArray.height)
+        if (score.isNotEmpty()) {
+            val flag1 = XledFrame(File(ClassLoader.getSystemResource("images/flags/euro24/${score[0].first}.png").toURI()))
+            val goals1 = XledFrame(
+                text = score[0].second,
+                fontName = "xttyb",
+                backgroundColor = RGBColor(0, 0, 0),
+                textColor = RGBColor(255, 255, 255)
+            )
+
+            val flag2 = XledFrame(File(ClassLoader.getSystemResource("images/flags/euro24/${score[1].first}.png").toURI()))
+            val goals2 = XledFrame(
+                text = score[1].second,
+                fontName = "xttyb",
+                backgroundColor = RGBColor(0, 0, 0),
+                textColor = RGBColor(255, 255, 255)
+            )
+
+            canvas.replaceSubFrame(flag1, 0, 0)
+            canvas.replaceSubFrame(goals1, (xledArray.width - goals1.width) / 2, 9, BlendMode.ADD)
+
+            canvas.replaceSubFrame(flag2, 0, 21)
+            canvas.replaceSubFrame(goals2, (xledArray.width - goals2.width) / 2, 30, BlendMode.ADD)
+        }
+        return canvas
+    }
+
+    private fun getLiveScore(): List<Pair<String, String>> {
+        val url = "https://de.uefa.com/euro2024/fixtures-results/"
+        val driver = ChromeDriver()
+        driver.get(url)
+        Thread.sleep(1000)
+        val html = driver.pageSource
+        driver.quit()
+//        val html = File(ClassLoader.getSystemResource("html/scrape-pending.html").toURI()).readText()
+        return "Live-Ergebnisse - (.*?)\"".toRegex()
+            .find(html)
+            ?.let { a ->
+                a.groups[1]?.value
+                    ?.split(" - ")
+                    ?.let { b ->
+                        "${b[0]} (\\d+)-(\\d+) ${b[1]}".toRegex()
+                            .find(html)
+                            ?.let { c ->
+                                listOf(
+                                    Pair(b[0], c.groups[1]?.value ?: ""),
+                                    Pair(b[1], c.groups[2]?.value ?: "")
+                                )
+                            }?:listOf(Pair(b[0], "0"),Pair(b[1], "0"))
+                    }
+            } ?: "Nächstes Spiel - (.*?)\"".toRegex().find(html)?.let { d ->
+            d.groups[1]?.value?.split(" - ")?.let { e -> listOf(Pair(e[0], "?"), Pair(e[1], "?")) }
+        } ?: listOf()
+    }
 
     /**
      * Shows a clock with local time and date

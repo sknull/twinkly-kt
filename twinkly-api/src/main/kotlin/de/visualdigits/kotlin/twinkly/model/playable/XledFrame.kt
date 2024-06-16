@@ -447,6 +447,13 @@ open class XledFrame(
         return this
     }
 
+    fun fillRect(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
+        for (x in x0 .. x1) {
+            drawLine(x, y1, x, y0, color)
+        }
+        return this
+    }
+
     fun drawLine(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
         // see also here: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
         if (abs(y1 - y0) < abs(x1 - x0)) {

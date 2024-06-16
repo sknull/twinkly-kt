@@ -12,7 +12,7 @@ class Demos : XledArrayTest() {
     fun testConwaysGameOfLife() {
         val conway = Conway(
             preset = File(ClassLoader.getSystemResource("conway/conway_diehard.png").toURI()),
-            xled = xledArray
+            xledArray = xledArray
         )
         conway.run()
     }

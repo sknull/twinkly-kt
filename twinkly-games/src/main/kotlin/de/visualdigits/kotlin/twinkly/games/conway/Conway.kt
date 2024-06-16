@@ -8,37 +8,37 @@ import java.io.File
 
 class Conway(
     val preset: File,
-    val xled: XLed
+    val xledArray: XLed
 ) {
 
     fun run() {
         val initialFrame = XledFrame(preset)
-        var matrix = Matrix(xled.width, xled.height)
-        xled.setMode(DeviceMode.rt)
-        for (y in 0 until xled.height) {
-            for (x in 0 until xled.width) {
+        var matrix = Matrix(xledArray.width, xledArray.height)
+        xledArray.setMode(DeviceMode.rt)
+        for (y in 0 until xledArray.height) {
+            for (x in 0 until xledArray.width) {
                 if (!initialFrame[x, y].isBlack()) {
                     initialFrame[x, y] = RGBColor(0, 0, 255)
                     matrix[x][y] = 1
                 }
             }
         }
-        xled.showRealTimeFrame(initialFrame)
+        xledArray.showRealTimeFrame(initialFrame)
         Thread.sleep(100)
         var result = ConwayResult(matrix)
         while (result.changes > 0) {
             result = nextGeneration(matrix, result)
             matrix = result.matrix
-            val frame = XledFrame(xled.width, xled.height)
+            val frame = XledFrame(xledArray.width, xledArray.height)
             val color = determineColor(result)
-            for (y in 0 until xled.height) {
-                for (x in 0 until xled.width) {
+            for (y in 0 until xledArray.height) {
+                for (x in 0 until xledArray.width) {
                     if (matrix[x][y] != 0) {
                         frame[x, y] = color
                     }
                 }
             }
-            xled.showRealTimeFrame(frame)
+            xledArray.showRealTimeFrame(frame)
             Thread.sleep(100)
         }
     }
