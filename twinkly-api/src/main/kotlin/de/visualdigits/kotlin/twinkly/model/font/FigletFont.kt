@@ -30,14 +30,10 @@ class FigletFont(
         }?: listOf()
 
         val header: String = lines.first()
-        if (MAGIC_NUMBER.findAll(header).toList().isEmpty()) {
-            throw IllegalArgumentException("Invalid font: $resourcePath")
-        }
+        require (!MAGIC_NUMBER.findAll(header).toList().isEmpty()) { "Invalid font: $resourcePath" }
         val headerParts = MAGIC_NUMBER.replace(header, "").split(" ")
         val n = headerParts.size
-        if (n < 6) {
-            throw IllegalArgumentException("Invalid header for font: $resourcePath")
-        }
+        require (n >= 6) { "Invalid header for font: $resourcePath" }
         this.hardBlank = headerParts[0][0].toString()
         this.height = headerParts[1].toInt()
         this.baseLine = headerParts[2].toInt()

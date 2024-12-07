@@ -75,7 +75,7 @@ class XLedTest {
 
     @Test
     fun testTimer() {
-        val response = xled.setTimer(10, 35, 10, 36)
+        xled.setTimer(10, 35, 10, 36)
         val timer = xled.getTimer()
         println(timer)
     }

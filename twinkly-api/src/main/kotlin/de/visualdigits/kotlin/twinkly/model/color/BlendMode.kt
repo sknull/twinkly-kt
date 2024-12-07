@@ -2,6 +2,9 @@
 
 package de.visualdigits.kotlin.twinkly.model.color
 
+import de.visualdigits.kotlin.twinkly.model.color.BlendMode.entries
+
+
 enum class BlendMode {
 
     ADD,

@@ -25,7 +25,7 @@ open class UrlClient(
         log.debug("POST '{}' body='{}' headers={}", url, String(body), headers)
         (authToken?: tokens[host]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return try {
-            URL(url).post<T>(body, headers)
+            URL(null, url).post<T>(body, headers)
         } catch (e: Exception) {
             log.warn("Could not talk to server $host")
             null
@@ -40,7 +40,7 @@ open class UrlClient(
         log.debug("GET '{}' headers={}", url, headers)
         (authToken?: tokens[host]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return try {
-            URL(url).get<T>(headers)
+            URL(null, url).get<T>(headers)
         } catch (e: Exception) {
             log.warn("Could not talk to server $host")
             null
@@ -55,7 +55,7 @@ open class UrlClient(
         log.debug("DELETE '{}' headers={}", url, headers)
         (authToken?: tokens[host]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return try {
-            URL(url).delete<T>(headers)
+            URL(null, url).delete<T>(headers)
         } catch (e: Exception) {
             log.warn("Could not talk to server $host")
             null

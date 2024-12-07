@@ -45,12 +45,9 @@ class PlasmaEffect(
         }
     }
     
-    override fun reset(numFrames: Int?) {
-    }
-
     override fun getNextFrame() {
-        val xx = sk.get(0) * x - sk.get(0) / 2.0
-        val yy = sk.get(1) * y - sk.get(1) / 2.0
+        val xx = sk[0] * x - sk[0] / 2.0
+        val yy = sk[1] * y - sk[1] / 2.0
         var v = sin(xx * coordScaling + time)
         v += sin((yy * coordScaling + time) / 2.0)
         v += sin((xx * coordScaling + yy * coordScaling + time) / 2.0)
@@ -60,7 +57,7 @@ class PlasmaEffect(
         v += sin(sqrt(100.0 * (cx * cx + cy * cy) + 1.0) + time)
         v /= 2.0
 
-        val color = RGBWColor(255, (255 * (sin(PI * v) + 1.0) / 2.0).roundToInt(), (255 * (cos(PI * v) + 1.0) / 2.0).roundToInt(), 255)
+        RGBWColor(255, (255 * (sin(PI * v) + 1.0) / 2.0).roundToInt(), (255 * (cos(PI * v) + 1.0) / 2.0).roundToInt(), 255)
         println("$cx, $cy")
 
         time += 1
@@ -76,8 +73,8 @@ class PlasmaEffect(
             return (ZOOM_SHIFT * ZOOM_RANGE * (FULL_SCALE - zoom) + ZOOM_MAX * ZOOM_RANGE * zoom) / (ZOOM_RANGE * FULL_SCALE)
         }
 
-        fun fullScaleToAngle(angle_fs: Double): Double {
-            return (angle_fs / FULL_SCALE * 360.0)
+        fun fullScaleToAngle(angleFs: Double): Double {
+            return (angleFs / FULL_SCALE * 360.0)
         }
 
         fun angleFDegToRad(deg: Double): Double {
@@ -91,10 +88,5 @@ class PlasmaEffect(
         fun getRemainder(num: Int, divisor: Int): Int {
             return (num - divisor * (num / divisor))
         }
-
-//        fun noise(octave: Int, x: Float, y: Float): Float {
-//            return -1.0 + 2.0 * fract(sin(dot(vec2(x, y), vec2(12.9898, 78.233))) * 43758.5453)
-//        }
-
     }
 }

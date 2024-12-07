@@ -40,6 +40,9 @@ import java.util.Base64
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+private const val CONTENT_TYPE = "Content-Type"
+private const val APPLICATION_JSON = "application/json"
+
 class XLedDevice(
     host: String = "",
     override var width: Int = 0,
@@ -109,7 +112,7 @@ class XLedDevice(
             url = "$baseUrl/led/mode",
             body = body.toByteArray(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -167,7 +170,7 @@ class XLedDevice(
             url = "$baseUrl/led/out/brightness",
             body = Brightness(value = (100 * brightness).roundToInt()).marshallToBytes(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -185,7 +188,7 @@ class XLedDevice(
             url = "$baseUrl/led/out/saturation",
             body = Saturation(value = (100 * saturation).roundToInt()).marshallToBytes(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -241,7 +244,7 @@ class XLedDevice(
             url = "$baseUrl/led/color",
             body = body.toByteArray(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -294,7 +297,7 @@ class XLedDevice(
             url = "$baseUrl/movies/current",
             body = moviesCurrentRequest.marshallToBytes(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -377,7 +380,7 @@ class XLedDevice(
             url = "$baseUrl/led/movie/full",
             body = bytes,
             headers = mutableMapOf(
-                "Content-Type" to "application/octet-stream"
+                CONTENT_TYPE to "application/octet-stream"
             )
         )
     }
@@ -393,7 +396,7 @@ class XLedDevice(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.marshallToBytes(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -403,7 +406,7 @@ class XLedDevice(
             url = "$baseUrl/movies/new",
             body = newMovie.marshallToBytes(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
@@ -445,7 +448,7 @@ class XLedDevice(
             url = "$baseUrl/timer",
             body = timer.marshallToBytes(),
             headers = mutableMapOf(
-                "Content-Type" to "application/json"
+                CONTENT_TYPE to APPLICATION_JSON
             )
         )
         return if (result?.responseCode == ResponseCode.Ok) {

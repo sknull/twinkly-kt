@@ -1,12 +1,18 @@
 package de.visualdigits.kotlin.klanglicht.rest.configuration
 
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.filter.AbstractRequestLoggingFilter
 
-open class SimpleRequestLoggingFilter : AbstractRequestLoggingFilter() {
+class SimpleRequestLoggingFilter : AbstractRequestLoggingFilter() {
+
+    @Value("\${server.logging.requestLogging}")
+    private var enableReuestLogging: Boolean? = false
 
     override fun beforeRequest(request: HttpServletRequest, message: String) {
-        logger.info(message)
+        if (enableReuestLogging == true) {
+            logger.info(message)
+        }
     }
 
     override fun afterRequest(request: HttpServletRequest, message: String) {

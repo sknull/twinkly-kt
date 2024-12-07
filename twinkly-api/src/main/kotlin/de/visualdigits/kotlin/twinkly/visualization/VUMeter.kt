@@ -32,7 +32,7 @@ class VUMeter(
         val player = minim.getLineIn(AudioInputType.STEREO)!!
         player.disableMonitoring()
 
-        val beat = BeatDetect(algorithm = DetectMode.SOUND_ENERGY)
+        BeatDetect(algorithm = DetectMode.SOUND_ENERGY)
 
         val fft = FFT(player.bufferSize(), player.sampleRate())
         xled.setMode(DeviceMode.rt)
@@ -47,7 +47,6 @@ class VUMeter(
             fft.forward(player.right)
             drawChannel(fft, canvas, 11, 8)
 
-//            println("#### l:$vuLeft  r:$vuRight")
             xled.showRealTimeFrame(canvas)
 
             Thread.sleep(10)

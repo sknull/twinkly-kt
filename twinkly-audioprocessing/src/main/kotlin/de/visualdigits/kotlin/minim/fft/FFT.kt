@@ -62,7 +62,7 @@ class FFT(
     }
 
     private fun calculateDb() {
-        val normalizeOffset = 20.0 * log10(timeSize * 2.0.pow(16) / 2.0)
+        20.0 * log10(timeSize * 2.0.pow(16) / 2.0)
         for (i in 0 until timeSize) {
             db[i] = 20.0 * log10(spectrum[i])// - normalizeOffset
         }

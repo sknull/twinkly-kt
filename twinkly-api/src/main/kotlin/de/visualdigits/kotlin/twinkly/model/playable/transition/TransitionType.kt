@@ -6,6 +6,7 @@ import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.playable.Playable
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
+import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType.entries
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.random.Random
@@ -61,7 +62,7 @@ enum class TransitionType(
     ): XledSequence {
 
         val availableTransitions = TransitionType.entries.toMutableList()
-        availableTransitions.remove(TransitionType.RANDOM)
+        availableTransitions.remove(RANDOM)
         val transition = if (this == RANDOM) availableTransitions[random.nextInt(0, availableTransitions.size)] else this
         val direction = if (this == RANDOM) TransitionDirection.entries[random.nextInt(0, TransitionDirection.entries.size)] else transitionDirection
         val mode = if (this == RANDOM) BlendMode.entries[random.nextInt(0, BlendMode.entries.size)] else blendMode

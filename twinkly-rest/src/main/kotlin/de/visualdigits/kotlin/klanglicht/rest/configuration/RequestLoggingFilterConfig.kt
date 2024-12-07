@@ -10,9 +10,9 @@ open class RequestLoggingFilterConfig {
     open fun logFilter(): SimpleRequestLoggingFilter {
         val filter = SimpleRequestLoggingFilter()
         filter.setBeforeMessagePrefix("Request [")
-        filter.setIncludeQueryString(true)
-        filter.setIncludeClientInfo(true)
-        filter.setIncludeHeaders(true)
+        filter.isIncludeQueryString = true
+        filter.isIncludeClientInfo = true
+        filter.isIncludeHeaders = true
 //        filter.setIncludePayload(true);
 //        filter.setMaxPayloadLength(10000);
         return filter

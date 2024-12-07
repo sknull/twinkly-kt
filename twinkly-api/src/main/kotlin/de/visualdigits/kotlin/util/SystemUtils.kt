@@ -4,6 +4,8 @@ import java.io.File
 import kotlin.math.min
 
 
+private const val MAC_OS_X = "Mac OS X"
+
 object SystemUtils {
 
 
@@ -137,7 +139,7 @@ object SystemUtils {
      *
      * @since 2.0
      */
-    val IS_OS_MAC_OSX: Boolean = getOsMatchesName("Mac OS X")
+    val IS_OS_MAC_OSX: Boolean = getOsMatchesName(MAC_OS_X)
 
     /**
      *
@@ -151,7 +153,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_CHEETAH: Boolean = getOsMatches("Mac OS X", "10.0")
+    val IS_OS_MAC_OSX_CHEETAH: Boolean = getOsMatches(MAC_OS_X, "10.0")
 
     /**
      *
@@ -165,7 +167,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_PUMA: Boolean = getOsMatches("Mac OS X", "10.1")
+    val IS_OS_MAC_OSX_PUMA: Boolean = getOsMatches(MAC_OS_X, "10.1")
 
     /**
      *
@@ -179,7 +181,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_JAGUAR: Boolean = getOsMatches("Mac OS X", "10.2")
+    val IS_OS_MAC_OSX_JAGUAR: Boolean = getOsMatches(MAC_OS_X, "10.2")
 
     /**
      *
@@ -193,7 +195,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_PANTHER: Boolean = getOsMatches("Mac OS X", "10.3")
+    val IS_OS_MAC_OSX_PANTHER: Boolean = getOsMatches(MAC_OS_X, "10.3")
 
     /**
      *
@@ -207,7 +209,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_TIGER: Boolean = getOsMatches("Mac OS X", "10.4")
+    val IS_OS_MAC_OSX_TIGER: Boolean = getOsMatches(MAC_OS_X, "10.4")
 
     /**
      *
@@ -221,7 +223,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_LEOPARD: Boolean = getOsMatches("Mac OS X", "10.5")
+    val IS_OS_MAC_OSX_LEOPARD: Boolean = getOsMatches(MAC_OS_X, "10.5")
 
     /**
      *
@@ -235,7 +237,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_SNOW_LEOPARD: Boolean = getOsMatches("Mac OS X", "10.6")
+    val IS_OS_MAC_OSX_SNOW_LEOPARD: Boolean = getOsMatches(MAC_OS_X, "10.6")
 
     /**
      *
@@ -249,7 +251,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_LION: Boolean = getOsMatches("Mac OS X", "10.7")
+    val IS_OS_MAC_OSX_LION: Boolean = getOsMatches(MAC_OS_X, "10.7")
 
     /**
      *
@@ -263,7 +265,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_MOUNTAIN_LION: Boolean = getOsMatches("Mac OS X", "10.8")
+    val IS_OS_MAC_OSX_MOUNTAIN_LION: Boolean = getOsMatches(MAC_OS_X, "10.8")
 
     /**
      *
@@ -277,7 +279,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_MAVERICKS: Boolean = getOsMatches("Mac OS X", "10.9")
+    val IS_OS_MAC_OSX_MAVERICKS: Boolean = getOsMatches(MAC_OS_X, "10.9")
 
     /**
      *
@@ -291,7 +293,7 @@ object SystemUtils {
      *
      * @since 3.4
      */
-    val IS_OS_MAC_OSX_YOSEMITE: Boolean = getOsMatches("Mac OS X", "10.10")
+    val IS_OS_MAC_OSX_YOSEMITE: Boolean = getOsMatches(MAC_OS_X, "10.10")
 
     /**
      *
@@ -305,7 +307,7 @@ object SystemUtils {
      *
      * @since 3.5
      */
-    val IS_OS_MAC_OSX_EL_CAPITAN: Boolean = getOsMatches("Mac OS X", "10.11")
+    val IS_OS_MAC_OSX_EL_CAPITAN: Boolean = getOsMatches(MAC_OS_X, "10.11")
 
     /**
      *
@@ -319,7 +321,7 @@ object SystemUtils {
      *
      * @since 3.12.0
      */
-    val IS_OS_MAC_OSX_SIERRA: Boolean = getOsMatches("Mac OS X", "10.12")
+    val IS_OS_MAC_OSX_SIERRA: Boolean = getOsMatches(MAC_OS_X, "10.12")
 
     /**
      *
@@ -333,7 +335,7 @@ object SystemUtils {
      *
      * @since 3.12.0
      */
-    val IS_OS_MAC_OSX_HIGH_SIERRA: Boolean = getOsMatches("Mac OS X", "10.13")
+    val IS_OS_MAC_OSX_HIGH_SIERRA: Boolean = getOsMatches(MAC_OS_X, "10.13")
 
     /**
      *
@@ -347,7 +349,7 @@ object SystemUtils {
      *
      * @since 3.12.0
      */
-    val IS_OS_MAC_OSX_MOJAVE: Boolean = getOsMatches("Mac OS X", "10.14")
+    val IS_OS_MAC_OSX_MOJAVE: Boolean = getOsMatches(MAC_OS_X, "10.14")
 
     /**
      *
@@ -361,7 +363,7 @@ object SystemUtils {
      *
      * @since 3.12.0
      */
-    val IS_OS_MAC_OSX_CATALINA: Boolean = getOsMatches("Mac OS X", "10.15")
+    val IS_OS_MAC_OSX_CATALINA: Boolean = getOsMatches(MAC_OS_X, "10.15")
 
     /**
      *
@@ -375,7 +377,7 @@ object SystemUtils {
      *
      * @since 3.12.0
      */
-    val IS_OS_MAC_OSX_BIG_SUR: Boolean = getOsMatches("Mac OS X", "10.16")
+    val IS_OS_MAC_OSX_BIG_SUR: Boolean = getOsMatches(MAC_OS_X, "10.16")
 
     /**
      *
@@ -893,7 +895,7 @@ object SystemUtils {
         if (osName == null) {
             return false
         }
-        return osNamePrefix?.let { osName.startsWith(it) }?:false
+        return osNamePrefix?.let { osName.startsWith(it) } == true
     }
     // -----------------------------------------------------------------------
     /**

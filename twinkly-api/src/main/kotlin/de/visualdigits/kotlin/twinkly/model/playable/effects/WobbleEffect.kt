@@ -17,9 +17,6 @@ class WobbleEffect(
     var color: HSVColor = HSVColor(0, 100, 100)
     private var colorStep: Int = 3
 
-    override fun reset(numFrames: Int?) {
-    }
-
     override fun getNextFrame() {
         for (x in 0 until width / grid * grid step grid) {
             for (y in 0 until height / grid * grid step grid) {

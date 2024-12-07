@@ -26,7 +26,7 @@ object FontUtil {
 
     fun drawText(
         text: String,
-        fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
+        fontDirectory: File? =  systemFontsDirectory(),
         fontName: String,
         fontSize: Int,
         backgroundColor: Color<*>,
@@ -128,7 +128,7 @@ object FontUtil {
         charMatrix = trimLeft(charMatrix)
         val width = charMatrix.maxOf { line -> line.maxOf { row -> row.length } }
         val frame = XledFrame(width, height, backgroundColor)
-        charMatrix.forEachIndexed { l, line ->
+        charMatrix.forEachIndexed { _, line ->
             line.forEachIndexed { y, row ->
                 row.forEachIndexed { x, char ->
                     if (char != ' ') frame[x, y] = textColor
@@ -193,27 +193,38 @@ object FontUtil {
             val curChar = font.chars[code]
             if (curChar != null) {
                 curCharWidth = font.width[code] ?:0
-                if (textWidth < curCharWidth) {
-                    throw IllegalStateException("No space left to print char")
-                }
-                maxSmush = if (curChar.isNotEmpty()) {
-                    smusher.currentSmushAmount(buffer, curChar, curCharWidth, prevCharWidth)
-                } else {
-                    0
-                }
-                currentTotalWidth = buffer[0].length + curCharWidth - maxSmush
-                if (code == ' '.code) {
-                    blankMarkers.add(tuple)
-                }
-                if (currentTotalWidth >= textWidth) {
-                    handleNewline(buffer, chars, queue, blankMarkers, font, smusher)
-                } else {
-                    for (row in 0 until font.height) {
-                        val (addLeft, addRight) = smusher.smushRow(buffer[row], curChar, row, maxSmush, curCharWidth, prevCharWidth)
-                        buffer[row] = addLeft + addRight.substring(maxSmush)
+                when {
+                    textWidth < curCharWidth -> {
+                        throw IllegalStateException("No space left to print char")
+                    }
+                    else -> {
+                        maxSmush = if (curChar.isNotEmpty()) {
+                            smusher.currentSmushAmount(buffer, curChar, curCharWidth, prevCharWidth)
+                        } else {
+                            0
+                        }
+                        currentTotalWidth = buffer[0].length + curCharWidth - maxSmush
+                        if (code == ' '.code) {
+                            blankMarkers.add(tuple)
+                        }
+                        if (currentTotalWidth >= textWidth) {
+                            handleNewline(buffer, chars, queue, blankMarkers, font, smusher)
+                        } else {
+                            for (row in 0 until font.height) {
+                                val (addLeft, addRight) = smusher.smushRow(
+                                    buffer[row],
+                                    curChar,
+                                    row,
+                                    maxSmush,
+                                    curCharWidth,
+                                    prevCharWidth
+                                )
+                                buffer[row] = addLeft + addRight.substring(maxSmush)
+                            }
+                        }
+                        prevCharWidth = curCharWidth
                     }
                 }
-                prevCharWidth = curCharWidth
             }
         }
     }

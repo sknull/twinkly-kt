@@ -40,21 +40,21 @@ class Visualizer(
         val numberOfPoints = 20
         val rMin = 3
 
-        val random = Random(System.currentTimeMillis())
+        Random(System.currentTimeMillis())
 
         val minim = Minim()
 
         val player = minim.getLineIn(AudioInputType.MONO)!!
         player.disableMonitoring()
 
-        val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
+        BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
 
         val fft = FFT(player.bufferSize(), player.sampleRate())
         val spectrumSize = fft.specSize() / 8
 
 
         var frame = XledFrame(xled.width, xled.height, RGBColor(0, 0 , 0))
-        val frameBlack = XledFrame(xled.width, xled.height, RGBColor(0, 0 , 0))
+        XledFrame(xled.width, xled.height, RGBColor(0, 0 , 0))
 
         var f = 1.0
         while(true) {

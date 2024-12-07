@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.klanglicht.rest.configuration
+package de.visualdigits.kotlin.klanglicht.model.twinkly
 
 class XledDeviceConfiguration(
     val name: String,

@@ -12,9 +12,6 @@ class SparkleEffect(
 
     private val random = Random(System.currentTimeMillis())
 
-    override fun reset(numFrames: Int?) {
-    }
-
     override fun getNextFrame() {
         setColor(initialColor)
         for (i in 0 until 100) {

@@ -42,14 +42,13 @@ class SpectrumAnalyzer(
         val beat = BeatDetect(DetectMode.FREQ_ENERGY)
 
         val spectrumSize = fft.specSize() / 1
-        val s = (spectrumSize.toDouble() / xled.width).roundToInt()
-        val maxAmplitudes = MutableList(xled.width) { 0 }
-        var t = 0
+        (spectrumSize.toDouble() / xled.width).roundToInt()
+        MutableList(xled.width) { 0 }
         while(true) {
             val buffer = player.mix.toArray().map { it.toDouble() }.toDoubleArray()
             fft.forward(buffer)
             beat.detect(buffer)
-            val color = colorMeter//if (beat.isKick()) colorMax else colorMeter
+            colorMeter//if (beat.isKick()) colorMax else colorMeter
             val frame = XledFrame(xled.width, xled.height)
 
             var b = 0

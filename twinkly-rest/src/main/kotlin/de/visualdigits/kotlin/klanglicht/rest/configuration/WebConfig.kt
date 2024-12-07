@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.klanglicht.rest.configuration
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Description
@@ -16,10 +15,9 @@ import org.thymeleaf.templateresolver.ITemplateResolver
 import java.nio.file.Paths
 
 @Configuration
-open class WebConfig : WebMvcConfigurer {
-
-    @Autowired
-    val configHolder: ConfigHolder? = null
+open class WebConfig(
+    private val prefs: ApplicationPreferences
+) : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
@@ -30,10 +28,10 @@ open class WebConfig : WebMvcConfigurer {
     open fun templateResolver(): ITemplateResolver {
         val templateResolver = FileTemplateResolver()
         val templatesPath = Paths.get(
-            configHolder!!.twinklyDirectory.absolutePath,
+            prefs.klanglichtDirectory.absolutePath,
             "resources",
             "themes",
-            configHolder.preferences?.theme,
+            prefs.preferences?.theme,
             "templates"
         ).toFile().absolutePath.replace("\\", "/") + "/"
         templateResolver.prefix = templatesPath

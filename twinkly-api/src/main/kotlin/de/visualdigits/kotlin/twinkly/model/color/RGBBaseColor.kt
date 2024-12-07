@@ -54,7 +54,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
             RGBWColor::class -> toRGBW() as T
             HSVColor::class -> toHSV() as T
             RGBBaseColor::class -> toRGB() as T
-            else -> throw IllegalStateException("Unsupported color type")
+            else -> error("Unsupported color type")
         }
     }
 

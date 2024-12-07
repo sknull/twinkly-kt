@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import de.visualdigits.kotlin.twinkly.model.device.CONNECTION_TIMEOUT
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
 object UrlExtensions {
-    val log = LoggerFactory.getLogger(javaClass)
+    val log: Logger = LoggerFactory.getLogger(javaClass)
 }
 
 val mapper: JsonMapper = jacksonMapperBuilder()
@@ -23,7 +24,7 @@ val mapper: JsonMapper = jacksonMapperBuilder()
 
 inline fun <reified T> URL.post(
     body: ByteArray = byteArrayOf(),
-    headers: MutableMap<String, String> = mutableMapOf()
+    headers: Map<String, String> = mapOf()
 ): T? {
     val connection = (openConnection() as HttpURLConnection)
     connection.requestMethod = "POST"

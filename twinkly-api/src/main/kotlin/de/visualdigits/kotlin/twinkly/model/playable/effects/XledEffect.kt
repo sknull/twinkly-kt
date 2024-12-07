@@ -16,7 +16,9 @@ abstract class XledEffect(
 
     private val repeater = XledRepeater(name, xled, this, frameDelay)
 
-    abstract fun reset(numFrames: Int? = null)
+    open fun reset(numFrames: Int? = null) {
+        // nothing to do here
+    }
 
     abstract fun getNextFrame()
 

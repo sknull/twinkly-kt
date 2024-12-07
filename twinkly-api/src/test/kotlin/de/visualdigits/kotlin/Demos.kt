@@ -35,6 +35,12 @@ class Demos : XledArrayTest() {
         }
     }
 
+    @Test
+    fun liveScore() {
+        val result = getLiveScore()
+        println(result)
+    }
+
     private fun createScoreFrame(): XledFrame {
         val score = getLiveScore()
         val canvas = XledFrame(xledArray.width, xledArray.height)

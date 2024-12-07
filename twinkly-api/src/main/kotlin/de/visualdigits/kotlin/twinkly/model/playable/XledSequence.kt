@@ -33,7 +33,7 @@ class XledSequence(
         initialColor: Color<*> = RGBColor(0, 0, 0),
         frameDelay: Long = 1000
     ) : this(frameDelay = frameDelay) {
-        if (!directory.isDirectory) throw IllegalArgumentException("Given file is not a directory")
+        require (directory.isDirectory) { "Given file is not a directory" }
         if (!readSceneDirectory(directory, initialColor)) {
             directory
                 .listFiles { file -> file.isDirectory }
@@ -220,12 +220,12 @@ class XledSequence(
         transitionBlendMode: BlendMode,
         transitionDuration: Long
     ) {
-        val transType = transitionType ?: TransitionType.random()
+        val transType = transitionType
         val transitionSequence = transType.transitionSequence(
             source = source,
             target = target,
-            transitionDirection = transitionDirection ?: transType.supportedTransitionDirections().random(),
-            blendMode = transitionBlendMode ?: BlendMode.random(),
+            transitionDirection = transitionDirection,
+            blendMode = transitionBlendMode,
             duration = transitionDuration
         )
         xled.showRealTimeSequence(transitionSequence, loop = 1)
