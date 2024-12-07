@@ -19,7 +19,7 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-@Disabled("for local testing only")
+@Disabled("only for local testing")
 class Demos : XledArrayTest() {
 
     @Test

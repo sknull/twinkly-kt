@@ -12,7 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder
 import kotlin.math.min
 import kotlin.random.Random
 
-@Disabled("for local testing only")
+@Disabled("only for local testing")
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class BasicTests : XledArrayTest() {
 

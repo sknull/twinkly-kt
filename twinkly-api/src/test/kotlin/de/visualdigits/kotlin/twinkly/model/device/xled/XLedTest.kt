@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.random.Random.Default.nextInt
 
-@Disabled("for local testing only")
+@Disabled("only for local testing")
 class XLedTest {
 
     private val xled = XLedDevice("192.168.178.35", 10, 21)

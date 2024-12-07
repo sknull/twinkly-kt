@@ -3,7 +3,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-@Disabled("for local testing only")
+@Disabled("only for local testing")
 class XMusicTest {
 
     private val xmusic = XMusic("192.168.178.43")

@@ -1,8 +1,10 @@
 package de.visualdigits.kotlin
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.chrome.ChromeDriver
 
+@Disabled("only for local testing")
 class LiveScoreTest {
 
     @Test

@@ -4,12 +4,14 @@ import de.visualdigits.kotlin.XledArrayTest
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
+@Disabled("only for local testing")
 class XledEffectTest : XledArrayTest() {
 
     @Test

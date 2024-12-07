@@ -26,13 +26,6 @@
       <version>${revision}</version>
     </dependency>
 
-    <!-- kotlin -->
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-allopen</artifactId>
-      <version>${version.kotlin.maven}</version>
-    </dependency>
-
     <!-- common stuff -->
     <dependency>
       <groupId>org.apache.commons</groupId>
