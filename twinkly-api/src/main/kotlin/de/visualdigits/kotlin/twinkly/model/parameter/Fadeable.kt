@@ -9,7 +9,7 @@ interface Fadeable<T : Fadeable<T>> {
 
     fun getId(): String = ""
 
-    fun getRgbColor(): RGBColor? = null
+    fun toRgbColor(): RGBColor
 
     fun setRgbColor(rgbColor: RGBColor) {
         // do something

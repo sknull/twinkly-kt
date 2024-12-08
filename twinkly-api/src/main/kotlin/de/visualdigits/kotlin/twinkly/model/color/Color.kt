@@ -14,8 +14,6 @@ interface Color<T : Color<T>> : Parameter<T> {
 
     fun ansiColor(): String
 
-    fun toRgbColor(): RGBColor
-
     fun toHsvColor(): HSVColor
 
     fun toRgbwColor(): RGBWColor
