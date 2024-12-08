@@ -1,9 +1,9 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
+import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.Session
 import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
@@ -193,7 +193,7 @@ class XLedDevice(
         )
     }
 
-    fun getColor(): TwinklyColor<*> {
+    fun getColor(): Color<*> {
         refreshTokenIfNeeded()
         val response = get<Map<String, Any>>(
             url = "$baseUrl/led/color",
@@ -228,7 +228,7 @@ class XLedDevice(
         }
     }
 
-    override fun setColor(color: TwinklyColor<*>) {
+    override fun setColor(color: Color<*>) {
         refreshTokenIfNeeded()
         val body = when (color) {
             is RGBColor -> "{\"red\":${color.red},\"green\":${color.green},\"blue\":${color.blue}}"

@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.playable.effects
 
+import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
@@ -12,7 +12,7 @@ class MatrixEffect(
     xled: XLed,
     val color: RGBColor = RGBColor(0, 255, 0),
     val interval: Int = 3,
-    initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
+    initialColor: Color<*> = RGBColor(0, 0, 0)
 ): XledEffect("Matrix Effect", xled, initialColor = initialColor) {
 
     private val hsvColor = color.toHsvColor()

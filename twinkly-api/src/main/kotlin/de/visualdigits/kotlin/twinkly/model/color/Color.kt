@@ -1,8 +1,8 @@
 package de.visualdigits.kotlin.twinkly.model.color
 
-interface Color<T : Color<T>> {
+import de.visualdigits.kotlin.twinkly.model.parameter.Parameter
 
-    fun clone(): T
+interface Color<T : Color<T>> : Parameter<T> {
 
     fun value(): Long
 
@@ -20,19 +20,12 @@ interface Color<T : Color<T>> {
 
     fun toRgbwColor(): RGBWColor
 
-//    fun toRgbaColor(): RGBAColor
+    fun toRgbaColor(): RGBAColor
 
     fun toAwtColor(): java.awt.Color
-
-    fun parameterMap(): Map<String, Int>
 
     /**
      * Blends this color towards the given color according to its alpha value of the given color.
      */
     fun blend(other: Any, blendMode: BlendMode): T
-
-    /**
-     * Fades this instance towards the given instance using the given factor 0.0 .. 1.0.
-     */
-    fun fade(other: Any, factor: Double, blendMode: BlendMode): T
 }

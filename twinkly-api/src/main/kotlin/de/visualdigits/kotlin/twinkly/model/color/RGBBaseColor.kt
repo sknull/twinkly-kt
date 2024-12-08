@@ -4,6 +4,7 @@ import java.lang.Long.decode
 import java.lang.Long.toHexString
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 
 abstract class RGBBaseColor<T : RGBBaseColor<T>>(
@@ -12,7 +13,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     var blue: Int = 0,
     var alpha: Int = 255,
     val normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
-) : TwinklyColor<T>() {
+) : Color<T> {
 
     constructor(value: Long, normalize: Boolean = false) : this(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
@@ -32,6 +33,25 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
 
     open fun repr(): String {
         return "RGBColor(hex='${web()}', r=$red, g=$green , b=$blue)"
+    }
+
+    @Suppress("UNCHECKED_CAST") // I know...
+    override fun clone(): T {
+        return when (this) {
+            is RGBColor -> {
+                RGBColor(red, green, blue) as T
+            }
+            is RGBWColor -> {
+                RGBWColor(red, green, blue, white) as T
+            }
+            is RGBAColor -> {
+                RGBAColor(red, green, blue, amber) as T
+            }
+            is RGBWAColor -> {
+                RGBWAColor(red, green, blue, white, amber) as T
+            }
+            else -> error("Unknown color type") // esoteric - make compiler happy
+        }
     }
 
     override fun toAwtColor(): java.awt.Color {
@@ -137,6 +157,27 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                 )
             }
         }
+    }
+
+    override fun toRgbaColor(): RGBAColor {
+        val amber: Int
+        var r = 0
+        var g = 0
+        if (red > green) {
+            amber = green
+            g = 0
+            r -= (amber / RGBAColor.AMBER_FACTOR).roundToInt()
+        } else {
+            amber = red
+            r = 0
+            g -= (amber * RGBAColor.AMBER_FACTOR).roundToInt()
+        }
+        return RGBAColor(
+            red = r - amber,
+            green = g - amber,
+            blue = blue,
+            amber = amber
+        )
     }
 
     override fun equals(other: Any?): Boolean {

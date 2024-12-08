@@ -11,7 +11,7 @@ class HSVColor(
     /** 0 -100 */
     var v: Int = 0,
     var alpha: Int = 255
-) : TwinklyColor<HSVColor>() {
+) : Color<HSVColor> {
 
     override fun toString(): String {
         return "[$h, $s, $v]"
@@ -104,5 +104,9 @@ class HSVColor(
 
     override fun toRgbwColor(): RGBWColor {
         return toRgbColor().toRgbwColor()
+    }
+
+    override fun toRgbaColor(): RGBAColor {
+        return toRgbColor().toRgbaColor()
     }
 }

@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.color
 
+import java.lang.Long.decode
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -17,6 +18,11 @@ class RGBColor(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
         green = min(a = 255, b = (value and 0x0000ff00L shr 8).toInt()),
         blue = min(a = 255, b = (value and 0x000000ffL).toInt()),
+        normalize = normalize
+    )
+
+    constructor(hex: String, normalize: Boolean = false) : this(
+        value = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
         normalize = normalize
     )
 

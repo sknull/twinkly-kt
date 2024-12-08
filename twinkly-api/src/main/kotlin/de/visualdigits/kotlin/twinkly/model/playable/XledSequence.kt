@@ -2,8 +2,8 @@ package de.visualdigits.kotlin.twinkly.model.playable
 
 import com.madgag.gif.fmsware.GifDecoder
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
+import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
@@ -30,7 +30,7 @@ class XledSequence(
     constructor(
         directory: File,
         maxFrames: Int = Int.MAX_VALUE,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+        initialColor: Color<*> = RGBColor(0, 0, 0),
         frameDelay: Long = 1000
     ) : this(frameDelay = frameDelay) {
         require (directory.isDirectory) { "Given file is not a directory" }
@@ -52,7 +52,7 @@ class XledSequence(
         targetWidth: Int,
         targetHeight: Int,
         frameDelay: Long = 100,
-        texts: List<Triple<String, TwinklyColor<*>, TwinklyColor<*>>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ) : this(frameDelay = frameDelay) {
         val banner = XledFrame(
             fontName = fontName,
@@ -69,7 +69,7 @@ class XledSequence(
         targetWidth: Int,
         targetHeight: Int,
         frameDelay: Long = 100,
-        texts: List<Triple<String, TwinklyColor<*>, TwinklyColor<*>>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ) : this(frameDelay = frameDelay) {
         val banner = XledFrame(
             fontName = fontName,
@@ -89,7 +89,7 @@ class XledSequence(
     /**
      * Read subdirectory nested in a presentation.
      */
-    private fun readSceneDirectory(sceneDirectory: File, initialColor: TwinklyColor<*>): Boolean {
+    private fun readSceneDirectory(sceneDirectory: File, initialColor: Color<*>): Boolean {
         val sceneFile = File(sceneDirectory, "scene.json")
         val exists = sceneFile.exists()
         if (exists) {
@@ -200,7 +200,7 @@ class XledSequence(
     fun addAnimatedGif(
         ins: InputStream,
         maxFrames: Int = Int.MAX_VALUE,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
+        initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledSequence {
         val gifDecoder = GifDecoder()
         gifDecoder.read(ins)

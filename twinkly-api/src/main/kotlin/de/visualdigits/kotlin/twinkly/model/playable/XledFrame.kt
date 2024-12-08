@@ -1,8 +1,10 @@
 package de.visualdigits.kotlin.twinkly.model.playable
 
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
+import de.visualdigits.kotlin.twinkly.model.color.Color
+import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
+import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
@@ -28,7 +30,7 @@ import kotlin.math.sin
 open class XledFrame(
     var width: Int = 0,
     var height: Int = 0,
-    val initialColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+    val initialColor: Color<*> = RGBColor(0, 0, 0),
     var frameDelay: Long = 1000,
 ) : Playable {
 
@@ -36,26 +38,26 @@ open class XledFrame(
 
     override var running: Boolean = false
 
-    private var frame: Array<Array<TwinklyColor<*>>> = Array(width) { Array(height) { initialColor } }
+    private var frame: Array<Array<Color<*>>> = Array(width) { Array(height) { initialColor } }
 
     constructor(
         bytes: ByteArray,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+        initialColor: Color<*> = RGBColor(0, 0, 0),
     ): this(ImageIO.read(bytes.inputStream()), initialColor)
 
     constructor(
         file: File,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+        initialColor: Color<*> = RGBColor(0, 0, 0),
     ): this(ImageIO.read(file), initialColor)
 
     constructor(
         ins: InputStream,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+        initialColor: Color<*> = RGBColor(0, 0, 0),
     ): this(ImageIO.read(ins), initialColor)
 
     constructor(
         image: BufferedImage,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+        initialColor: Color<*> = RGBColor(0, 0, 0),
     ): this(width = image.width, height = image.height, initialColor = initialColor) {
         for (y in 0 until height) {
             for (x in 0 until width) {
@@ -73,8 +75,8 @@ open class XledFrame(
         fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontName: String,
         fontSize: Int,
-        backgroundColor: TwinklyColor<*> = RGBColor(0, 0, 0),
-        textColor: TwinklyColor<*> = RGBColor(255, 0, 0)
+        backgroundColor: Color<*> = RGBColor(0, 0, 0),
+        textColor: Color<*> = RGBColor(255, 0, 0)
     ) : this(
         image = FontUtil.drawText(
             text = text,
@@ -94,7 +96,7 @@ open class XledFrame(
         fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontName: String,
         fontSize: Int,
-        texts: List<Triple<String, TwinklyColor<*>, TwinklyColor<*>>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ): this() {
         join(texts.map { entry ->
             XledFrame(
@@ -115,8 +117,8 @@ open class XledFrame(
     constructor(
         text: String,
         fontName: String = "6x10",
-        backgroundColor: TwinklyColor<*> = RGBColor(0, 0, 0),
-        textColor: TwinklyColor<*> = RGBColor(255, 0, 0)
+        backgroundColor: Color<*> = RGBColor(0, 0, 0),
+        textColor: Color<*> = RGBColor(255, 0, 0)
     ) : this() {
         val figletFrame = FontUtil.drawFigletText(
             text = text,
@@ -135,7 +137,7 @@ open class XledFrame(
      */
     constructor(
         fontName: String = "6x10",
-        texts: List<Triple<String, TwinklyColor<*>, TwinklyColor<*>>>
+        texts: List<Triple<String, Color<*>, Color<*>>>
     ): this() {
         join(texts.map { entry ->
             XledFrame(
@@ -154,19 +156,19 @@ open class XledFrame(
         frames.drop(1).forEach { frame -> expandRight(frame) }
     }
 
-    private fun initialize(width: Int, height: Int, initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)) {
+    private fun initialize(width: Int, height: Int, initialColor: Color<*> = RGBColor(0, 0, 0)) {
         this.width = width
         this.height = height
         this.frame = Array(width) { Array(height) { initialColor } }
     }
 
-    operator fun set(x: Int, y: Int, color: TwinklyColor<*>) {
+    operator fun set(x: Int, y: Int, color: Color<*>) {
         if (x >= 0 && x < width && y >= 0 && y < height) {
             frame[x][y] = color
         }
     }
 
-    operator fun get(x: Int, y: Int): TwinklyColor<*> {
+    operator fun get(x: Int, y: Int): Color<*> {
         return if (x >= 0 && x < width && y >= 0 && y < height) {
             frame[x][y]
         } else {
@@ -207,7 +209,7 @@ open class XledFrame(
         return clone
     }
 
-    fun setColor(color: TwinklyColor<*>) {
+    fun setColor(color: Color<*>) {
         for (y in 0 until height) {
             for (x in 0 until width) {
                 frame[x][y] = color.clone()
@@ -247,7 +249,7 @@ open class XledFrame(
 
     suspend fun fade(
         xled: XLed,
-        color: TwinklyColor<*>,
+        color: Color<*>,
         millis: Long
     ) {
         val delay = millis / 255
@@ -302,7 +304,7 @@ open class XledFrame(
 
     fun expandRight(
         numberOfColumns: Int,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
+        initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
         val newFrame = XledFrame(width + numberOfColumns, height, initialColor)
         newFrame.replaceSubFrame(this, 0, 0)
@@ -314,7 +316,7 @@ open class XledFrame(
 
     fun expandLeft(
         numberOfColumns: Int,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
+        initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
         val newFrame = XledFrame(width + numberOfColumns, height, initialColor)
         newFrame.replaceSubFrame(this, numberOfColumns, 0)
@@ -326,7 +328,7 @@ open class XledFrame(
 
     fun expandTop(
         numberOfColumns: Int,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
+        initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
         val newFrame = XledFrame(width, height + numberOfColumns, initialColor)
         newFrame.replaceSubFrame(this, 0, numberOfColumns)
@@ -338,7 +340,7 @@ open class XledFrame(
 
     fun expandBottom(
         numberOfColumns: Int,
-        initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
+        initialColor: Color<*> = RGBColor(0, 0, 0)
     ): XledFrame {
         val newFrame = XledFrame(width, height + numberOfColumns, initialColor)
         newFrame.replaceSubFrame(this, 0, 0)
@@ -429,7 +431,7 @@ open class XledFrame(
         return newFrame
     }
 
-    fun drawCircle(cx: Int, cy: Int, rx: Int, ry: Int, color: TwinklyColor<*>): XledFrame {
+    fun drawCircle(cx: Int, cy: Int, rx: Int, ry: Int, color: Color<*>): XledFrame {
         for (a in 0 until 360) {
             val x = (cx + rx * cos(a * PI / 180.0)).roundToInt()
             val y = (cy + ry * sin(a * PI / 180.0)).roundToInt()
@@ -439,7 +441,7 @@ open class XledFrame(
         return this
     }
 
-    fun drawRect(x0: Int, y0: Int, x1: Int, y1: Int, color: TwinklyColor<*>): XledFrame {
+    fun drawRect(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
         drawLine(x0, y0, x1, y0, color)
         drawLine(x1, y0, x1, y1, color)
         drawLine(x1, y1, x0, y1, color)
@@ -447,14 +449,14 @@ open class XledFrame(
         return this
     }
 
-    fun fillRect(x0: Int, y0: Int, x1: Int, y1: Int, color: TwinklyColor<*>): XledFrame {
+    fun fillRect(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
         for (x in x0 .. x1) {
             drawLine(x, y1, x, y0, color)
         }
         return this
     }
 
-    fun drawLine(x0: Int, y0: Int, x1: Int, y1: Int, color: TwinklyColor<*>): XledFrame {
+    fun drawLine(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>): XledFrame {
         // see also here: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
         if (abs(y1 - y0) < abs(x1 - x0)) {
             if (x0 > x1) {
@@ -473,7 +475,7 @@ open class XledFrame(
         return this
     }
 
-    private fun drawLineLow(x0: Int, y0: Int, x1: Int, y1: Int, color: TwinklyColor<*>) {
+    private fun drawLineLow(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>) {
         val dx = x1 - x0
         var dy = y1 - y0
         var yi = 1
@@ -494,7 +496,7 @@ open class XledFrame(
         }
     }
 
-    private fun drawLineHigh(x0: Int, y0: Int, x1: Int, y1: Int, color: TwinklyColor<*>) {
+    private fun drawLineHigh(x0: Int, y0: Int, x1: Int, y1: Int, color: Color<*>) {
         var dx = x1 - x0
         val dy = y1 - y0
         var xi = 1
@@ -530,11 +532,72 @@ open class XledFrame(
         val baos = ByteArrayOutputStream()
         for (x in 0 until width) {
             for (y in 0 until height) {
-                baos.write(frame[x][y].toLedPixel(bytesPerLed))
+                baos.write(toLedPixel(frame[x][y], bytesPerLed))
             }
         }
 
         return baos.toByteArray()
+    }
+
+    private fun toLedPixel(color: Color<*>, bytesPerLed: Int): ByteArray {
+        return when (color) {
+            is RGBWColor -> {
+                if (bytesPerLed == 4) {
+                    byteArrayOf(
+                        color.white.toByte(),
+                        color.red.toByte(),
+                        color.green.toByte(),
+                        color.blue.toByte()
+                    )
+                }
+                else {
+                    val rgbColor = color.toRgbColor()
+                    byteArrayOf(
+                        rgbColor.red.toByte(),
+                        rgbColor.green.toByte(),
+                        rgbColor.blue.toByte()
+                    )
+                }
+            }
+            is RGBColor -> {
+                if (bytesPerLed == 4) {
+                    val rgbwColor = color.toRgbwColor()
+                    byteArrayOf(
+                        rgbwColor.white.toByte(),
+                        rgbwColor.red.toByte(),
+                        rgbwColor.green.toByte(),
+                        rgbwColor.blue.toByte()
+                    )
+                }
+                else {
+                    byteArrayOf(
+                        color.red.toByte(),
+                        color.green.toByte(),
+                        color.blue.toByte()
+                    )
+                }
+            }
+            is HSVColor -> {
+                if (bytesPerLed == 4) {
+                    val rgbwColor = color.toRgbwColor()
+                    byteArrayOf(
+                        rgbwColor.white.toByte(),
+                        rgbwColor.red.toByte(),
+                        rgbwColor.green.toByte(),
+                        rgbwColor.blue.toByte()
+                    )
+                }
+                else {
+                    val rgbColor = color.toRgbColor()
+                    byteArrayOf(
+                        rgbColor.red.toByte(),
+                        rgbColor.green.toByte(),
+                        rgbColor.blue.toByte()
+                    )
+                }
+            }
+            else -> byteArrayOf()
+        }
     }
 
     override fun frames(): List<Playable> = listOf(this)
