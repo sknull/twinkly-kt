@@ -1,8 +1,8 @@
-package de.visualdigits.kotlin.klanglicht.model.twinkly
+package de.visualdigits.kotlin.twinkly.model.twinkly
 
 class XledDeviceConfiguration(
     val name: String,
     val ipAddress: String,
     val width: Int,
-    val height: Int,
+    val height: Int
 )

@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.klanglicht.rest.configuration
+package de.visualdigits.kotlin.twinkly.rest.configuration
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver
 import java.nio.file.Paths
 
 @Configuration
-open class WebConfig(
+class WebConfig(
     private val prefs: ApplicationPreferences
 ) : WebMvcConfigurer {
 
@@ -25,13 +25,13 @@ open class WebConfig(
 
     @Bean
     @Description("Thymeleaf file system template resolver serving HTML 5")
-    open fun templateResolver(): ITemplateResolver {
+    fun templateResolver(): ITemplateResolver {
         val templateResolver = FileTemplateResolver()
         val templatesPath = Paths.get(
-            prefs.klanglichtDirectory.absolutePath,
+            prefs.twinklyDirectory.absolutePath,
             "resources",
             "themes",
-            prefs.preferences?.theme,
+            prefs.theme,
             "templates"
         ).toFile().absolutePath.replace("\\", "/") + "/"
         templateResolver.prefix = templatesPath
@@ -44,7 +44,7 @@ open class WebConfig(
 
     @Bean
     @Description("Thymeleaf template engine with Spring integration")
-    open fun templateEngine(): SpringTemplateEngine {
+    fun templateEngine(): SpringTemplateEngine {
         val templateEngine = SpringTemplateEngine()
         templateEngine.setTemplateResolver(templateResolver())
         return templateEngine
@@ -52,7 +52,7 @@ open class WebConfig(
 
     @Bean
     @Description("Thymeleaf view resolver")
-    open fun viewResolver(): ViewResolver {
+    fun viewResolver(): ViewResolver {
         val viewResolver = ThymeleafViewResolver()
         viewResolver.templateEngine = templateEngine()
         viewResolver.characterEncoding = "UTF-8"

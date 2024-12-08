@@ -1,6 +1,6 @@
-package de.visualdigits.kotlin.klanglicht.rest
+package de.visualdigits.kotlin.twinkly.rest
 
-import de.visualdigits.kotlin.klanglicht.rest.configuration.ApplicationPreferences
+import de.visualdigits.kotlin.twinkly.rest.configuration.ApplicationPreferences
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.apache.tika.detect.Detector

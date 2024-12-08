@@ -15,25 +15,11 @@
   </parent>
 
   <dependencies>
-    <!-- project -->
-    <dependency>
-      <groupId>de.visualdigits</groupId>
-      <artifactId>twinkly-audioprocessing</artifactId>
-      <version>${revision}</version>
-    </dependency>
-
-    <!-- common stuff -->
-
+    <!-- image processing -->
     <dependency>
       <groupId>com.madgag</groupId>
       <artifactId>animated-gif-lib</artifactId>
       <version>1.4</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jetbrains.bio</groupId>
-      <artifactId>viktor</artifactId>
-      <version>1.2.0</version>
     </dependency>
 
     <!-- jackson -->

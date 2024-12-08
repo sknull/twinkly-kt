@@ -5,28 +5,9 @@ server:
   logging:
     requestLogging: false
 
-application:
-  klanglichtDirectory: file:${user.home}/.twinkly
-  preferences:
-    twinkly:
-      - name: "curtains"
-        deviceOrigin: "TOP_LEFT"
-        gain: 1.0
-        array:
-          - - name: "curtain1"
-              ipAddress: "192.168.178.35"
-              width: 10
-              height: 21
-            - name: "curtain3"
-              ipAddress: "192.168.178.58"
-              width: 10
-              height: 21
-          - - name: "curtain2"
-              ipAddress: "192.168.178.52"
-              width: 10
-              height: 21
-            - name: "curtain4"
-              ipAddress: "192.168.178.60"
-              width: 10
-              height: 21
+spring:
+  profiles:
+    active: local
+  config:
+    import: file:${user.home}/.twinkly/resources/application.yml
 

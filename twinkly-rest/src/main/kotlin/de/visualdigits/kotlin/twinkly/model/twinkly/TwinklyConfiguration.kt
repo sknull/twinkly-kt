@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.klanglicht.model.twinkly
+package de.visualdigits.kotlin.twinkly.model.twinkly
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice

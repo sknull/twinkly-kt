@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.ConfigurableApplicationContext
 
 @SpringBootApplication
-open class Application {
+class Application {
 
     companion object {
         private var context: ConfigurableApplicationContext? = null

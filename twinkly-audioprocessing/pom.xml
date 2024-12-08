@@ -15,6 +15,13 @@
   </parent>
 
   <dependencies>
+    <!--project -->
+    <dependency>
+      <groupId>de.visualdigits</groupId>
+      <artifactId>twinkly-api</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
     <!-- common stuff -->
     <dependency>
       <groupId>org.apache.commons</groupId>

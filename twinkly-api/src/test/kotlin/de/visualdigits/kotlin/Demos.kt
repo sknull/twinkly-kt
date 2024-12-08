@@ -6,10 +6,6 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
-import de.visualdigits.kotlin.twinkly.visualization.Oscilloscope
-import de.visualdigits.kotlin.twinkly.visualization.SpectrumAnalyzer
-import de.visualdigits.kotlin.twinkly.visualization.VUMeter
-import de.visualdigits.kotlin.twinkly.visualization.Visualizer
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.chrome.ChromeDriver
@@ -214,37 +210,5 @@ class Demos : XledArrayTest() {
             )
         )
         sequence.play(xledArrayLandscapeRight)
-    }
-
-    @Test
-    fun testOscilloscope() {
-        val oscilloscope = Oscilloscope(
-            xled = xledArrayLandscapeRight
-        )
-        oscilloscope.run()
-    }
-
-    @Test
-    fun testSpectrumAnalyzer() {
-        val analyzer = SpectrumAnalyzer(
-            xled = xledArrayLandscapeRight
-        )
-        analyzer.run()
-    }
-
-    @Test
-    fun testVUMeter() {
-        val vuMeter = VUMeter(
-            xled = xledArray
-        )
-        vuMeter.run()
-    }
-
-    @Test
-    fun testVisualizer() {
-        val visualizer = Visualizer(
-            xled = xledArray
-        )
-        visualizer.run()
     }
 }

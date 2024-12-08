@@ -1,4 +1,4 @@
-package de.visualdigits.kotlin.klanglicht.rest.configuration
+package de.visualdigits.kotlin.twinkly.rest.configuration
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
