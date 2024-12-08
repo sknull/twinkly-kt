@@ -1,8 +1,8 @@
 package de.visualdigits.kotlin.twinkly.model.playable.effects
 
-import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import kotlin.math.PI
 import kotlin.math.cos
@@ -16,7 +16,7 @@ class PlasmaEffect(
     val zoom: Double,
     val speed: Double,
     xled: XLed,
-    initialColor: Color<*> = RGBColor(0, 0, 0)
+    initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
 ): XledEffect("Plasma Effect", xled, initialColor = initialColor) {
 
     private val mx = max(xled.width, xled.height) 

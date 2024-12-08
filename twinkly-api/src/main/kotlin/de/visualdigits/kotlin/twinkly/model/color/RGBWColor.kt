@@ -106,10 +106,10 @@ class RGBWColor(
     override fun web(): String = "#${hex()}"
 
     override fun ansiColor(): String {
-        return toRGB().ansiColor()
+        return toRgbColor().ansiColor()
     }
 
-    override fun toRGB(): RGBColor {
+    override fun toRgbColor(): RGBColor {
         return RGBColor(
             red = min(255, red + white),
             green = min(255, green + white),
@@ -118,11 +118,11 @@ class RGBWColor(
         )
     }
 
-    override fun toHSV(): HSVColor {
-        return toRGB().toHSV()
+    override fun toHsvColor(): HSVColor {
+        return toRgbColor().toHsvColor()
     }
 
-    override fun toRGBW(): RGBWColor {
+    override fun toRgbwColor(): RGBWColor {
         return this
     }
 }

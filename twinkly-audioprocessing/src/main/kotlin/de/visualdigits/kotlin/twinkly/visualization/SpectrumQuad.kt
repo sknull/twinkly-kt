@@ -4,8 +4,8 @@ import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.minim.fft.BeatDetect
 import de.visualdigits.kotlin.minim.fft.DetectMode
-import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
@@ -20,14 +20,14 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
  * @param xled The xled device to use.
  */
 class SpectrumQuad(
-    private val colorMeter: Color<*> = RGBWColor(0, 255, 0, 0),
-    private val colorMax: Color<*> = RGBWColor(255, 0, 0, 0),
-    private val colorMeterKick: Color<*> = RGBWColor(255, 0, 0, 0),
-    private val colorMaxKick: Color<*> = RGBWColor(255, 0, 0, 128),
-    private val colorMeterHiHat: Color<*> = RGBWColor(255, 255, 0, 0),
-    private val colorMaxHiHat: Color<*> = RGBWColor(255, 255, 0, 128),
-    private val colorMeterSnare: Color<*> = RGBWColor(0, 0, 255, 0),
-    private val colorMaxSnare: Color<*> = RGBWColor(0, 0, 255, 128),
+    private val colorMeter: TwinklyColor<*> = RGBWColor(0, 255, 0, 0),
+    private val colorMax: TwinklyColor<*> = RGBWColor(255, 0, 0, 0),
+    private val colorMeterKick: TwinklyColor<*> = RGBWColor(255, 0, 0, 0),
+    private val colorMaxKick: TwinklyColor<*> = RGBWColor(255, 0, 0, 128),
+    private val colorMeterHiHat: TwinklyColor<*> = RGBWColor(255, 255, 0, 0),
+    private val colorMaxHiHat: TwinklyColor<*> = RGBWColor(255, 255, 0, 128),
+    private val colorMeterSnare: TwinklyColor<*> = RGBWColor(0, 0, 255, 0),
+    private val colorMaxSnare: TwinklyColor<*> = RGBWColor(0, 0, 255, 128),
     private val xled: XLed
 ) {
 

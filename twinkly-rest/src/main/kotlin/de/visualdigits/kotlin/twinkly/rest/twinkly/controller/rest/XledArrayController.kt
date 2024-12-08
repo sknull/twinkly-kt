@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin.twinkly.rest.twinkly.controller.rest
 
-import de.visualdigits.kotlin.twinkly.rest.configuration.ApplicationPreferences
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
@@ -10,6 +9,7 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
+import de.visualdigits.kotlin.twinkly.rest.configuration.ApplicationPreferences
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

@@ -1,6 +1,5 @@
 package de.visualdigits.kotlin
 
-import de.visualdigits.kotlin.twinkly.games.conway.Matrix
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame

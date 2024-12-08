@@ -1,12 +1,12 @@
 package de.visualdigits.kotlin.twinkly.games.tetris
 
-import de.visualdigits.kotlin.twinkly.model.color.Color
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
 open class TetrisBlock(
     width: Int,
     height: Int,
-    initialColor: Color<*>,
+    initialColor: TwinklyColor<*>,
     var opaquePixels: List<Pair<Int, Int>> = listOf()
 ) : XledFrame(width, height) {
 

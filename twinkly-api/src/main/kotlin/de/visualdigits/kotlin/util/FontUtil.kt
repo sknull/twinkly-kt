@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.util
 
-import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.font.Direction
 import de.visualdigits.kotlin.twinkly.model.font.FigletFont
 import de.visualdigits.kotlin.twinkly.model.font.FigletSmusher
@@ -29,8 +29,8 @@ object FontUtil {
         fontDirectory: File? =  systemFontsDirectory(),
         fontName: String,
         fontSize: Int,
-        backgroundColor: Color<*>,
-        textColor: Color<*>,
+        backgroundColor: TwinklyColor<*>,
+        textColor: TwinklyColor<*>,
     ): BufferedImage {
         val frameBufferTemp = BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB)
         val gTemp: Graphics2D = frameBufferTemp.graphics as Graphics2D
@@ -92,8 +92,8 @@ object FontUtil {
         textWidth: Int = 9999,
         fontName: String = "basic",
         direction: Direction = Direction.auto,
-        backgroundColor: Color<*> = RGBColor(0, 0, 0),
-        textColor: Color<*> = RGBColor(255, 0, 0),
+        backgroundColor: TwinklyColor<*> = RGBColor(0, 0, 0),
+        textColor: TwinklyColor<*> = RGBColor(255, 0, 0),
         justify: Justify = Justify.auto,
         ensureWidth: Boolean = false
     ): XledFrame {

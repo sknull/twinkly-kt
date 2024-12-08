@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
-import de.visualdigits.kotlin.twinkly.model.color.Color
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
@@ -87,7 +87,7 @@ class XledArray(
         xLedDevices.flatten().forEach { it.setSaturation(saturation) }
     }
 
-    override fun setColor(color: Color<*>) {
+    override fun setColor(color: TwinklyColor   <*>) {
         xLedDevices.flatten().forEach { it.setColor(color) }
     }
 

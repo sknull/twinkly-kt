@@ -1,10 +1,10 @@
 package de.visualdigits.kotlin.twinkly.rest.twinkly.controller.rest
 
-import de.visualdigits.kotlin.twinkly.rest.configuration.ApplicationPreferences
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.rest.configuration.ApplicationPreferences
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

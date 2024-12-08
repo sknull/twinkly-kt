@@ -12,7 +12,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     var blue: Int = 0,
     var alpha: Int = 255,
     val normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
-) : Color<T> {
+) : TwinklyColor<T>() {
 
     constructor(value: Long, normalize: Boolean = false) : this(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
@@ -30,13 +30,13 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
         return "[$red, $green, $blue]"
     }
 
-    override fun toAwtColor(): java.awt.Color {
-        val rgbColor = toRGB()
-        return java.awt.Color(rgbColor.red, rgbColor.green, rgbColor.blue)
-    }
-
     open fun repr(): String {
         return "RGBColor(hex='${web()}', r=$red, g=$green , b=$blue)"
+    }
+
+    override fun toAwtColor(): java.awt.Color {
+        val rgbColor = toRgbColor()
+        return java.awt.Color(rgbColor.red, rgbColor.green, rgbColor.blue)
     }
 
     override fun isBlack(): Boolean = red == 0 && green == 0 && blue == 0
@@ -51,14 +51,14 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
 
     inline fun <reified T : Color<T>> convert(): T {
         return when (T::class) {
-            RGBWColor::class -> toRGBW() as T
-            HSVColor::class -> toHSV() as T
-            RGBBaseColor::class -> toRGB() as T
+            RGBWColor::class -> toRgbwColor() as T
+            HSVColor::class -> toHsvColor() as T
+            RGBBaseColor::class -> toRgbColor() as T
             else -> error("Unsupported color type")
         }
     }
 
-    override fun toRGB(): RGBColor {
+    override fun toRgbColor(): RGBColor {
         return RGBColor(
             red = red,
             green = green,
@@ -67,7 +67,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
         )
     }
 
-    override fun toHSV(): HSVColor {
+    override fun toHsvColor(): HSVColor {
         val r = red.toDouble() / 255
         val g = green.toDouble() / 255
         val b = blue.toDouble() / 255
@@ -104,7 +104,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
         )
     }
 
-    override fun toRGBW(): RGBWColor {
+    override fun toRgbwColor(): RGBWColor {
         return if (normalize) {
             val white = min(red, min(green, blue))
             RGBWColor(
@@ -116,7 +116,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
                 normalize = normalize
             )
         } else {
-            val hsv = toHSV()
+            val hsv = toHsvColor()
             if (hsv.s == 0) {
                 RGBWColor(
                     red = red,

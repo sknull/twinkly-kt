@@ -1,6 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
-import de.visualdigits.kotlin.twinkly.model.color.Color
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
@@ -33,7 +33,7 @@ interface XLed {
 
     fun setSaturation(saturation: Float)
 
-    fun setColor(color: Color<*>)
+    fun setColor(color: TwinklyColor<*>)
 
     /**
      * Returns the current timer of the device.

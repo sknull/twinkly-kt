@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.playable.effects
 
-import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
@@ -12,10 +12,10 @@ class MatrixEffect(
     xled: XLed,
     val color: RGBColor = RGBColor(0, 255, 0),
     val interval: Int = 3,
-    initialColor: Color<*> = RGBColor(0, 0, 0)
+    initialColor: TwinklyColor<*> = RGBColor(0, 0, 0)
 ): XledEffect("Matrix Effect", xled, initialColor = initialColor) {
 
-    private val hsvColor = color.toHSV()
+    private val hsvColor = color.toHsvColor()
 
     private var chars: MutableList<Pair<XledFrame, Pair<Int, Int>>> = mutableListOf()
 
@@ -29,7 +29,7 @@ class MatrixEffect(
             for (y in 0 until 3) {
                 for (x in 0 until 3) {
                     hsvColor.v = random.nextInt(0, 100)
-                    frame[x, y] = hsvColor.toRGB()
+                    frame[x, y] = hsvColor.toRgbColor()
                 }
             }
             val px = random.nextInt(0, width / 3) * 3
@@ -46,7 +46,7 @@ class MatrixEffect(
             for (y in 0 until 3) {
                 for (x in 0 until 3) {
                     hsvColor.v = random.nextInt(0, 100)
-                    frame[x, y] = hsvColor.toRGB()
+                    frame[x, y] = hsvColor.toRgbColor()
                 }
             }
             val px = random.nextInt(0, width / 3) * 3
@@ -63,9 +63,9 @@ class MatrixEffect(
                 val f = frame.clone()
                 for (y in 0 until 3) {
                     for (x in 0 until 3) {
-                        val hsv = frame[x, y].toHSV()
+                        val hsv = frame[x, y].toHsvColor()
                         hsv.v = max(hsv.v - 3 * n, 0)
-                        f[x, y] = hsv.toRGB()
+                        f[x, y] = hsv.toRgbColor()
                     }
                 }
                 replaceSubFrame(f, ppx, ppy - n)

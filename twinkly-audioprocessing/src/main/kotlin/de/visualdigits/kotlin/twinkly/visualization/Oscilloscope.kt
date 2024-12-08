@@ -3,8 +3,8 @@ package de.visualdigits.kotlin.twinkly.visualization
 import de.visualdigits.kotlin.minim.Minim
 import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.minim.fft.BeatDetect
-import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.color.TwinklyColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
@@ -20,8 +20,8 @@ import kotlin.math.roundToInt
  * @param xled The xled device to use.
  */
 class Oscilloscope(
-    private val color: Color<*> = RGBColor(255, 0, 0),
-    private val colorBeat: Color<*> = RGBColor(255, 255, 255),
+    private val color: TwinklyColor<*> = RGBColor(255, 0, 0),
+    private val colorBeat: TwinklyColor<*> = RGBColor(255, 255, 255),
     private val xled: XLed
 ) {
 
