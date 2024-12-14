@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class XMusicTest {
 
     private val xmusic = XMusic("192.168.178.43")
-    private val deviceInfo = xmusic.deviceInfo()
+    private val deviceInfo = xmusic.deviceInfo
 
     @Test
     fun testMusicStats() {

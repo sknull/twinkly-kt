@@ -81,7 +81,7 @@ object FontUtil {
         return if (SystemUtils.IS_OS_WINDOWS) {
             File("c:/Windows/Fonts")
         } else if (SystemUtils.IS_OS_MAC_OSX) {
-            Paths.get(SystemUtils.USER_DIR, "Library", "Fonts").toFile()
+            Paths.get(System.getProperty("user.home"), "Library", "Fonts").toFile()
         } else {
             null
         }
@@ -190,41 +190,42 @@ object FontUtil {
             blankMarkers.add(tuple)
             handleNewline(buffer, chars, queue, blankMarkers, font, smusher)
         } else {
-            val curChar = font.chars[code]
-            if (curChar != null) {
-                curCharWidth = font.width[code] ?:0
-                when {
-                    textWidth < curCharWidth -> {
-                        error("No space left to print char")
-                    }
-                    else -> {
-                        maxSmush = if (curChar.isNotEmpty()) {
-                            smusher.currentSmushAmount(buffer, curChar, curCharWidth, prevCharWidth)
-                        } else {
-                            0
-                        }
-                        currentTotalWidth = buffer[0].length + curCharWidth - maxSmush
-                        if (code == ' '.code) {
-                            blankMarkers.add(tuple)
-                        }
-                        if (currentTotalWidth >= textWidth) {
-                            handleNewline(buffer, chars, queue, blankMarkers, font, smusher)
-                        } else {
-                            for (row in 0 until font.height) {
-                                val (addLeft, addRight) = smusher.smushRow(
-                                    buffer[row],
-                                    curChar,
-                                    row,
-                                    maxSmush,
-                                    curCharWidth,
-                                    prevCharWidth
-                                )
-                                buffer[row] = addLeft + addRight.substring(maxSmush)
-                            }
-                        }
-                        prevCharWidth = curCharWidth
-                    }
+            handleChar(font, code, textWidth, smusher, buffer, blankMarkers, tuple, chars, queue)
+        }
+    }
+
+    private fun handleChar(
+        font: FigletFont,
+        code: Int,
+        textWidth: Int,
+        smusher: FigletSmusher,
+        buffer: Array<String>,
+        blankMarkers: MutableList<Pair<Array<String>, Int>>,
+        tuple: Pair<Array<String>, Int>,
+        chars: List<Int>,
+        queue: MutableList<Array<String>>
+    ) {
+        val curChar = font.chars[code]
+        if (curChar != null) {
+            curCharWidth = font.width[code] ?: 0
+            if (textWidth < curCharWidth) {
+                error("No space left to print char")
+            } else {
+                maxSmush = if (curChar.isNotEmpty()) {
+                    smusher.currentSmushAmount(buffer, curChar, curCharWidth, prevCharWidth)
+                } else {
+                    0
                 }
+                currentTotalWidth = buffer[0].length + curCharWidth - maxSmush
+                if (code == ' '.code) {
+                    blankMarkers.add(tuple)
+                }
+                if (currentTotalWidth >= textWidth) {
+                    handleNewline(buffer, chars, queue, blankMarkers, font, smusher)
+                } else {
+                    handleRow(font, smusher, buffer, curChar)
+                }
+                prevCharWidth = curCharWidth
             }
         }
     }
@@ -254,6 +255,25 @@ object FontUtil {
         val curChar = font.chars[chars[iterator]]
         if (curChar?.isNotEmpty() == true) {
             maxSmush = smusher.currentSmushAmount(buffer, curChar, curCharWidth, prevCharWidth)
+        }
+    }
+
+    private fun handleRow(
+        font: FigletFont,
+        smusher: FigletSmusher,
+        buffer: Array<String>,
+        curChar: List<String>
+    ) {
+        for (row in 0 until font.height) {
+            val (addLeft, addRight) = smusher.smushRow(
+                buffer[row],
+                curChar,
+                row,
+                maxSmush,
+                curCharWidth,
+                prevCharWidth
+            )
+            buffer[row] = addLeft + addRight.substring(maxSmush)
         }
     }
 

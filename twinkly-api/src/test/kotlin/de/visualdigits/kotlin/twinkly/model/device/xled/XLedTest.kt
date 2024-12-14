@@ -41,7 +41,7 @@ class XLedTest {
     @Disabled("Adding a new movie does not really work but might mess up an existing movie.")
     @Test
     fun testNewMovie() {
-        val deviceInfo = xled.deviceInfo()
+        val deviceInfo = xled.deviceInfo
 
         xled.setColor(RGBColor())
         xled.setMode(DeviceMode.color)

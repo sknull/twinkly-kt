@@ -63,38 +63,49 @@ class FigletSmusher(
         }
         var maxSmush = curCharWidth
         for (row in 0 until font.height) {
-            var lineLeft = buffer[row]
-            var lineRight = curChar[row]
-            if (Direction.rightToLeft == direction) {
-                val temp = lineLeft
-                lineLeft = lineRight
-                lineRight = temp
-            }
-            var linebd = rtrim(lineLeft).length - 1
-            if (linebd < 0) {
-                linebd = 0
-            }
-            var ch1: String = ""
-            if (linebd < lineLeft.length) {
-                ch1 = lineLeft[linebd].toString()
-            }
-            val charbd = lineRight.length - ltrim(lineRight).length
-            var ch2: String = ""
-            if (charbd < lineRight.length) {
-                ch2 = lineRight[charbd].toString()
-            }
-            var amt = charbd + lineLeft.length - 1 - linebd
-
-            if (ch1.isEmpty() || ch1 == " ") {
-                amt += 1
-            } else if (ch2.isNotEmpty() && smushChars(ch1, ch2, curCharWidth, prevCharWidth).isNotEmpty()) {
-                amt += 1
-            }
+            var amt = currentRowSmushAmount(buffer, row, curChar, curCharWidth, prevCharWidth)
             if (amt < maxSmush) {
                 maxSmush = amt
             }
         }
         return maxSmush
+    }
+
+    private fun currentRowSmushAmount(
+        buffer: Array<String>,
+        row: Int,
+        curChar: List<String>,
+        curCharWidth: Int,
+        prevCharWidth: Int
+    ): Int {
+        var lineLeft = buffer[row]
+        var lineRight = curChar[row]
+        if (Direction.rightToLeft == direction) {
+            val temp = lineLeft
+            lineLeft = lineRight
+            lineRight = temp
+        }
+        var linebd = rtrim(lineLeft).length - 1
+        if (linebd < 0) {
+            linebd = 0
+        }
+        var ch1: String = ""
+        if (linebd < lineLeft.length) {
+            ch1 = lineLeft[linebd].toString()
+        }
+        val charbd = lineRight.length - ltrim(lineRight).length
+        var ch2: String = ""
+        if (charbd < lineRight.length) {
+            ch2 = lineRight[charbd].toString()
+        }
+        var amt = charbd + lineLeft.length - 1 - linebd
+
+        if (ch1.isEmpty() || ch1 == " ") {
+            amt += 1
+        } else if (ch2.isNotEmpty() && smushChars(ch1, ch2, curCharWidth, prevCharWidth).isNotEmpty()) {
+            amt += 1
+        }
+        return amt
     }
 
     private fun smushChars(left: String = "", right: String = "", curCharWidth: Int, prevCharWidth: Int): String {
@@ -103,15 +114,15 @@ class FigletSmusher(
         } else if (right.isNotEmpty() && right.trim().isEmpty()) {
             return left
         }
-        
+
         if (prevCharWidth < 2 || curCharWidth < 2) {
             return ""
         }
-        
+
         if ((font.smushMode and SM_SMUSH) == 0) {
             return ""
         }
-        
+
         if ((font.smushMode and 63) == 0) {
             if (left == font.hardBlank) {
                 return right
@@ -129,33 +140,16 @@ class FigletSmusher(
         if ((font.smushMode and SM_HARDBLANK) != 0 && left == font.hardBlank && right == font.hardBlank) {
             return left
         }
-        
+
         if (left == font.hardBlank || right == font.hardBlank) {
             return ""
         }
-        
+
         if ((font.smushMode and SM_EQUAL) != 0 && left == right) {
             return left
         }
-        
-        val smushes = mutableMapOf<String, String>()
-        if ((font.smushMode and SM_LOWLINE) != 0) {
-            smushes.put("_", "|/\\\\[]{}()<>")
-        }
-        
-        if ((font.smushMode and SM_HIERARCHY) != 0) {
-            smushes.putAll(
-                mapOf(
-                    "|" to "|/\\\\[]{}()<>",
-                    "\\\\/" to "[]{}()<>",
-                    "[]" to "{}()<>",
-                    "{}" to "()<>",
-                    "()" to "<>"
-                )
-            )
-        }
-        
-        smushes.forEach { entry ->
+
+        determineSmushes().forEach { entry ->
             if (entry.key.contains(left) && entry.value.contains(right)) {
                 return right
             }
@@ -164,7 +158,7 @@ class FigletSmusher(
             }
         }
 
-        if ((font.smushMode and SM_PAIR) != 0)  {
+        if ((font.smushMode and SM_PAIR) != 0) {
             listOf(left + right, right + left)
                 .forEach { pair ->
                     if (PAIRS.contains(pair)) {
@@ -172,7 +166,7 @@ class FigletSmusher(
                     }
                 }
         }
-        
+
         if ((font.smushMode and SM_BIGX) != 0) {
             if ("/" == left && "\\" == right) {
                 return "|"
@@ -186,6 +180,26 @@ class FigletSmusher(
         }
 
         return ""
+    }
+
+    private fun determineSmushes(): MutableMap<String, String> {
+        val smushes = mutableMapOf<String, String>()
+        if ((font.smushMode and SM_LOWLINE) != 0) {
+            smushes.put("_", "|/\\\\[]{}()<>")
+        }
+
+        if ((font.smushMode and SM_HIERARCHY) != 0) {
+            smushes.putAll(
+                mapOf(
+                    "|" to "|/\\\\[]{}()<>",
+                    "\\\\/" to "[]{}()<>",
+                    "[]" to "{}()<>",
+                    "{}" to "()<>",
+                    "()" to "<>"
+                )
+            )
+        }
+        return smushes
     }
 
     private fun ltrim(s: String): String = s.replace("^\\s+".toRegex(), "")

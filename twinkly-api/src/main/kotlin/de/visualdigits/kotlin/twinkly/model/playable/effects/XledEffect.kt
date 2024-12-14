@@ -6,6 +6,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledRepeater
+import java.lang.Thread.sleep
 
 abstract class XledEffect(
     val name: String,
@@ -26,22 +27,27 @@ abstract class XledEffect(
     fun start() {
         xled.setMode(DeviceMode.rt)
         reset()
-        repeater.start()
+        while (true) {
+            xled.showRealTimeFrame(this)
+            getNextFrame()
+            sleep(frameDelay)
+        }
+//        repeater.start()
     }
 
     fun play() {
-        repeater.play()
+//        repeater.play()
     }
 
     fun pause() {
-        repeater.pause()
+//        repeater.pause()
     }
 
     fun end() {
-        repeater.end()
+//        repeater.end()
     }
 
     fun join() {
-        repeater.join()
+//        repeater.join()
     }
 }

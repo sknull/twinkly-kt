@@ -22,21 +22,24 @@ class WobbleEffect(
             for (y in 0 until height / grid * grid step grid) {
                 for (yy in 0 until grid - 1 - time) {
                     this[x, y + yy] = color
+                    this[x + 1, y + yy] = color
                     this[x + grid - 2, y + yy] = color
+                    this[x + grid - 3, y + yy] = color
                 }
                 for (yy in grid - 1 - time until grid - 1) {
                     this[x, y + yy] = initialColor
+                    this[x + 1, y + yy] = initialColor
                     this[x + grid - 2, y + yy] = initialColor
+                    this[x + grid - 3, y + yy] = initialColor
                 }
-
-                for (xx in 1 until grid - 2) {
+                for (xx in 2 until grid - 3) {
                     for (yy in 0 until time) {
-                        this[x + xx , y + yy] = color
+                        this[x + xx, y + yy] = color
                     }
                 }
-                for (xx in 1 until grid - 2) {
+                for (xx in 2 until grid - 3) {
                     for (yy in time until grid - 1) {
-                        this[x + xx , y + yy] = initialColor
+                        this[x + xx, y + yy] = initialColor
                     }
                 }
             }
@@ -50,4 +53,5 @@ class WobbleEffect(
             colorStep *= -1
         }
     }
+
 }

@@ -32,80 +32,178 @@ class TransitionWipe : Transition() {
 
         when (transitionDirection) {
             TransitionDirection.LEFT_RIGHT -> {
-                val n = (width * factor).roundToInt()
-                for (y in 0 until height) {
-                    for (x in 0 until n) {
-                        newTargetFrame[x, y] =  sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
-                    }
-                }
+                transitionLeftRight(width, factor, height, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.RIGHT_LEFT -> {
-                val n = (width * factor).roundToInt()
-                for (y in 0 until height) {
-                    for (x in 1 .. n) {
-                        newTargetFrame[width - x, y] = sourceFrame[width - x, y].fade(targetFrame[width - x, y], factor, blendMode)
-                    }
-                }
+                transitionRightLeft(width, factor, height, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.UP_DOWN -> {
-                val n = (height * factor).roundToInt()
-                for (x in 0 until width) {
-                    for (y in 0 until n) {
-                        newTargetFrame[x, y] = sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
-                    }
-                }
+                transitionUpDown(height, factor, width, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.DOWN_UP -> {
-                val n = (height * factor).roundToInt()
-                for (x in 0 until width) {
-                    for (y in 1 .. n) {
-                        newTargetFrame[x, height - y] = sourceFrame[x, height - y].fade(targetFrame[x, height - y], factor, blendMode)
-                    }
-                }
+                transitionDownUp(height, factor, width, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.DIAGONAL_FROM_TOP_LEFT -> {
-                val n = (min(width, height) * 2 * factor).roundToInt()
-                for (y in 0 until n) {
-                    for (x in 0 .. y) {
-                        val xx = min(x, width - 1)
-                        val yy = min(y - x, height - 1)
-                        newTargetFrame[xx, yy] =  sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
-                    }
-                }
+                transitionDiagonalTopLeft(width, height, factor, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.DIAGONAL_FROM_TOP_RIGHT -> {
-                val n = (min(width, height) * 2 * factor).roundToInt()
-                for (y in 0 until n) {
-                    for (x in 0 .. y) {
-                        val xx = max(0, min(width - x, width - 1))
-                        val yy = min(y - x, height - 1)
-                        newTargetFrame[xx, yy] =  sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
-                    }
-                }
+                transitionDiagonalTopRight(width, height, factor, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.DIAGONAL_FROM_BOTTOM_LEFT -> {
-                val n = (min(width, height) * 2 * factor).roundToInt()
-                for (y in 0 until n) {
-                    for (x in 0 .. y) {
-                        val xx = min(x, width - 1)
-                        val yy = max(0, min(height - y + x, height - 1))
-                        newTargetFrame[xx, yy] =  sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
-                    }
-                }
+                transitionDiagonalBottomLeft(width, height, factor, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             TransitionDirection.DIAGONAL_FROM_BOTTOM_RIGHT -> {
-                val n = (min(width, height) * 2 * factor).roundToInt()
-                for (y in 0 until n) {
-                    for (x in 0 .. y) {
-                        val xx = max(0, min(width - x, width - 1))
-                        val yy = max(0, min(height - y + x, height - 1))
-                        newTargetFrame[xx, yy] =  sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
-                    }
-                }
+                transitionDiagonalBottomRight(width, height, factor, newTargetFrame, sourceFrame, targetFrame, blendMode)
             }
             else -> {}
         }
 
         return newTargetFrame
+    }
+
+    private fun transitionDiagonalBottomRight(
+        width: Int,
+        height: Int,
+        factor: Double,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (min(width, height) * 2 * factor).roundToInt()
+        for (y in 0 until n) {
+            for (x in 0..y) {
+                val xx = max(0, min(width - x, width - 1))
+                val yy = max(0, min(height - y + x, height - 1))
+                newTargetFrame[xx, yy] = sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionDiagonalBottomLeft(
+        width: Int,
+        height: Int,
+        factor: Double,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (min(width, height) * 2 * factor).roundToInt()
+        for (y in 0 until n) {
+            for (x in 0..y) {
+                val xx = min(x, width - 1)
+                val yy = max(0, min(height - y + x, height - 1))
+                newTargetFrame[xx, yy] = sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionDiagonalTopRight(
+        width: Int,
+        height: Int,
+        factor: Double,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (min(width, height) * 2 * factor).roundToInt()
+        for (y in 0 until n) {
+            for (x in 0..y) {
+                val xx = max(0, min(width - x, width - 1))
+                val yy = min(y - x, height - 1)
+                newTargetFrame[xx, yy] = sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionDiagonalTopLeft(
+        width: Int,
+        height: Int,
+        factor: Double,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (min(width, height) * 2 * factor).roundToInt()
+        for (y in 0 until n) {
+            for (x in 0..y) {
+                val xx = min(x, width - 1)
+                val yy = min(y - x, height - 1)
+                newTargetFrame[xx, yy] = sourceFrame[xx, yy].fade(targetFrame[xx, yy], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionDownUp(
+        height: Int,
+        factor: Double,
+        width: Int,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (height * factor).roundToInt()
+        for (x in 0 until width) {
+            for (y in 1..n) {
+                newTargetFrame[x, height - y] =
+                    sourceFrame[x, height - y].fade(targetFrame[x, height - y], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionUpDown(
+        height: Int,
+        factor: Double,
+        width: Int,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (height * factor).roundToInt()
+        for (x in 0 until width) {
+            for (y in 0 until n) {
+                newTargetFrame[x, y] = sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionRightLeft(
+        width: Int,
+        factor: Double,
+        height: Int,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (width * factor).roundToInt()
+        for (y in 0 until height) {
+            for (x in 1..n) {
+                newTargetFrame[width - x, y] =
+                    sourceFrame[width - x, y].fade(targetFrame[width - x, y], factor, blendMode)
+            }
+        }
+    }
+
+    private fun transitionLeftRight(
+        width: Int,
+        factor: Double,
+        height: Int,
+        newTargetFrame: XledFrame,
+        sourceFrame: XledFrame,
+        targetFrame: XledFrame,
+        blendMode: BlendMode
+    ) {
+        val n = (width * factor).roundToInt()
+        for (y in 0 until height) {
+            for (x in 0 until n) {
+                newTargetFrame[x, y] = sourceFrame[x, y].fade(targetFrame[x, y], factor, blendMode)
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@ class TwinklyConfiguration(
             xLedDevices = array.map { column ->
                 column.map { config ->
                     XLedDevice(
-                        host = config.ipAddress,
+                        ipAddress = config.ipAddress,
                         width = config.width,
                         height = config.height
                     )

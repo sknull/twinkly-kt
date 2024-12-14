@@ -22,7 +22,7 @@ class XledArray(
     override val bytesPerLed: Int = xLedDevices.flatten().firstOrNull()?.bytesPerLed?:0
 
     constructor(width: Int, height: Int): this(
-        xLedDevices = Array(width) { Array(height) { XLedDevice() } },
+        xLedDevices = Array(width) { Array(height) { XLedDevice("") } },
         width = width,
         height = height
     )
@@ -147,48 +147,56 @@ class XledArray(
 
     override fun showRealTimeFrame(frame: XledFrame) {
         if (deviceOrigin.isPortrait()) {
-            val translatedArray = when (deviceOrigin) {
-                DeviceOrigin.BOTTOM_RIGHT -> rotate180()
-                else -> this
-            }
-            val firstDevice = translatedArray.xLedDevices[0][0]
-            val offsetX = firstDevice.width
-            val offsetY = firstDevice.height
-            for (x in 0 until columns) {
-                for (y in 0 until rows) {
-                    val xledDevice = translatedArray.xLedDevices[x][y]
-                    val offsetX1 = x * offsetX
-                    val offsetY1 = y * offsetY
-                    if (offsetX1 < frame.width && offsetY1 < frame.height) {
-                        val subFrame = frame.subFrame(offsetX1, offsetY1, xledDevice.width, xledDevice.height)
-                        val translatedFrame = when (deviceOrigin) {
-                            DeviceOrigin.BOTTOM_RIGHT -> subFrame.rotate180()
-                            else -> subFrame
-                        }
-                        xledDevice.showRealTimeFrame(translatedFrame)
-                    }
-                }
-            }
+            showFramePortrait(frame)
         } else  {
-            val translatedArray = when (deviceOrigin) {
-                DeviceOrigin.TOP_RIGHT -> rotateLeft()
-                DeviceOrigin.BOTTOM_LEFT -> rotateRight()
-                else -> this
-            }
-            val firstDevice = translatedArray.xLedDevices[0][0]
-            val offsetX = firstDevice.height
-            val offsetY = firstDevice.width
-            for (x in 0 until rows) {
-                for (y in 0 until columns) {
-                    val xledDevice = translatedArray.xLedDevices[x][y]
-                    val subFrame = frame.subFrame(x * offsetX, y * offsetY, xledDevice.height, xledDevice.width)
+            showFrameLandscape(frame)
+        }
+    }
+
+    private fun showFramePortrait(frame: XledFrame) {
+        val translatedArray = when (deviceOrigin) {
+            DeviceOrigin.BOTTOM_RIGHT -> rotate180()
+            else -> this
+        }
+        val firstDevice = translatedArray.xLedDevices[0][0]
+        val offsetX = firstDevice.width
+        val offsetY = firstDevice.height
+        for (x in 0 until columns) {
+            for (y in 0 until rows) {
+                val xledDevice = translatedArray.xLedDevices[x][y]
+                val offsetX1 = x * offsetX
+                val offsetY1 = y * offsetY
+                if (offsetX1 < frame.width && offsetY1 < frame.height) {
+                    val subFrame = frame.subFrame(offsetX1, offsetY1, xledDevice.width, xledDevice.height)
                     val translatedFrame = when (deviceOrigin) {
-                        DeviceOrigin.TOP_RIGHT -> subFrame.rotateLeft()
-                        DeviceOrigin.BOTTOM_LEFT -> subFrame.rotateRight()
+                        DeviceOrigin.BOTTOM_RIGHT -> subFrame.rotate180()
                         else -> subFrame
                     }
                     xledDevice.showRealTimeFrame(translatedFrame)
                 }
+            }
+        }
+    }
+
+    private fun showFrameLandscape(frame: XledFrame) {
+        val translatedArray = when (deviceOrigin) {
+            DeviceOrigin.TOP_RIGHT -> rotateLeft()
+            DeviceOrigin.BOTTOM_LEFT -> rotateRight()
+            else -> this
+        }
+        val firstDevice = translatedArray.xLedDevices[0][0]
+        val offsetX = firstDevice.height
+        val offsetY = firstDevice.width
+        for (x in 0 until rows) {
+            for (y in 0 until columns) {
+                val xledDevice = translatedArray.xLedDevices[x][y]
+                val subFrame = frame.subFrame(x * offsetX, y * offsetY, xledDevice.height, xledDevice.width)
+                val translatedFrame = when (deviceOrigin) {
+                    DeviceOrigin.TOP_RIGHT -> subFrame.rotateLeft()
+                    DeviceOrigin.BOTTOM_LEFT -> subFrame.rotateRight()
+                    else -> subFrame
+                }
+                xledDevice.showRealTimeFrame(translatedFrame)
             }
         }
     }

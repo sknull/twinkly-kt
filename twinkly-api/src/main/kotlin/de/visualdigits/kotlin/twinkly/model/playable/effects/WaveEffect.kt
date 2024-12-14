@@ -32,7 +32,7 @@ class WaveEffect(
                     h = h + 1.0
                 if (h > 1.0)
                     h = h - 1.0
-                color.v = 100//(100.0 * (ysin + 1.0) / 2.0).roundToInt();
+                color.v = 100
                 this[x, y] = HSVColor((360.0 * h).roundToInt(), color.s, color.v)
 
                 time += step

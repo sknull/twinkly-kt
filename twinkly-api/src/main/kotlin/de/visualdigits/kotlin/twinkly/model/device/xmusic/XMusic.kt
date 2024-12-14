@@ -2,20 +2,34 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
 import de.visualdigits.kotlin.twinkly.model.device.Session
 import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MicEnabled
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicStats
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicMode
 import de.visualdigits.kotlin.udp.UdpClient
 
-class XMusic(host: String): Session(
-    host,
-    "http://$host/xmusic/v1"
+/**
+ * Specific session for the twinkly music device which is used
+ * as networked microfone for audio input.
+ */
+class XMusic(
+    ipAddress: String
+): Session(
+    ipAddress,
+    "http://$ipAddress/xmusic/v1"
 ) {
+
+    val deviceInfo: DeviceInfo?
 
     init {
         // ensure we are logged in up to here to avoid unneeded requests
-        if (!tokens.containsKey(host)) login()
+        if (!tokens.containsKey(ipAddress)) login()
+        if (tokens[ipAddress]?.loggedIn == true) {
+            deviceInfo = get<DeviceInfo>("$baseUrl/gestalt")
+        } else {
+            deviceInfo = null
+        }
     }
 
     fun musicConfig(): MusicConfig? {
@@ -47,7 +61,7 @@ class XMusic(host: String): Session(
     }
 
     fun readData(): String {
-        val bytes = UdpClient(host, UDP_PORT_STREAMING).use { udpClient ->
+        val bytes = UdpClient(ipAddress, UDP_PORT_STREAMING).use { udpClient ->
             udpClient.read(1)
         }
         return String(bytes)

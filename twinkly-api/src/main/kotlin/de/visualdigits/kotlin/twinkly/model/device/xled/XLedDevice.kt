@@ -43,13 +43,16 @@ import kotlin.math.roundToInt
 private const val CONTENT_TYPE = "Content-Type"
 private const val APPLICATION_JSON = "application/json"
 
+/**
+ * Specific session for a twinkly device having leds.
+ */
 class XLedDevice(
-    host: String = "",
+    ipAddress: String,
     override var width: Int = 0,
     override var height: Int = 0
 ): XLed, Session(
-    host,
-    "http://$host/xled/v1",
+    ipAddress,
+    "http://$ipAddress/xled/v1",
 ) {
 
     val deviceInfo: DeviceInfo?
@@ -58,12 +61,12 @@ class XLedDevice(
     override val bytesPerLed: Int
 
     init {
-        if (host.isNotEmpty()) {
+        if (ipAddress.isNotEmpty()) {
             // ensure we are logged in up to here to avoid unneeded requests
-            if (!tokens.containsKey(host)) login()
-            if (tokens[host]?.loggedIn == true) {
-                deviceInfo = deviceInfo()
-                ledLayout = getLayout()
+            if (!tokens.containsKey(ipAddress)) login()
+            if (tokens[ipAddress]?.loggedIn == true) {
+                deviceInfo = get<DeviceInfo>("$baseUrl/gestalt")
+                ledLayout = get<LedLayout>("$baseUrl/led/layout/full")
                 bytesPerLed = deviceInfo?.bytesPerLed?:4 // fallback to rgbw assuming gen 2 device
             } else {
                 deviceInfo = null
@@ -79,13 +82,9 @@ class XLedDevice(
 
     override fun powerOn() {
         refreshTokenIfNeeded()
+        // try modes until it works...
         listOf(DeviceMode.playlist, DeviceMode.movie, DeviceMode.effect)
-            .forEach { mode ->
-                val responseCode = setMode(mode)
-                if (responseCode?.responseCode == ResponseCode.Ok) {
-                    return
-                }
-            }
+            .find { mode -> setMode(mode)?.responseCode == ResponseCode.Ok }
     }
 
     override fun powerOff() {
@@ -107,7 +106,7 @@ class XLedDevice(
     override fun setMode(mode: DeviceMode): JsonObject? {
         refreshTokenIfNeeded()
         val body = "{\"mode\":\"${mode.name}\"}"
-        log.debug("Setting mode for device '$host' to ${mode.name}...")
+        log.debug("Setting mode for device '$ipAddress' to ${mode.name}...")
         return post<Mode>(
             url = "$baseUrl/led/mode",
             body = body.toByteArray(),
@@ -256,12 +255,6 @@ class XLedDevice(
         )
     }
 
-    fun getLayout(): LedLayout? {
-        return get<LedLayout>(
-            url = "$baseUrl/led/layout/full",
-        )
-    }
-
     fun getEffects(): Effects? {
         return get<Effects>(
             url = "$baseUrl/led/effects",
@@ -321,6 +314,10 @@ class XLedDevice(
         showSequence(name, XledSequence(frames = mutableListOf(frame)), 1)
     }
 
+    /**
+     * Experimental code which tries to upload a new movie and plays it in device.
+     * Seems to overwrite the current sequence which is active in the device.
+     */
     fun showSequence(
         name: String,
         sequence: XledSequence,
@@ -355,13 +352,13 @@ class XLedDevice(
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {
-        UdpClient(host, UDP_PORT_STREAMING).use { udpClient ->
+        UdpClient(ipAddress, UDP_PORT_STREAMING).use { udpClient ->
             frame.toByteArray(bytesPerLed)
                 .toList()
                 .chunked(900)
                 .mapIndexed { index, value ->
                     udpClient.send(byteArrayOf(0x03) +
-                        Base64.getDecoder().decode(tokens[host]?.authToken?:"") +
+                        Base64.getDecoder().decode(tokens[ipAddress]?.authToken?:"") +
                         byteArrayOf(0x00, 0x00) +
                         byteArrayOf(index.toByte()) +
                         value.toByteArray()
