@@ -115,7 +115,7 @@ class XledArrayController(
             playable?.playAsync(
                 xled = it,
                 loop = loop,
-                random = random,
+                randomSequence = random,
                 transitionType = transitionType,
                 transitionDirection = transitionDirection,
                 transitionBlendMode = transitionBlendMode,

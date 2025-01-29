@@ -56,14 +56,22 @@ class Conway(
         return if (result.life > 0) {
             if (result.changes > 0) {
                 when (result.cycle) {
-                    0 -> RGBColor(0, 255, 0)
-                    2 -> RGBColor(255, 255, 0)
-                    3 -> RGBColor(255, 0, 255)
-                    4 -> RGBColor(0, 255, 255)
-                    else -> RGBColor(255, 255, 255)
+                     0 -> RGBColor(255,   0,   0)
+                     2 -> RGBColor(255, 255,   0)
+                     3 -> RGBColor(255,   0, 255)
+                     4 -> RGBColor(  0, 255,   0)
+                     5 -> RGBColor(  0, 255, 255)
+                     6 -> RGBColor(  0,   0, 255)
+                     7 -> RGBColor(128,   0,   0)
+                     8 -> RGBColor(128, 128,   0)
+                     9 -> RGBColor(128,   0, 128)
+                    10 -> RGBColor(  0, 128,   0)
+                    11 -> RGBColor(  0, 128, 128)
+                    12 -> RGBColor(  0,   0, 128)
+                    else -> RGBColor(  255,   191, 0)
                 }
             } else {
-                RGBColor(0, 0, 255)
+                RGBColor(128, 128, 128)
             }
         } else {
             RGBColor(255, 0, 0)
@@ -101,6 +109,7 @@ class Conway(
         val nextGenerations = if (cycle > 0) {
             result.generations.subList(result.generations.size - cycle, result.generations.size)
         } else result.generations
+println("$life - $changes - $cycle - ${result.generations.size}")
         return ConwayResult(nextFrame, life, changes, cycle, nextGenerations)
     }
 
@@ -126,12 +135,6 @@ class Conway(
             n
         }
     }
-
-    data class ConwayResult(
-        val matrix: Matrix,
-        val life: Int = 0,
-        val changes: Int = 1,
-        val cycle: Int = 0,
-        val generations: MutableList<Matrix> = mutableListOf()
-    )
 }
+
+

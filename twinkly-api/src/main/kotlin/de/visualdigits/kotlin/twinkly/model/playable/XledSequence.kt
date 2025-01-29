@@ -127,6 +127,7 @@ class XledSequence(
         xled: XLed,
         loop: Int,
         transitionType: TransitionType,
+        randomSequence: Boolean,
         transitionDirection: TransitionDirection,
         transitionBlendMode: BlendMode,
         transitionDuration: Long,
@@ -141,7 +142,7 @@ class XledSequence(
         running = true
         while (running && (frameLoopCount == -1 || frameLoopCount > 0)) {
             for (j in 0 until frames.size) {
-                val playable = nextPlayable(j, lastPlayable, transitionType == TransitionType.RANDOM)
+                val playable = nextPlayable(j, lastPlayable, randomSequence)
                 if (verbose) log.info("\n$playable")
 
                 if (lastPlayable != null && transitionType != TransitionType.STRAIGHT) {

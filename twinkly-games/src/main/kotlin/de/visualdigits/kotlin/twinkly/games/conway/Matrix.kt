@@ -38,15 +38,16 @@ class Matrix(
         return clone
     }
 
-    override fun equals(other: Any?): Boolean = other is Matrix && hashCode() == other.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Matrix
+
+        return matrix == other.matrix
+    }
 
     override fun hashCode(): Int {
-        val lst = mutableListOf<Int>()
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                lst.add(matrix[x][y])
-            }
-        }
-        return lst.hashCode()
+        return matrix.hashCode()
     }
 }

@@ -195,7 +195,6 @@ class Playground : XledArrayTest() {
             loop = -1,
             //            transitionType = TransitionType.STRAIGHT,
 //            transitionDirection = TransitionDirection.LEFT_RIGHT,
-            transitionBlendMode = BlendMode.REPLACE,
             transitionDuration = 1000
         )
     }

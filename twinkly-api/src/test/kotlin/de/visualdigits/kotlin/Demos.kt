@@ -139,7 +139,7 @@ class Demos : XledArrayTest() {
             for (x in 0 until yearMarker) {
                 canvas[x, xledArrayLandscapeRight.height - 1] = RGBColor(255, 255, 0)
             }
-            canvas.play(xledArrayLandscapeRight, 1)
+            canvas.play(xledArrayLandscapeRight)
 
             Thread.sleep(100)
         }
@@ -153,8 +153,8 @@ class Demos : XledArrayTest() {
     }
 
     @Test
-    fun testSanta() {
-        val frame = XledFrame(File(ClassLoader.getSystemResource("images/christmas-scenes/09_santa/frame_001.png").toURI()))
+    fun testScene() {
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/christmas-scenes/14_Lights/frame_001.png").toURI()))
         frame.play(xled = xledArray)
     }
 
@@ -172,7 +172,7 @@ class Demos : XledArrayTest() {
             loop = -1,
             transitionType = TransitionType.RANDOM,
 //            transitionDirection = TransitionDirection.HORIZONTAL,
-            transitionBlendMode = BlendMode.REPLACE,
+            randomSequence = true,
             transitionDuration = 1000
         )
     }
