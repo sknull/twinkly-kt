@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.request.MoviesCurrentRequest
+import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.MovieConfig
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
@@ -17,17 +17,23 @@ import kotlin.random.Random.Default.nextInt
 @Disabled("only for local testing")
 class XLedTest {
 
-    private val xled = XLedDevice("192.168.178.35", 10, 21)
+    private val xled = XLedDevice("192.168.178.35", 10, 50)
+
+    protected val xledMatrix = XledMatrixDevice("192.168.178.34", 10, 50)
 
     @Test
     fun testDeviceInfo() {
+//        println(xled.getLedMovieConfig())
         println(xled.deviceInfo)
-        println(xled.status())
-        println(xled.networkStatus())
-        println(xled.getMusicEnabled())
-        println(xled.getMusicDriversCurrent())
-        println(xled.getMusicDriversSets())
-        println(xled.getCurrentMusicDriversSet())
+//        println(xled.firmwareVersion)
+//        println(xledMatrix.status())
+//        println(xledMatrix.networkStatus())
+//        println(xledMatrix.getMusicEnabled())
+//        println(xledMatrix.getMusicDriversCurrent())
+//        println(xledMatrix.getMusicDriversSets())
+//        println(xledMatrix.getCurrentMusicDriversSet())
+//        println(xledMatrix.getCurrentMovie())
+//        println(xledMatrix.getMovies())
     }
 
     @Test
@@ -46,7 +52,7 @@ class XLedTest {
         xled.setColor(RGBColor())
         xled.setMode(DeviceMode.color)
         xled.deleteMovies()
-        val newMovie = xled.newMovie(
+        val newMovie = xled.uploadNewMovie(
             NewMovieRequest(
                 name = "FooBar",
                 descriptorType = "rgbw_raw",
@@ -56,8 +62,8 @@ class XLedTest {
             )
         )
         println(newMovie)
-        xled.uploadMovie(XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
-        xled.movieConfig(
+        xled.uploadNewMovieToListOfMovies(XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
+        xled.setLedMovieConfig(
             MovieConfig(
                 frameDelay = 1000 / 1,
                 ledsNumber = deviceInfo?.numberOfLed?:4,
@@ -66,7 +72,7 @@ class XLedTest {
         )
         xled.setMode(DeviceMode.movie)
         println(xled.getMovies())
-        println(xled.getMoviesCurrent())
+        println(xled.getCurrentMovie())
         println(xled.getPlaylist())
         println(xled.getPlaylistCurrent())
         println(xled.getEffects())
@@ -89,7 +95,7 @@ class XLedTest {
 
     @Test
     fun testRandomColorMovie() {
-        val frame = XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255)))
+        val frame = XledFrame(10, 50, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255)))
         frame.play(xled = xled, loop = -1)
     }
 
@@ -175,7 +181,7 @@ class XLedTest {
 //            }
 
         val numberOfFrames = sequence.size
-        val newMovie = xled.newMovie(
+        val newMovie = xled.uploadNewMovie(
             NewMovieRequest(
                 name = "Foo",
                 descriptorType = "rgbw_raw",
@@ -184,16 +190,16 @@ class XLedTest {
                 fps = fps
             )
         )
-        xled.uploadMovie(sequence.toByteArray(xled.bytesPerLed))
-        xled.movieConfig(
+        xled.uploadNewMovieToListOfMovies(sequence.toByteArray(xled.bytesPerLed))
+        xled.setLedMovieConfig(
             MovieConfig(
                 frameDelay = 1000 / fps,
                 ledsNumber = xled.deviceInfo?.numberOfLed?:4,
                 framesNumber = numberOfFrames,
             )
         )
-        xled.setMoviesCurrent(
-            MoviesCurrentRequest(
+        xled.setCurrentMovie(
+            CurrentMovieRequest(
                 id = newMovie?.id
             )
         )

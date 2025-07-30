@@ -1,5 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled.response.mode
 
+import de.visualdigits.kotlin.twinkly.model.common.JsonBaseObject
+
 class ColorConfig(
 //    val hue: Int? = null,
 //    val saturation: Int? = null,
@@ -8,4 +10,4 @@ class ColorConfig(
     val red: Int? = null,
     val green: Int? = null,
     val blue: Int? = null,
-)
+) : JsonBaseObject()

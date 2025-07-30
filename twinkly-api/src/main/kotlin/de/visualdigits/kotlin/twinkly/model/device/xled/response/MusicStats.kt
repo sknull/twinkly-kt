@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 
 class MusicStats(
+    code: Int? = null,
+
     @JsonProperty("total_skipped") val totalSkipped: Int? = null,
     @JsonProperty("total_received") val totalReceived: Int? = null,
     @JsonProperty("total_loss_percent") val totalLossPercent: Int? = null,
@@ -32,6 +34,4 @@ class MusicStats(
 
     @JsonProperty("new_beats") val newBeats: Int? = null,
     val bpm: Int? = null,
-
-    code: Int? = null
 ) : JsonObject(code)

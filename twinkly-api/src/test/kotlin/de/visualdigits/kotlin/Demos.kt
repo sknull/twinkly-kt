@@ -2,6 +2,7 @@ package de.visualdigits.kotlin
 
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
@@ -99,7 +100,9 @@ class Demos : XledArrayTest() {
      */
     @Test
     fun testClock() {
-        val canvas = XledFrame(xledArrayLandscapeRight.width, xledArrayLandscapeRight.height)
+//        val device = xledArrayLandscapeRight
+        val device = xledMatrix
+        val canvas = XledFrame(device.height, device.width, rotation = Rotation.LEFT)
         val bgColor = RGBColor(0, 0, 0)
         val digitColor = RGBColor(255, 0, 0)
         val doubleColonColor = RGBColor(0, 0, 128)
@@ -130,16 +133,16 @@ class Demos : XledArrayTest() {
             )
 //            if (separator == ":") separator = " " else separator = ":"
             canvas.replaceSubFrame(frameTime)
-            canvas.replaceSubFrame(frameDate, 0 , xledArrayLandscapeRight.height / 2)
-            val dayMarker = (now.hour / 24.0 * xledArrayLandscapeRight.width).roundToInt()
+            canvas.replaceSubFrame(frameDate, 0 , device.height / 2)
+            val dayMarker = (now.hour / 24.0 * device.width).roundToInt()
             for (x in 0 until dayMarker) {
                 canvas[x, 0] = RGBColor(0, 255, 0)
             }
-            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * xledArrayLandscapeRight.width).roundToInt()
+            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * device.width).roundToInt()
             for (x in 0 until yearMarker) {
-                canvas[x, xledArrayLandscapeRight.height - 1] = RGBColor(255, 255, 0)
+                canvas[x, device.height - 1] = RGBColor(255, 255, 0)
             }
-            canvas.play(xledArrayLandscapeRight)
+            canvas.play(device)
 
             Thread.sleep(100)
         }
@@ -179,21 +182,24 @@ class Demos : XledArrayTest() {
 
     @Test
     fun testText() {
+        val device = xledArrayLandscapeRight
+//        val device = xledMatrix
         val sequence = XledSequence(
             fontName = "Only When I Do Fonts Regular.ttf",
             fontDirectory = File(ClassLoader.getSystemResource("fonts").toURI()),
-            fontSize = 20,
-            targetWidth = xledArrayLandscapeRight.width,
-            targetHeight = xledArrayLandscapeRight.height,
+            fontSize = 10,
+            targetWidth = device.height,
+            targetHeight = device.width,
             frameDelay = 20,
             texts = listOf(
                 Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
                 Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
                 Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
-            )
+            ),
+            rotation = Rotation.LEFT
         )
 
-        sequence.play(xledArrayLandscapeRight, -1)
+        sequence.play(device, -1)
     }
 
     @Test

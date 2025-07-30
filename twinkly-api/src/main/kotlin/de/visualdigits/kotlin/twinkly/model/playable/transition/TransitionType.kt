@@ -6,7 +6,6 @@ import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.playable.Playable
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
-import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType.entries
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.random.Random

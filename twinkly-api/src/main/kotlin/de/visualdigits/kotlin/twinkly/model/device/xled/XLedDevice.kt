@@ -7,16 +7,17 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.Session
 import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
-import de.visualdigits.kotlin.twinkly.model.device.xled.request.MoviesCurrentRequest
+import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.CurrentMovieResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.CurrentMusicDriverSet
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Effects
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.EffectsCurrent
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.LedConfig
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.MovieConfig
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.MoviesCurrentResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.MusicDriversCurrent
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.MusicStats
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.NewMovieResponse
@@ -24,6 +25,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.PlayList
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Version
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
@@ -35,6 +37,7 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
 import de.visualdigits.kotlin.util.TimeUtil
+import de.visualdigits.kotlin.util.compareTo
 import java.time.OffsetDateTime
 import java.util.Base64
 import kotlin.math.min
@@ -46,16 +49,19 @@ private const val APPLICATION_JSON = "application/json"
 /**
  * Specific session for a twinkly device having leds.
  */
-class XLedDevice(
-    ipAddress: String,
+open class XLedDevice(
+    ipAddress: String = "",
     override var width: Int = 0,
-    override var height: Int = 0
+    override var height: Int = 0,
+    override val transformation:  ((XledFrame) -> XledFrame)? = null
 ): XLed, Session(
     ipAddress,
     "http://$ipAddress/xled/v1",
 ) {
 
     val deviceInfo: DeviceInfo?
+    val firmwareVersion: Version
+    val deviceGeneration: Int
     val ledLayout: LedLayout?
 
     override val bytesPerLed: Int
@@ -65,17 +71,23 @@ class XLedDevice(
             // ensure we are logged in up to here to avoid unneeded requests
             if (!tokens.containsKey(ipAddress)) login()
             if (tokens[ipAddress]?.loggedIn == true) {
-                deviceInfo = get<DeviceInfo>("$baseUrl/gestalt")
-                ledLayout = get<LedLayout>("$baseUrl/led/layout/full")
-                bytesPerLed = deviceInfo?.bytesPerLed?:4 // fallback to rgbw assuming gen 2 device
+                deviceInfo = getDeviceInfoResponse()
+                firmwareVersion = getFirmwareVersionResponse()?.versionParts ?: Version.UNKNOWN
+                deviceGeneration = determineDeviceGeneration()
+                ledLayout = getLedLayoutResponse()
+                bytesPerLed = deviceInfo?.bytesPerLed?:3
             } else {
                 deviceInfo = null
+                firmwareVersion = Version.UNKNOWN
+                deviceGeneration = 0
                 ledLayout = null
                 bytesPerLed = 0
             }
         } else {
-            deviceInfo = DeviceInfo()
-            ledLayout = LedLayout()
+            deviceInfo = null
+            firmwareVersion = Version.UNKNOWN
+            deviceGeneration = 0
+            ledLayout = null
             bytesPerLed = 0
         }
     }
@@ -114,6 +126,28 @@ class XLedDevice(
                 CONTENT_TYPE to APPLICATION_JSON
             )
         )
+    }
+
+    override fun getDeviceInfoResponse(): DeviceInfo? {
+        return get<DeviceInfo>("$baseUrl/gestalt")
+    }
+
+    override fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
+        return get<FirmwareVersionResponse>("$baseUrl/fw/version")
+    }
+
+    override fun determineDeviceGeneration(): Int {
+        return if (deviceInfo?.fwFamily == "D" &&  firmwareVersion <= Version("2.3.8")) {
+            1
+        } else if (firmwareVersion <= Version("2.4.6")) {
+            2
+        } else {
+            3
+        }
+    }
+
+    override fun getLedLayoutResponse(): LedLayout? {
+        return get<LedLayout>("$baseUrl/led/layout/full")
     }
 
     override fun ledReset() {
@@ -167,7 +201,7 @@ class XLedDevice(
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/brightness",
-            body = Brightness(value = (100 * brightness).roundToInt()).marshallToBytes(),
+            body = Brightness(value = (100 * brightness).roundToInt()).writeValueAssBytes(),
             headers = mutableMapOf(
                 CONTENT_TYPE to APPLICATION_JSON
             )
@@ -185,7 +219,7 @@ class XLedDevice(
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/saturation",
-            body = Saturation(value = (100 * saturation).roundToInt()).marshallToBytes(),
+            body = Saturation(value = (100 * saturation).roundToInt()).writeValueAssBytes(),
             headers = mutableMapOf(
                 CONTENT_TYPE to APPLICATION_JSON
             )
@@ -279,16 +313,16 @@ class XLedDevice(
         )
     }
 
-    fun getMoviesCurrent(): MoviesCurrentResponse? {
-        return get<MoviesCurrentResponse>(
+    fun getCurrentMovie(): CurrentMovieResponse? {
+        return get<CurrentMovieResponse>(
             url = "$baseUrl/movies/current",
         )
     }
 
-    fun setMoviesCurrent(moviesCurrentRequest: MoviesCurrentRequest): JsonObject? {
+    fun setCurrentMovie(currentMovieRequest: CurrentMovieRequest): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/movies/current",
-            body = moviesCurrentRequest.marshallToBytes(),
+            body = currentMovieRequest.writeValueAssBytes(),
             headers = mutableMapOf(
                 CONTENT_TYPE to APPLICATION_JSON
             )
@@ -329,7 +363,7 @@ class XLedDevice(
 
         val numberOfFrames = sequence.size
 
-        val newMovie = newMovie(
+        val newMovie = uploadNewMovie(
             NewMovieRequest(
                 name = name.substring(0, min(name.length, 32)),
                 descriptorType = "rgbw_raw",
@@ -338,72 +372,98 @@ class XLedDevice(
                 fps = fps
             )
         )
-        uploadMovie(sequence.toByteArray(bytesPerLed))
-        movieConfig(
+        uploadNewMovieToListOfMovies(sequence.toByteArray(bytesPerLed))
+        setLedMovieConfig(
             MovieConfig(
                 frameDelay = 1000 / fps,
                 ledsNumber = bytesPerLed,
                 framesNumber = numberOfFrames,
             )
         )
-        setMoviesCurrent(MoviesCurrentRequest(id = newMovie?.id))
+        setCurrentMovie(CurrentMovieRequest(id = newMovie?.id))
 
         setMode(DeviceMode.movie)
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {
+        val transformed = transformation?.let {
+            transformation!!(frame)
+        }?:frame
         UdpClient(ipAddress, UDP_PORT_STREAMING).use { udpClient ->
-            frame.toByteArray(bytesPerLed)
+            transformed.toByteArray(bytesPerLed)
                 .toList()
                 .chunked(900)
                 .mapIndexed { index, value ->
-                    udpClient.send(byteArrayOf(0x03) +
-                        Base64.getDecoder().decode(tokens[ipAddress]?.authToken?:"") +
-                        byteArrayOf(0x00, 0x00) +
-                        byteArrayOf(index.toByte()) +
-                        value.toByteArray()
-                    )
+                    val datagram = when (deviceGeneration) {
+                        1 -> createDatagramV1(value)
+                        2 -> createDatagramV2(value)
+                        3 -> createDatagramV3(index, value)
+                        else -> null
+                    }
+                    datagram?.also { d -> udpClient.send(d) }
                 }
         }
     }
 
-    fun uploadMovie(frame: XledFrame): Movie? {
-        val bytes = frame.toByteArray(bytesPerLed)
-        return uploadMovie(bytes)
+    private fun createDatagramV1(value: List<Byte>): ByteArray {
+        return byteArrayOf(0x01) +
+                Base64.getDecoder().decode(tokens[ipAddress]?.authToken ?: "") +
+                byteArrayOf(value.size.toByte()) +
+                value.toByteArray()
     }
 
-    fun uploadMovie(bytes: ByteArray): Movie? {
-        return post<Movie>(
-            url = "$baseUrl/led/movie/full",
-            body = bytes,
-            headers = mutableMapOf(
-                CONTENT_TYPE to "application/octet-stream"
-            )
-        )
+    private fun createDatagramV2(value: List<Byte>): ByteArray {
+        return byteArrayOf(0x02) +
+                Base64.getDecoder().decode(tokens[ipAddress]?.authToken ?: "") +
+                byteArrayOf(0x00) +
+                value.toByteArray()
     }
 
-    fun movieConfig(): MovieConfig? {
+    private fun createDatagramV3(index: Int, value: List<Byte>): ByteArray {
+        return byteArrayOf(0x03) +
+                Base64.getDecoder().decode(tokens[ipAddress]?.authToken ?: "") +
+                byteArrayOf(0x00, 0x00) +
+                byteArrayOf(index.toByte()) +
+                value.toByteArray()
+    }
+
+    fun getLedMovieConfig(): MovieConfig? {
         return get<MovieConfig>(
             url = "$baseUrl/led/movie/config",
         )
     }
 
-    fun movieConfig(movieConfig: MovieConfig): JsonObject? {
+    fun setLedMovieConfig(movieConfig: MovieConfig): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
-            body = movieConfig.marshallToBytes(),
+            body = movieConfig.writeValueAssBytes(),
             headers = mutableMapOf(
                 CONTENT_TYPE to APPLICATION_JSON
             )
         )
     }
 
-    fun newMovie(newMovie: NewMovieRequest): NewMovieResponse? {
+    fun uploadNewMovie(newMovie: NewMovieRequest): NewMovieResponse? {
         return post<NewMovieResponse>(
             url = "$baseUrl/movies/new",
-            body = newMovie.marshallToBytes(),
+            body = newMovie.writeValueAssBytes(),
             headers = mutableMapOf(
                 CONTENT_TYPE to APPLICATION_JSON
+            )
+        )
+    }
+
+    fun uploadNewMovieToListOfMovies(frame: XledFrame): Movie? {
+        val bytes = frame.toByteArray(bytesPerLed)
+        return uploadNewMovieToListOfMovies(bytes)
+    }
+
+    fun uploadNewMovieToListOfMovies(bytes: ByteArray): Movie? {
+        return post<Movie>(
+            url = "$baseUrl/led/movie/full",
+            body = bytes,
+            headers = mutableMapOf(
+                CONTENT_TYPE to "application/octet-stream"
             )
         )
     }
@@ -443,7 +503,7 @@ class XLedDevice(
     override fun setTimer(timer: Timer): Timer? {
         val result = post<JsonObject>(
             url = "$baseUrl/timer",
-            body = timer.marshallToBytes(),
+            body = timer.writeValueAssBytes(),
             headers = mutableMapOf(
                 CONTENT_TYPE to APPLICATION_JSON
             )

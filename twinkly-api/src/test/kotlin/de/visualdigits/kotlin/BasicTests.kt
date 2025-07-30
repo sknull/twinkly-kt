@@ -16,6 +16,33 @@ import kotlin.random.Random
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class BasicTests : XledArrayTest() {
 
+//    @Test
+//    fun testRunningPixel() {
+//        xledMatrix.powerOn()
+//        for (x in 0 until 10) {
+//            for (y in 0 until 50) {
+//                val frame = XledFrame(
+//                    width = xledMatrix.width,
+//                    height = xledMatrix.height
+//                )
+//                frame[x, y] = RGBColor(255, 255, 255)
+//                frame.play(xledMatrix)
+//                Thread.sleep(10)
+//            }
+//        }
+//    }
+//
+//    @Test
+//    fun testPixel() {
+//        xledArray.powerOn()
+//        val frame = XledFrame(
+//            width = xledArray.width,
+//            height = xledArray.height
+//        )
+//        frame[0, 0] = RGBColor(255, 255, 255)
+//        frame.play(xledArray)
+//    }
+
     @Test
     @Order(1)
     fun testPowerOn() {

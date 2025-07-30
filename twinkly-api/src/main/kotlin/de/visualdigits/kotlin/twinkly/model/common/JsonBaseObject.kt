@@ -2,6 +2,7 @@ package de.visualdigits.kotlin.twinkly.model.common
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import java.io.File
 
@@ -9,7 +10,7 @@ abstract class JsonBaseObject {
 
     companion object {
         val mapper: ObjectMapper = jacksonMapperBuilder()
-//            .disable(SerializationFeature.INDENT_OUTPUT)
+            .enable(SerializationFeature.INDENT_OUTPUT)
             .build()
             .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
 
@@ -22,13 +23,13 @@ abstract class JsonBaseObject {
         }
     }
 
-    override fun toString(): String = this::class.simpleName + ": " + marshall()
+    override fun toString(): String = this::class.simpleName + ": " + writeValueAsString()
 
-    fun marshall(): String {
+    fun writeValueAsString(): String {
         return mapper.writeValueAsString(this)
     }
 
-    fun marshallToBytes(): ByteArray {
+    fun writeValueAssBytes(): ByteArray {
         return mapper.writeValueAsBytes(this)
     }
 }

@@ -4,6 +4,7 @@ import com.madgag.gif.fmsware.GifDecoder
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
@@ -20,7 +21,8 @@ import kotlin.math.min
 
 class XledSequence(
     var frameDelay: Long = 100,
-    private val frames: MutableList<Playable> = mutableListOf()
+    private val frames: MutableList<Playable> = mutableListOf(),
+    val rotation: Rotation = Rotation.NONE
 ) : Playable, MutableList<Playable> by frames {
 
     private val log = LoggerFactory.getLogger(XledSequence::class.java)
@@ -31,8 +33,9 @@ class XledSequence(
         directory: File,
         maxFrames: Int = Int.MAX_VALUE,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-        frameDelay: Long = 1000
-    ) : this(frameDelay = frameDelay) {
+        frameDelay: Long = 1000,
+        rotation: Rotation = Rotation.NONE
+    ) : this(frameDelay = frameDelay, rotation = rotation) {
         require (directory.isDirectory) { "Given file is not a directory" }
         if (!readSceneDirectory(directory, initialColor)) {
             directory
@@ -52,13 +55,15 @@ class XledSequence(
         targetWidth: Int,
         targetHeight: Int,
         frameDelay: Long = 100,
-        texts: List<Triple<String, Color<*>, Color<*>>>
-    ) : this(frameDelay = frameDelay) {
+        texts: List<Triple<String, Color<*>, Color<*>>>,
+        rotation: Rotation = Rotation.NONE
+    ) : this(frameDelay = frameDelay, rotation = rotation) {
         val banner = XledFrame(
             fontName = fontName,
             fontDirectory = fontDirectory,
             fontSize = fontSize,
-            texts = texts
+            texts = texts,
+            rotation = rotation
         )
 
         addScrollingBanner(banner, targetWidth, targetHeight)
@@ -69,8 +74,9 @@ class XledSequence(
         targetWidth: Int,
         targetHeight: Int,
         frameDelay: Long = 100,
-        texts: List<Triple<String, Color<*>, Color<*>>>
-    ) : this(frameDelay = frameDelay) {
+        texts: List<Triple<String, Color<*>, Color<*>>>,
+        rotation: Rotation = Rotation.NONE
+    ) : this(frameDelay = frameDelay, rotation = rotation) {
         val banner = XledFrame(
             fontName = fontName,
             texts = texts
@@ -176,6 +182,7 @@ class XledSequence(
             val frame = banner.subFrame(0, 0, x, min(banner.height, targetHeight))
             val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
             canvas.replaceSubFrame(frame, targetWidth - 1 - x, 0)
+            canvas.rotation = rotation
             add(canvas)
         }
 
@@ -183,6 +190,7 @@ class XledSequence(
         for (x in 0 until banner.width - targetWidth) {
             val frame = banner.subFrame(x, 0, targetWidth, min(banner.height, targetHeight))
             val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+            canvas.rotation = rotation
             canvas.replaceSubFrame(frame, 0, 0)
             add(canvas)
         }
@@ -191,6 +199,7 @@ class XledSequence(
         for (x in targetWidth - 1 downTo 0) {
             val frame = banner.subFrame(banner.width - x, 0, x, min(banner.height, targetHeight))
             val canvas = XledFrame(targetWidth, targetHeight, RGBColor(0, 0, 0))
+            canvas.rotation = rotation
             canvas.replaceSubFrame(frame, 0, 0)
             add(canvas)
         }
@@ -240,7 +249,13 @@ class XledSequence(
         when (playable) {
             is XledFrame -> {
                 for (i in 0 until repetitions) {
-                    xled.showRealTimeFrame(playable)
+                    val rotated = when (rotation) {
+                        Rotation.LEFT -> playable.rotateLeft()
+                        Rotation.RIGHT -> playable.rotateRight()
+                        Rotation.FULL -> playable.rotate180()
+                        else -> playable
+                    }
+                    xled.showRealTimeFrame(rotated)
                     if (!running) break
                     Thread.sleep(min(5000, frameDelay))
                     xled.setMode(DeviceMode.rt)

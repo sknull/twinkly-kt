@@ -2,9 +2,12 @@ package de.visualdigits.kotlin.twinkly.model.device.xled.response
 
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 
-data class DeviceInfo(
+class DeviceInfo(
+    code: Int? = null,
     @JsonProperty("product_name") val productName: String? = null,
+    @JsonProperty("product_version") val productVersion: String? = null,
     @JsonProperty("hardware_version") val hardwareVersion: String? = null,
     @JsonProperty("bytes_per_led") val bytesPerLed: Int? = null,
     @JsonProperty("hw_id") val hwId: String? = null,
@@ -25,6 +28,5 @@ data class DeviceInfo(
     @JsonProperty("max_movies") val maxMovies: Int? = null,
     @JsonProperty("wire_type") val wireType: Int? = null,
     val copyright: String? = null,
-    val code: Int? = null,
     val diagnostics: List<Any> = listOf()
-)
+) : JsonObject(code)

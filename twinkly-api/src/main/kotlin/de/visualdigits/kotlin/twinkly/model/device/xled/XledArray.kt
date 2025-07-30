@@ -2,11 +2,15 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.time.OffsetDateTime
+import kotlin.collections.flatten
 
 private const val NO_DEVICE = "No device"
 
@@ -14,18 +18,13 @@ class XledArray(
     var xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
     val deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
     override var width: Int = 0,
-    override var height: Int = 0
+    override var height: Int = 0,
+    override val transformation:  ((XledFrame) -> XledFrame)? = null
 ) : XLed {
 
     val columns = xLedDevices.size
     val rows = if (xLedDevices.isNotEmpty()) xLedDevices.minOf { column -> column.size } else 0
     override val bytesPerLed: Int = xLedDevices.flatten().firstOrNull()?.bytesPerLed?:0
-
-    constructor(width: Int, height: Int): this(
-        xLedDevices = Array(width) { Array(height) { XLedDevice("") } },
-        width = width,
-        height = height
-    )
 
     init {
         initalize()
@@ -79,6 +78,22 @@ class XledArray(
         return xLedDevices.flatten().map { it.setMode(mode) }.firstOrNull()
     }
 
+    override fun getDeviceInfoResponse(): DeviceInfo? {
+        return xLedDevices.flatten().firstOrNull()?.getDeviceInfoResponse()
+    }
+
+    override fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
+        return xLedDevices.flatten().firstOrNull()?.getFirmwareVersionResponse()
+    }
+
+    override fun determineDeviceGeneration(): Int {
+        return xLedDevices.flatten().firstOrNull()?.determineDeviceGeneration()?:0
+    }
+
+    override fun getLedLayoutResponse(): LedLayout? {
+        return xLedDevices.flatten().firstOrNull()?.getLedLayoutResponse()
+    }
+
     override fun setBrightness(brightness: Float) {
         xLedDevices.flatten().forEach { it.setBrightness(brightness) }
     }
@@ -110,7 +125,7 @@ class XledArray(
     }
 
     fun rotateRight(): XledArray {
-        val newArray = XledArray(rows, columns)
+        val newArray = XledArray(width = rows, height = columns)
         for (y in 0 until rows) {
             for (x in 0 until columns) {
                 newArray[y, columns - x - 1] = this[x, y]
@@ -122,7 +137,7 @@ class XledArray(
     }
 
     fun rotateLeft(): XledArray {
-        val newArray = XledArray(rows, columns)
+        val newArray = XledArray(width = rows, height = columns)
         for (y in 0 until rows) {
             for (x in 0 until columns) {
                 newArray[rows - y - 1, x] = this[x, y]
@@ -134,7 +149,7 @@ class XledArray(
     }
 
     fun rotate180(): XledArray {
-        val newArray = XledArray(columns, rows)
+        val newArray = XledArray(width = columns, height = rows)
         for (y in 0 until rows) {
             for (x in 0 until columns) {
                 newArray[columns - x - 1, rows - y - 1] = this[x, y]

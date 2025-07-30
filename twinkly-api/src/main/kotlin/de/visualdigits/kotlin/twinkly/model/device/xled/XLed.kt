@@ -2,7 +2,10 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
@@ -14,6 +17,7 @@ interface XLed {
     var width: Int
     var height: Int
     val bytesPerLed: Int
+    val transformation: ((XledFrame) -> XledFrame)?
 
     fun logout()
 
@@ -26,6 +30,14 @@ interface XLed {
     fun getDeviceMode(): DeviceMode?
 
     fun setMode(mode: DeviceMode): JsonObject?
+
+    fun getDeviceInfoResponse(): DeviceInfo?
+
+    fun getFirmwareVersionResponse(): FirmwareVersionResponse?
+
+    fun determineDeviceGeneration(): Int
+
+    fun getLedLayoutResponse(): LedLayout?
 
     fun ledReset()
 
@@ -51,7 +63,10 @@ interface XLed {
 
     fun setTimer(timer: Timer): Timer?
 
-    fun showRealTimeSequence(frameSequence: XledSequence, loop: Int = 1) {
+    fun showRealTimeSequence(
+        frameSequence: XledSequence,
+        loop: Int = 1
+    ) {
         val frames = frameSequence
             .filter { it is XledFrame }
             .map { it as XledFrame }

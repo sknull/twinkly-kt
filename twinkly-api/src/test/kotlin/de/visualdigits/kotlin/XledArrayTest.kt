@@ -3,6 +3,7 @@ package de.visualdigits.kotlin
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.XledMatrixDevice
 
 abstract class XledArrayTest {
 
@@ -46,4 +47,6 @@ abstract class XledArrayTest {
         ),
         DeviceOrigin.TOP_RIGHT
     )
+
+    protected val xledMatrix = XledMatrixDevice("192.168.178.34", 10, 50)
 }

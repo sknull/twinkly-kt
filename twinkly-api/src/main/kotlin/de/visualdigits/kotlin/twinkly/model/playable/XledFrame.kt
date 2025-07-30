@@ -5,6 +5,7 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
@@ -32,6 +33,7 @@ open class XledFrame(
     var height: Int = 0,
     val initialColor: Color<*> = RGBColor(0, 0, 0),
     var frameDelay: Long = 1000,
+    var rotation: Rotation = Rotation.NONE
 ) : Playable {
 
     private val log = LoggerFactory.getLogger(XledFrame::class.java)
@@ -43,22 +45,31 @@ open class XledFrame(
     constructor(
         bytes: ByteArray,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-    ): this(ImageIO.read(bytes.inputStream()), initialColor)
+        rotation: Rotation = Rotation.NONE
+    ): this(ImageIO.read(bytes.inputStream()), initialColor, rotation = rotation)
 
     constructor(
         file: File,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-    ): this(ImageIO.read(file), initialColor)
+        rotation: Rotation = Rotation.NONE
+    ): this(ImageIO.read(file), initialColor, rotation = rotation)
 
     constructor(
         ins: InputStream,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-    ): this(ImageIO.read(ins), initialColor)
+        rotation: Rotation = Rotation.NONE
+    ): this(ImageIO.read(ins), initialColor, rotation = rotation)
 
     constructor(
         image: BufferedImage,
         initialColor: Color<*> = RGBColor(0, 0, 0),
-    ): this(width = image.width, height = image.height, initialColor = initialColor) {
+        rotation: Rotation = Rotation.NONE
+    ): this(
+        width = image.width,
+        height = image.height,
+        initialColor = initialColor,
+        rotation = rotation
+    ) {
         for (y in 0 until height) {
             for (x in 0 until width) {
                 frame[x][y] = RGBColor(image.getRGB(x, y).toLong())
@@ -76,7 +87,8 @@ open class XledFrame(
         fontName: String,
         fontSize: Int,
         backgroundColor: Color<*> = RGBColor(0, 0, 0),
-        textColor: Color<*> = RGBColor(255, 0, 0)
+        textColor: Color<*> = RGBColor(255, 0, 0),
+        rotation: Rotation = Rotation.NONE
     ) : this(
         image = FontUtil.drawText(
             text = text,
@@ -85,7 +97,8 @@ open class XledFrame(
             fontSize = fontSize,
             backgroundColor = backgroundColor,
             textColor = textColor
-        )
+        ),
+        rotation = rotation
     )
 
     /**
@@ -96,7 +109,8 @@ open class XledFrame(
         fontDirectory: File? = if (SystemUtils.IS_OS_WINDOWS) File("c:/Windows/Fonts") else null,
         fontName: String,
         fontSize: Int,
-        texts: List<Triple<String, Color<*>, Color<*>>>
+        texts: List<Triple<String, Color<*>, Color<*>>>,
+        rotation: Rotation = Rotation.NONE
     ): this() {
         join(texts.map { entry ->
             XledFrame(
@@ -105,7 +119,8 @@ open class XledFrame(
                 fontName = fontName,
                 fontSize = fontSize,
                 backgroundColor = entry.second,
-                textColor = entry.third
+                textColor = entry.third,
+                rotation = rotation
             )
         })
     }
@@ -118,7 +133,8 @@ open class XledFrame(
         text: String,
         fontName: String = "6x10",
         backgroundColor: Color<*> = RGBColor(0, 0, 0),
-        textColor: Color<*> = RGBColor(255, 0, 0)
+        textColor: Color<*> = RGBColor(255, 0, 0),
+        rotation: Rotation = Rotation.NONE
     ) : this() {
         val figletFrame = FontUtil.drawFigletText(
             text = text,
@@ -126,6 +142,7 @@ open class XledFrame(
             backgroundColor = backgroundColor,
             textColor = textColor
         )
+        this.rotation = rotation
         this.frame = figletFrame.frame
         this.width = figletFrame.width
         this.height = figletFrame.height
@@ -137,14 +154,16 @@ open class XledFrame(
      */
     constructor(
         fontName: String = "6x10",
-        texts: List<Triple<String, Color<*>, Color<*>>>
+        texts: List<Triple<String, Color<*>, Color<*>>>,
+        rotation: Rotation = Rotation.NONE
     ): this() {
         join(texts.map { entry ->
             XledFrame(
                 text = entry.first,
                 fontName = fontName,
                 backgroundColor = entry.second,
-                textColor = entry.third
+                textColor = entry.third,
+                rotation = rotation
             )
         })
     }
@@ -230,13 +249,19 @@ open class XledFrame(
         if (verbose) log.info("\n$this")
 
         xled.setMode(DeviceMode.rt)
+        val rotated = when (rotation) {
+            Rotation.LEFT -> rotateLeft()
+            Rotation.RIGHT -> rotateRight()
+            Rotation.FULL -> rotate180()
+            else -> this
+        }
 
         val n = max(1, frameDelay / 5000)
         var loopCount = loop
         var t = System.currentTimeMillis()
         while (loopCount == -1 || loopCount > 0) {
             for (j in 0 until n) {
-                xled.showRealTimeFrame(this)
+                xled.showRealTimeFrame(rotated)
                 if (loopCount != -1) loopCount--
                 if (loopCount > 0) Thread.sleep(min(5000, frameDelay))
             }
