@@ -7,7 +7,7 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.util.FontUtil
@@ -248,7 +248,7 @@ open class XledFrame(
     ) {
         if (verbose) log.info("\n$this")
 
-        xled.setMode(DeviceMode.rt)
+        xled.setLedMode(LedMode.rt)
         val rotated = when (rotation) {
             Rotation.LEFT -> rotateLeft()
             Rotation.RIGHT -> rotateRight()
@@ -268,7 +268,7 @@ open class XledFrame(
             val now = System.currentTimeMillis()
             if (t - now > 5000) {
                 t = now
-                xled.setMode(DeviceMode.rt)
+                xled.setLedMode(LedMode.rt)
             }
         }
     }

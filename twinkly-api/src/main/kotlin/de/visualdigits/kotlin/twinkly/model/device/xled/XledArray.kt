@@ -5,12 +5,13 @@ import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.CurrentLedEffectResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedEffectsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.time.OffsetDateTime
-import kotlin.collections.flatten
 
 private const val NO_DEVICE = "No device"
 
@@ -70,23 +71,37 @@ class XledArray(
         return xLedDevices.flatten().firstOrNull()?.getMode()
     }
 
-    override fun getDeviceMode(): DeviceMode? {
+    override fun getDeviceMode(): LedMode? {
         return xLedDevices.flatten().firstOrNull()?.getDeviceMode()
     }
 
-    override fun setMode(mode: DeviceMode): JsonObject? {
-        return xLedDevices.flatten().map { it.setMode(mode) }.firstOrNull()
+    override fun setLedMode(mode: LedMode): JsonObject? {
+        return xLedDevices.flatten().map { it.setLedMode(mode) }.firstOrNull()
     }
 
-    override fun getDeviceInfoResponse(): DeviceInfo? {
+    fun getLedEffects(): LedEffectsResponse? {
+        return xLedDevices.flatten().firstOrNull()?.getLedEffects()
+    }
+
+    fun getCurrentLedEffect(): CurrentLedEffectResponse? {
+        return xLedDevices.flatten().firstOrNull()?.getCurrentLedEffect()
+    }
+
+    fun setCurrentLedEffect(effectId: String): JsonObject? {
+        return xLedDevices.flatten()
+            .map { it.setCurrentLedEffect(effectId) }
+            .firstOrNull()
+    }
+
+    fun getDeviceInfoResponse(): DeviceInfo? {
         return xLedDevices.flatten().firstOrNull()?.getDeviceInfoResponse()
     }
 
-    override fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
+    fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
         return xLedDevices.flatten().firstOrNull()?.getFirmwareVersionResponse()
     }
 
-    override fun determineDeviceGeneration(): Int {
+    fun determineDeviceGeneration(): Int {
         return xLedDevices.flatten().firstOrNull()?.determineDeviceGeneration()?:0
     }
 

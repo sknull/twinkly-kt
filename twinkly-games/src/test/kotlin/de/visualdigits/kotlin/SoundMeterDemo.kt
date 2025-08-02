@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import org.hid4java.HidManager
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class SoundMeterDemo : XledArrayTest() {
         frame.fillRect(0, heightRed, 1, heightYellow - 1, RGBColor(255,255,0))
         frame.fillRect(0, 0, 1, heightRed - 1, RGBColor(255,0,0))
 
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
 
         hidDevice?.also { device ->
             device.open()

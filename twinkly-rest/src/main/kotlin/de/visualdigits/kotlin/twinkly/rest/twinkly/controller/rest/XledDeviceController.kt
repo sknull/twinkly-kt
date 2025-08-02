@@ -3,7 +3,7 @@ package de.visualdigits.kotlin.twinkly.rest.twinkly.controller.rest
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.rest.configuration.ApplicationPreferences
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -76,7 +76,7 @@ class XledDeviceController(
         @PathVariable mode: String,
     ) {
         log.info("Setting saturation to $mode")
-        prefs.getXledDevice(device)?.setMode(DeviceMode.valueOf(mode))
+        prefs.getXledDevice(device)?.setLedMode(LedMode.valueOf(mode))
     }
 
     @PutMapping("/{device}/color/{red}/{green}/{blue}/{white}")
@@ -89,7 +89,7 @@ class XledDeviceController(
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
         log.info("Showing color ${rgbwColor.ansiColor()}")
-        prefs.getXledDevice(device)?.setMode(DeviceMode.color)
+        prefs.getXledDevice(device)?.setLedMode(LedMode.color)
         prefs.getXledDevice(device)?.setColor(rgbwColor)
     }
 }

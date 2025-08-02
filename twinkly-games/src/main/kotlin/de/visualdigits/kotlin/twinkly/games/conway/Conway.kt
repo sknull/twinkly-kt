@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.games.conway
 
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.io.File
 
@@ -14,7 +14,7 @@ class Conway(
     fun run() {
         val initialFrame = XledFrame(preset)
         var matrix = Matrix(xledArray.width, xledArray.height)
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         for (y in 0 until xledArray.height) {
             for (x in 0 until xledArray.width) {
                 if (!initialFrame[x, y].isBlack()) {

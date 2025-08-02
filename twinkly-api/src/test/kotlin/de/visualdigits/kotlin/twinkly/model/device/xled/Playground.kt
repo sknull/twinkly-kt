@@ -4,7 +4,7 @@ import de.visualdigits.kotlin.XledArrayTest
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import org.junit.jupiter.api.Disabled
@@ -22,7 +22,7 @@ class Playground : XledArrayTest() {
             initialColor = RGBColor(10, 0, 30)
         )
 
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         frame.play(xledArray)
     }
 
@@ -45,13 +45,13 @@ class Playground : XledArrayTest() {
         frame.replaceSubFrame(red, 5, 5, BlendMode.ADD)
         frame.replaceSubFrame(green, 10, 10, BlendMode.ADD)
 
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         frame.play(xledArray)
     }
 
     @Test
     fun testFade() {
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         var frame = XledFrame(xledArray.width, xledArray.height, RGBColor(255, 0, 0))
         var black = XledFrame(xledArray.width, xledArray.height, RGBColor(0, 0, 0))
         var f = 0.0
@@ -83,7 +83,7 @@ class Playground : XledArrayTest() {
 
         frame.replaceSubFrame(green, 5, 5)
 
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         frame.play(xledArray)
     }
 
@@ -189,7 +189,7 @@ class Playground : XledArrayTest() {
 //            )))
 //        }
 
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         sequence.play(
             xled = xledArray,
             loop = -1,
@@ -202,7 +202,7 @@ class Playground : XledArrayTest() {
     @Test
     fun testPacmanFrame() {
         val frame = XledFrame(File(ClassLoader.getSystemResource("images/pacman/pacman_000.png").toURI()))
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
         frame.play(xled = xledArray,)
     }
 

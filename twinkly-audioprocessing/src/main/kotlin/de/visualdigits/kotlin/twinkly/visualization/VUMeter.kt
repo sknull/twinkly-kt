@@ -7,7 +7,7 @@ import de.visualdigits.kotlin.minim.fft.DetectMode
 import de.visualdigits.kotlin.minim.fft.FFT
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
 import kotlin.math.min
@@ -35,7 +35,7 @@ class VUMeter(
         BeatDetect(algorithm = DetectMode.SOUND_ENERGY)
 
         val fft = FFT(player.bufferSize(), player.sampleRate())
-        xled.setMode(DeviceMode.rt)
+        xled.setLedMode(LedMode.rt)
 
         val canvas = XledFrame(xled.width, xled.height)
 

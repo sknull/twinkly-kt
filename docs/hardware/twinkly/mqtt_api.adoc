@@ -1,0 +1,153 @@
+= Messaging API reference
+:doctype: article
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 5
+
+New in firmware version 2.0.22.
+
+=== Overview
+
+Device sends messages with its states to a broker with MQTT. By default
+broker is set to mqtt.twinkly.com.
+
+Firmware family "D" use HTTP and "G" use TLS.
+
+Last topic levels are always client ID which are by default derived from
+MAC address of the device as uppercased hexadecimal digits.
+
+=== Status from device
+
+Device publishes these messages to a broker.
+
+Topic [.title-ref]#xled/status/# followed by client ID
+
+==== Messages
+
+____
+* [.title-ref]#online#
+** [.title-ref]#ip# - IP address. Added in firmware 2.1.0.
+** [.title-ref]#ssid# - SSID to which device is connected. Added in
+firmware 2.1.0.
+* [.title-ref]#offline#
+____
+
+==== Example
+
+Online (firmware 2.0.22):
+
+....
+{"status": "online"}
+....
+
+Online (since firmware 2.1.0):
+
+....
+{"status": "online", "ip": "192.168.4.1", "ssid": "home"}
+....
+
+Offline:
+
+....
+{"status": "offline"}
+....
+
+=== Application status from device
+
+Device publishes these messages to a broker.
+
+==== Topic
+
+[.title-ref]#xled/appstatus/# followed by client ID
+
+==== Messages
+
+____
+* [.title-ref]#off#
+* [.title-ref]#movie#
+* [.title-ref]#collision#
+* [.title-ref]#rainbow#
+* [.title-ref]#twinkle#
+* [.title-ref]#snake#
+____
+
+==== Example
+
+Rainbow:
+
+....
+{"appstatus": "rainbow"}
+....
+
+=== Parameters
+
+Parameters published by a device to broker.
+
+==== Topic
+
+[.title-ref]#xled/params/# followed by client ID
+
+==== Messages
+
+[.title-ref]#brightness#::
+  (number), brightness value in percent
+[.title-ref]#filters#::
+  (list), contains a string "brightness" if brightness is set.
+
+==== Example
+
+....
+{"brightness": 50, "filters": ["brightness"]}
+....
+
+=== Command messages to device
+
+Device listens to these messages.
+
+==== Topic
+
+[.title-ref]#xled/command/# followed by client ID
+
+==== Messages
+
+[.title-ref]#changeeffect#::
+  each message switches to next of default effects or movie. Same as
+  pressing the button on the device.
+[.title-ref]#setmovie#::
+  sets to uploaded movie effect
+[.title-ref]#setcollision#::
+  sets default effect "collision"
+[.title-ref]#setrainbow#::
+  sets default effect "rainbow"
+[.title-ref]#setsnake#::
+  sets default effect "snake"
+[.title-ref]#settwinkle#::
+  sets default effect "twinkle"
+[.title-ref]#setwaves#::
+  sets default effect "waves"
+[.title-ref]#switchoff#::
+  switches off the device
+[.title-ref]#switchon#::
+  switches on the device
+[.title-ref]#setbrightnessdelta#::
+  changes brightness by amount set by [.title-ref]#value#. Parameter
+  [.title-ref]#value# is signed number.
+[.title-ref]#setbrightness#::
+  changes brightness to [.title-ref]#value#. Parameter
+  [.title-ref]#value# is a number between 0..255 but only up to 100 has
+  a dimming effect.
+
+==== Example
+
+Switch on:
+
+....
+{"command": "switchon"}
+....
+
+Lower brightness value by 20 percents:
+
+....
+{"command": "setbrightnessdelta", "value", -20}
+....

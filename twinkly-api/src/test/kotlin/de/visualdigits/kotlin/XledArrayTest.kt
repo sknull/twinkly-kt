@@ -4,18 +4,26 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
 import de.visualdigits.kotlin.twinkly.model.device.xled.XledMatrixDevice
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.XMusic
 
 abstract class XledArrayTest {
+
+    val twinklyMusic = XMusic("192.168.178.39")
+
+    val curtain1 = XLedDevice("192.168.178.35", 10, 21)
+    val curtain2 = XLedDevice("192.168.178.58", 10, 21)
+    val curtain3 = XLedDevice("192.168.178.52", 10, 21)
+    val curtain4 = XLedDevice("192.168.178.60", 10, 21)
 
     protected val xledArray = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                curtain1,
+                curtain2,
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
+                curtain3,
+                curtain4
             )
         )
     )
@@ -23,11 +31,11 @@ abstract class XledArrayTest {
     protected val xledArrayLandscapeLeft = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                curtain1,
+                curtain2,
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
+                curtain3,
                 XLedDevice("192.168.178.60", 10, 21)
             )
         ),
@@ -37,11 +45,11 @@ abstract class XledArrayTest {
     protected val xledArrayLandscapeRight = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                curtain1,
+                curtain2,
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
+                curtain3,
                 XLedDevice("192.168.178.60", 10, 21)
             )
         ),

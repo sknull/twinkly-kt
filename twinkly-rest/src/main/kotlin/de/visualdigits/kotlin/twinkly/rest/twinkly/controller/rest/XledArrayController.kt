@@ -3,7 +3,7 @@ package de.visualdigits.kotlin.twinkly.rest.twinkly.controller.rest
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.Playable
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
@@ -32,7 +32,7 @@ class XledArrayController(
 
     private var playable: Playable? = null
 
-    private var currentMode: DeviceMode = DeviceMode.off
+    private var currentMode: LedMode = LedMode.off
 
     @PutMapping("/power/on")
     fun powerOn() {
@@ -67,8 +67,8 @@ class XledArrayController(
         @PathVariable mode: String,
     ) {
         log.info("Setting saturation to $mode")
-        currentMode = DeviceMode.valueOf(mode)
-        prefs.getXledArrays().forEach { it.setMode(currentMode) }
+        currentMode = LedMode.valueOf(mode)
+        prefs.getXledArrays().forEach { it.setLedMode(currentMode) }
     }
 
     @PutMapping("/color/{red}/{green}/{blue}/{white}")
@@ -80,7 +80,7 @@ class XledArrayController(
     ) {
         val rgbwColor = RGBWColor(red, green, blue, white)
         log.info("Showing color ${rgbwColor.ansiColor()}")
-        prefs.getXledArrays().forEach { it.setMode(DeviceMode.color) }
+        prefs.getXledArrays().forEach { it.setLedMode(LedMode.color) }
         prefs.getXledArrays().forEach { it.setColor(rgbwColor) }
     }
 
@@ -89,7 +89,7 @@ class XledArrayController(
         if (playable != null && playable?.running == true) {
             stopLoop()
         }
-        prefs.getXledArrays().forEach { it.setMode(DeviceMode.rt) }
+        prefs.getXledArrays().forEach { it.setLedMode(LedMode.rt) }
         playable = XledFrame(bytes)
         prefs.getXledArrays().forEach { playable?.playAsync(xled = it) }
     }
@@ -108,7 +108,7 @@ class XledArrayController(
         if (playable != null && playable?.running == true) {
             stopLoop()
         }
-        prefs.getXledArrays().forEach { it.setMode(DeviceMode.rt) }
+        prefs.getXledArrays().forEach { it.setLedMode(LedMode.rt) }
         playable = XledSequence(frameDelay = frameDelay,
             directory = File(ClassLoader.getSystemResource(directory).toURI()))
         prefs.getXledArrays().forEach {
@@ -126,7 +126,7 @@ class XledArrayController(
 
     @PutMapping("/loop/stop")
     fun stopLoop() {
-        prefs.getXledArrays().forEach { it.setMode(currentMode) }
+        prefs.getXledArrays().forEach { it.setLedMode(currentMode) }
         playable?.stop()
     }
 

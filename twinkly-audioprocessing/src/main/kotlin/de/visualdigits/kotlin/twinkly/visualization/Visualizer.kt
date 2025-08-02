@@ -8,7 +8,7 @@ import de.visualdigits.kotlin.minim.fft.FFT
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.PI
 import kotlin.math.cos
@@ -33,7 +33,7 @@ class Visualizer(
 ) {
 
     fun run() {
-        xled.setMode(DeviceMode.rt)
+        xled.setLedMode(LedMode.rt)
 
         val centerX = xled.width / 2
         val centerY = xled.height / 2

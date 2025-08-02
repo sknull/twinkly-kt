@@ -2,11 +2,9 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
@@ -27,15 +25,9 @@ interface XLed {
 
     fun getMode(): Mode?
 
-    fun getDeviceMode(): DeviceMode?
+    fun getDeviceMode(): LedMode?
 
-    fun setMode(mode: DeviceMode): JsonObject?
-
-    fun getDeviceInfoResponse(): DeviceInfo?
-
-    fun getFirmwareVersionResponse(): FirmwareVersionResponse?
-
-    fun determineDeviceGeneration(): Int
+    fun setLedMode(mode: LedMode): JsonObject?
 
     fun getLedLayoutResponse(): LedLayout?
 

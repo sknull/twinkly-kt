@@ -1,0 +1,135 @@
+= Bluetooth API reference
+:doctype: article
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 5
+
+=== Overview
+
+Generation II devices have Bluetooth LE module that can be used to
+configure WiFi network. User documentation how to
+https://web.archive.org/web/2/https://www.twinkly.com/knowledge/configure-twinkly-generation-ii-for-the-first-time/[configure
+Twinkly generation II for the first time] can be found on the
+manufacturer's site.
+
+Protocol is based on
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/blufi.html[Espressif
+BluFi] solution with couple of differences described here.
+
+Device doesn't require data encryption nor it use data checksum.
+
+Device broadcasts its Device ID (see Protocol Details). Bluetooth
+adapter has MAC address that differs in right most byte from WiFi MAC
+address.
+
+=== GATT information
+
+The most interesting handles are:
+
+* 0x2a for writing (client -> device)
+* 0x2c for reading and notification (device -> client):
+
+[width="96%",cols="19%,5%,42%,16%,18%",options="header",]
+|===
+a|
+____
+Handles
+____
+
+a|
+____
+Service > Characteristics
+____
+
+| a|
+____
+Properties
+____
+
+a|
+____
+Data
+____
+
+|0001 -> 0005 |Generic Attribute (1801) | | |
+|0003 | |Service Changed (2a05) |INDICATE |
+|0014 -> 001c |Generic Access (1800) | | |
+|0016 | |Device Name (2a00) |READ |Twinkly_1CC190
+|0018 | |Appearance (2a01) |READ |Unknown
+|001a | |2aa6 |READ |00
+|0028 -> ffff |68cac066-1f6e-0f96-1146-da9d00fa7b1b | | |
+|002a | |68cac066-1f6e-0f96-1146-da9d01fa7b1b |WRITE |
+|002c | |68cac066-1f6e-0f96-1146-da9d02fa7b1b |READ, NOTIFY |00
+|===
+
+=== Control frames
+
+==== Connect the device to the AP
+
+LSB - Type: [.title-ref]#0x0c#
+
+==== WiFi mode and its status
+
+LSB - Type: [.title-ref]#0x14#
+
+Example
+
+[source,text]
+----
+14 00 00 00
+----
+
+==== Set the opmode of WiFi
+
+LSB - Type: [.title-ref]#0x1d#
+
+Example in AP workflow
+
+[source,text]
+----
+1d 00 00 02 04 00
+----
+
+Example in STA workflow
+
+[source,text]
+----
+1d 00 00 01 00
+----
+
+==== Disconnect the BLE GATT link
+
+LSB - Type: [.title-ref]#0x20#
+
+==== WiFi List
+
+LSB - Type: [.title-ref]#0x24#
+
+Example
+
+[source,text]
+----
+24 00 00 00
+----
+
+=== Data frames
+
+==== Unknown use
+
+LSB - Type: [.title-ref]#0x08#
+
+Example
+
+[source,text]
+----
+08 08 00 02 01 00
+----
+
+==== Send the SSID for STA mode
+
+LSB - Type: [.title-ref]#0x09#
+
+==== Send the password for STA mode
+
+LSB - Type: [.title-ref]#0x0d#

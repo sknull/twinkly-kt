@@ -4,8 +4,8 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.MovieConfig
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.MovieConfigResponse
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.util.TimeUtil
@@ -50,7 +50,7 @@ class XLedTest {
         val deviceInfo = xled.deviceInfo
 
         xled.setColor(RGBColor())
-        xled.setMode(DeviceMode.color)
+        xled.setLedMode(LedMode.color)
         xled.deleteMovies()
         val newMovie = xled.uploadNewMovie(
             NewMovieRequest(
@@ -64,19 +64,19 @@ class XLedTest {
         println(newMovie)
         xled.uploadNewMovieToListOfMovies(XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
         xled.setLedMovieConfig(
-            MovieConfig(
+            MovieConfigResponse(
                 frameDelay = 1000 / 1,
                 ledsNumber = deviceInfo?.numberOfLed?:4,
                 framesNumber = 1,
             )
         )
-        xled.setMode(DeviceMode.movie)
+        xled.setLedMode(LedMode.movie)
         println(xled.getMovies())
         println(xled.getCurrentMovie())
         println(xled.getPlaylist())
         println(xled.getPlaylistCurrent())
-        println(xled.getEffects())
-        println(xled.getEffectsCurrent())
+        println(xled.getLedEffects())
+        println(xled.getCurrentLedEffect())
     }
 
     @Test
@@ -148,7 +148,7 @@ class XLedTest {
     @Test
     fun testColor() {
         xled.setColor(RGBColor(0, 0, 0))
-        xled.setMode(DeviceMode.color)
+        xled.setLedMode(LedMode.color)
         xled.deleteMovies()
 
         val fps = 1
@@ -192,7 +192,7 @@ class XLedTest {
         )
         xled.uploadNewMovieToListOfMovies(sequence.toByteArray(xled.bytesPerLed))
         xled.setLedMovieConfig(
-            MovieConfig(
+            MovieConfigResponse(
                 frameDelay = 1000 / fps,
                 ledsNumber = xled.deviceInfo?.numberOfLed?:4,
                 framesNumber = numberOfFrames,
@@ -203,6 +203,6 @@ class XLedTest {
                 id = newMovie?.id
             )
         )
-        xled.setMode(DeviceMode.movie)
+        xled.setLedMode(LedMode.movie)
     }
 }

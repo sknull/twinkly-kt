@@ -1,0 +1,132 @@
+= Smart LED Christmas lights
+:doctype: article
+:icons: font
+:toc:
+:toc-title: Contents
+:toclevels: 5
+
+https://xled-docs.readthedocs.io/[Unofficial documentation] of
+link:rest_api.adoc[rest api], protocol details and hardware
+of https://www.twinkly.com/[Twinkly] - Smart Decoration LED lights for
+Christmas.
+
+Official materials says:
+
+____
+Twinkly is a LED light device that you can control via smartphone. It
+allows you to play with colouful and animated effects, or create new
+ones. Decoration lights, not suitable for household illumination.
+____
+
+Since its
+https://www.kickstarter.com/projects/twinkly/twinkly-smart-decoration-for-your-christmas[Kickstarter
+project] in 2016 many products were introduced with varying properties
+and features. Most notably products released since September 2019 are
+identified as Generation II. Older products are since then referred as
+Generation I. Documentation has been created and tested only on some
+link:hardware.adoc[hardware]
+
+Products could be further groupped by families for which firmware is
+released. Firmware on devices can be upgraded and sometimes new features
+are introduced. Documentation has been created for some of these
+link:firmware.adoc[firmware]
+
+=== Why?
+
+My first Twinkly was 105 LEDs starter light set. That was the latest
+available model in 2017: TW105S-EU. As of December 2017 there are only
+two ways to control lights: mobile app on Android or iOS or hardware
+button on the cord.
+
+Android application didn't work as advertised on my Xiaomi Redmi 3S
+phone. On first start it connected and disconnected in very fast pace
+(like every 1-2 seconds) to the hardware. I wasn't able to control
+anything at all. Later I wanted to connect it to my local WiFi network.
+But popup dialog that shouldn't have appear never did so.
+
+Public API was
+https://www.kickstarter.com/projects/twinkly/twinkly-smart-decoration-for-your-christmas/comments?cursor=15497325#comment-15497324[promised
+around Christmas 2016] for next season. Later update from October 2016
+it seems
+https://www.kickstarter.com/projects/twinkly/twinkly-smart-decoration-for-your-christmas/comments?cursor=14619713#comment-14619712[API
+won't be available any time soon]:
+
+____
+API for external control are on our dev check list, we definitely need
+some feedback from the community to understand which could be a proper
+core set to start with.
+____
+
+It turned out that application uses HTTP to control lights. I ended up
+with capturing network traffic and documented this private API. In the
+end I'm able to configure the device pretty easilly.
+
+As of 2020 Twinkly devices can be controlled by Amazon Alexa and Google
+Assistant as well. Mobile application now requires an account to operate
+lights even locally. No sign of public API for local devices though.
+Therefore with my second device - Twinkly 210 RGB{plus}W Wall I keep
+updating this documentation to be able to operate my devices locally and
+not rely on availability of manufacturer's servers.
+
+=== License
+
+Documentation is available under MIT license.
+
+=== Client implementations
+
+There are multiple clients, libraries or just small projects that can be
+used to control Twinkly devices:
+
+* https://pypi.org/project/xled/[xled] - python library and command line
+interface
+* https://pypi.org/project/xled-plus/[xled_plus] - Addons to the
+XLED package, to create nice effects for Twinkly LED lights
+* https://www.home-assistant.io/integrations/twinkly/[Twinkly
+integration in Home Assistant]
+* SmartThings:
+** https://github.com/StevenJonSmith/SmartThings[Twinkly integration in
+SmartThings by StevenJonSmith]
+** https://github.com/Dameon87/SmartThings[Twinkly integration in
+SmartThings by Dameon87]
+* https://github.com/mvanhulsentop/openhab-addons/tree/twinklytree/bundles/org.openhab.binding.twinklytree[TwinklyTree
+Binding] for openHAB
+* https://github.com/d4rkmen/twinkly-homekit[Twinkly HomeKit Hub for
+Mongoose OS] using https://github.com/d4rkmen/twinkly[Twinkly library
+for Mongoose OS]
+* [.title-ref]#homebridge-twinkly# - unofficial Homebridge plugin
+* https://github.com/MarkAlanJones/TwinklyWPF[TwinklyWPF] - .net 5 GUI
+and API library
+* https://www.npmjs.com/package/iobroker.twinkly[ioBroker.twinkly] -
+twinkly adapter for ioBroker to communicate with the Twinkly lights
+* [.title-ref]#Twinkly Twinkly Little Star# - ttls helps you to make
+async requests to Twinkly LEDs. Includes CLI and some examples how to
+create both loadable movies and realtime sequences.
+* https://forums.homeseer.com/forum/developer-support/scripts-plug-ins-development-and-libraries/script-plug-in-library/1348314-twinkly-vb-christmas-tree-lights-with-predefined-and-custom-animations[Twinkly.vb
+for HomeSeer]
+* https://github.com/rec/bpx[bpx] - BiblioPixel driver for the xled
+library
+* https://www.npmjs.com/package/thingzi-logic-twinkly[thingzi-logic-twinkly]
+- Twinkly lights integration for node red
+* https://github.com/sluggoman/twinkly-animator[twinkly-animator] -
+Drawing and animation tools for Twinkly LED lights
+* Python class to interact with generation I device and IDA Pro loader
+of firmware binary in
+https://labs.f-secure.com/blog/twinkly-twinkly-little-star/[Twinkly
+Twinkly Little Star by F-Secure LABS].
+* http://www.artnet2twinkly.com/[Artnet 2 Twinkly] - interface XLights
+to Twinkly on a PC. Partially emulates and artnet controller, and even
+hooks into Twinkly's web api to allow manual layout editing.
+
+=== Communities
+
+There are multiple places where you can connect with others who are
+interested in Twinkly devices:
+
+* https://www.facebook.com/groups/twinklyusergroup[Twinkly (unofficial
+users group) on Facebook] to share your installations, show your
+creations, ask questions, post some hacks. Anything Twinkly related
+goes.
+* https://github.com/Anders-Holst/xled_plus/discussions[Discussions on
+GitHub in xled_plus project] with daily effects.
+* https://gitter.im/xled-community/chat[Gitter chat xled-community] of
+[.title-ref]#xled# project. Fairly small and quiet.

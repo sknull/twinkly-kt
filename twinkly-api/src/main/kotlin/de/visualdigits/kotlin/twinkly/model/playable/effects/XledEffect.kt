@@ -3,7 +3,7 @@ package de.visualdigits.kotlin.twinkly.model.playable.effects
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledRepeater
 import java.lang.Thread.sleep
@@ -25,7 +25,7 @@ abstract class XledEffect(
 
 
     fun start() {
-        xled.setMode(DeviceMode.rt)
+        xled.setLedMode(LedMode.rt)
         reset()
         while (true) {
             xled.showRealTimeFrame(this)

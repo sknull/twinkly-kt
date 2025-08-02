@@ -11,11 +11,11 @@ class XMusicTest {
 
     @Test
     fun testMusicStats() {
-        println(xmusic.musicMode())
-        println(xmusic.musicMicEnabled())
-        println(xmusic.musicConfig())
+        println(xmusic.getMusicMode())
+        println(xmusic.isMusicMicEnabled())
+        println(xmusic.getMusicConfig())
         while(true) {
-            println(xmusic.musicStats())
+            println(xmusic.getMusicStats())
             Thread.sleep(100)
         }
     }

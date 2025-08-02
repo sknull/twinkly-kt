@@ -6,7 +6,7 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 import de.visualdigits.kotlin.twinkly.model.scene.Scene
@@ -143,7 +143,7 @@ class XledSequence(
         var frameLoopCount = loop
         var lastPlayable: Playable? = null
 
-        xled.setMode(DeviceMode.rt)
+        xled.setLedMode(LedMode.rt)
 
         running = true
         while (running && (frameLoopCount == -1 || frameLoopCount > 0)) {
@@ -258,7 +258,7 @@ class XledSequence(
                     xled.showRealTimeFrame(rotated)
                     if (!running) break
                     Thread.sleep(min(5000, frameDelay))
-                    xled.setMode(DeviceMode.rt)
+                    xled.setLedMode(LedMode.rt)
                 }
             }
 

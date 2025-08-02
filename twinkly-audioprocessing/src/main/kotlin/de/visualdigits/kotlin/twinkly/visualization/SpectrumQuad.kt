@@ -7,7 +7,7 @@ import de.visualdigits.kotlin.minim.fft.DetectMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
 /**
@@ -36,7 +36,7 @@ class SpectrumQuad(
         val player = minim.getLineIn(AudioInputType.MONO)!!
         val beat = BeatDetect(algorithm = DetectMode.FREQ_ENERGY)
         player.disableMonitoring()
-        xled.setMode(DeviceMode.rt)
+        xled.setLedMode(LedMode.rt)
         while(true) {
             beat.detect(player.mix)
 

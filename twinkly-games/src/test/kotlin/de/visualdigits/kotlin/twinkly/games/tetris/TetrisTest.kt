@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.games.tetris
 
 import de.visualdigits.kotlin.XledArrayTest
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -51,7 +51,7 @@ class TetrisTest : XledArrayTest() {
 
     @Test
     fun testBlock() {
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
 
         val board = XledFrame(xledArray.width, xledArray.height)
 
@@ -64,7 +64,7 @@ class TetrisTest : XledArrayTest() {
 
     @Test
     fun testBlocks() {
-        xledArray.setMode(DeviceMode.rt)
+        xledArray.setLedMode(LedMode.rt)
 
         val board = XledFrame(xledArray.width, xledArray.height)
 
