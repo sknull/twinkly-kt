@@ -6,45 +6,41 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.Session
-import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.CurrentMovieResponse
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.CurrentMusicDriverSet
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Effects
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.EffectsCurrent
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.LedConfig
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.MovieConfig
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.MusicDriversCurrent
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.MusicStats
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.NewMovieResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.PlayList
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.ResponseCode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.Version
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.ledlayout.LedLayout
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.DeviceMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.CurrentLedEffectResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedEffectsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.movies.Movie
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.movies.Movies
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.musicdriverssets.MusicDriversSets
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.musicenabled.MusicEnabled
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.CurrentMovieResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.Movie
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.MovieConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.Movies
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.NewMovieResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriverSetResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriversResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicEffectResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicDriversSets
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEffectsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEnabledResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicStatsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicModeResponse
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
 import de.visualdigits.kotlin.util.TimeUtil
-import de.visualdigits.kotlin.util.compareTo
 import java.time.OffsetDateTime
 import java.util.Base64
 import kotlin.math.min
 import kotlin.math.roundToInt
-
-private const val CONTENT_TYPE = "Content-Type"
-private const val APPLICATION_JSON = "application/json"
 
 /**
  * Specific session for a twinkly device having leds.
@@ -59,34 +55,20 @@ open class XLedDevice(
     "http://$ipAddress/xled/v1",
 ) {
 
-    val deviceInfo: DeviceInfo?
-    val firmwareVersion: Version
-    val deviceGeneration: Int
     val ledLayout: LedLayout?
 
     override val bytesPerLed: Int
 
     init {
         if (ipAddress.isNotEmpty()) {
-            // ensure we are logged in up to here to avoid unneeded requests
-            if (!tokens.containsKey(ipAddress)) login()
             if (tokens[ipAddress]?.loggedIn == true) {
-                deviceInfo = getDeviceInfoResponse()
-                firmwareVersion = getFirmwareVersionResponse()?.versionParts ?: Version.UNKNOWN
-                deviceGeneration = determineDeviceGeneration()
                 ledLayout = getLedLayoutResponse()
                 bytesPerLed = deviceInfo?.bytesPerLed?:3
             } else {
-                deviceInfo = null
-                firmwareVersion = Version.UNKNOWN
-                deviceGeneration = 0
                 ledLayout = null
                 bytesPerLed = 0
             }
         } else {
-            deviceInfo = null
-            firmwareVersion = Version.UNKNOWN
-            deviceGeneration = 0
             ledLayout = null
             bytesPerLed = 0
         }
@@ -95,84 +77,137 @@ open class XLedDevice(
     override fun powerOn() {
         refreshTokenIfNeeded()
         // try modes until it works...
-        listOf(DeviceMode.playlist, DeviceMode.movie, DeviceMode.effect)
-            .find { mode -> setMode(mode)?.responseCode == ResponseCode.Ok }
+        listOf(LedMode.playlist, LedMode.movie, LedMode.effect)
+            .find { mode -> setLedMode(mode)?.responseCode == ResponseCode.Ok }
     }
 
     override fun powerOff() {
         refreshTokenIfNeeded()
-        setMode(DeviceMode.off)
+        setLedMode(LedMode.off)
     }
 
     override fun getMode(): Mode? {
         refreshTokenIfNeeded()
         return get<Mode>(
             url = "$baseUrl/led/mode",
+            clazz =Mode::class.java
         )
     }
 
-    override fun getDeviceMode(): DeviceMode? {
-        return getMode()?.deviceMode
+    override fun getDeviceMode(): LedMode? {
+        return getMode()?.ledMode
     }
 
-    override fun setMode(mode: DeviceMode): JsonObject? {
+    override fun setLedMode(ledMode: LedMode): JsonObject? {
         refreshTokenIfNeeded()
-        val body = "{\"mode\":\"${mode.name}\"}"
-        log.debug("Setting mode for device '$ipAddress' to ${mode.name}...")
+        val body = "{\"mode\":\"${ledMode.name}\"}"
+        log.debug("Setting mode for device '$ipAddress' to ${ledMode.name}...")
         return post<Mode>(
-            url = "$baseUrl/led/mode",
+            url = "http://$ipAddress/xled/v1/led/mode",
             body = body.toByteArray(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json"
+            ),
+            clazz = Mode::class.java
         )
-    }
-
-    override fun getDeviceInfoResponse(): DeviceInfo? {
-        return get<DeviceInfo>("$baseUrl/gestalt")
-    }
-
-    override fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
-        return get<FirmwareVersionResponse>("$baseUrl/fw/version")
-    }
-
-    override fun determineDeviceGeneration(): Int {
-        return if (deviceInfo?.fwFamily == "D" &&  firmwareVersion <= Version("2.3.8")) {
-            1
-        } else if (firmwareVersion <= Version("2.4.6")) {
-            2
-        } else {
-            3
-        }
     }
 
     override fun getLedLayoutResponse(): LedLayout? {
-        return get<LedLayout>("$baseUrl/led/layout/full")
+        return get<LedLayout>("$baseUrl/led/layout/full",
+            clazz = LedLayout::class.java)
     }
 
     override fun ledReset() {
         refreshTokenIfNeeded()
-        get<String>("$baseUrl/led/reset")
+        get<String>("$baseUrl/led/reset",
+            clazz = String::class.java)
     }
 
-    fun getMusicStats(): MusicStats? {
+    fun getMusicEffects(): MusicEffectsResponse? {
+        return get<MusicEffectsResponse>(
+            url = "$baseUrl/music/effects",
+            clazz = MusicEffectsResponse::class.java
+        )
+    }
+
+    fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
+        return get<CurrentMusicEffectResponse>(
+            url = "$baseUrl/music/effects/current",
+            clazz = CurrentMusicEffectResponse::class.java
+        )
+    }
+
+    fun setCurrentMusicEffect(effectId: String): JsonObject? {
+        return post<JsonObject>(
+            url = "/$baseUrl/music/effects/current",
+            body = ("{\n" +
+                    "  \"effect_idx\": 7,\n" +
+                    "  \"effectset_idx\": 6,\n" +
+                    "  \"effectsuperset_idx\": 1,\n" +
+                    "  \"mood_index\": 0\n" +
+                    "}").toByteArray(),
+            headers = mutableMapOf(
+                "Content-Type" to "application/json"
+            ),
+            clazz = JsonObject::class.java
+        )
+    }
+
+    fun getMusicConfig(): MusicConfigResponse? {
+        val response = get<MusicConfigResponse>(
+            url = "$baseUrl/music/config",
+            clazz = MusicConfigResponse::class.java
+        )
+        return response
+    }
+
+    fun getMusicStats(): MusicStatsResponse? {
         refreshTokenIfNeeded()
-        return get<MusicStats>(
+        return get<MusicStatsResponse>(
             url = "$baseUrl/music/stats",
+            clazz = MusicStatsResponse::class.java
         )
     }
 
-    fun getMusicEnabled(): MusicEnabled? {
+    fun getMusicEnabled(): MusicEnabledResponse? {
         refreshTokenIfNeeded()
-        return get<MusicEnabled>(
+        return get<MusicEnabledResponse>(
             url = "$baseUrl/music/enabled",
+            clazz = MusicEnabledResponse::class.java
         )
     }
 
-    fun getMusicDriversCurrent(): MusicDriversCurrent? {
+    fun setMusicEnabled(enabled: Boolean): JsonObject? {
         refreshTokenIfNeeded()
-        return get<MusicDriversCurrent>(
+        return post<JsonObject>(
+            url = "$baseUrl/music/enabled",
+            body = "{\"enabled\":${if (enabled) 1 else 0}}".toByteArray(),
+            clazz = JsonObject::class.java
+        )
+    }
+
+    fun getMusicMode(): MusicModeResponse? {
+        val response = get<MusicModeResponse>(
+            url = "$baseUrl/music/mode",
+            clazz = MusicModeResponse::class.java
+        )
+        return response
+    }
+
+    fun setMusicMode(musicMode: String): JsonObject? {
+        refreshTokenIfNeeded()
+        return post<JsonObject>(
+            url = "$baseUrl/music/mode",
+            body = "{\"effect\":\"$musicMode\"}".toByteArray(),
+            clazz = JsonObject::class.java
+        )
+    }
+
+    fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
+        refreshTokenIfNeeded()
+        return get<CurrentMusicDriversResponse>(
             url = "$baseUrl/music/drivers/current",
+            clazz = CurrentMusicDriversResponse::class.java
         )
     }
 
@@ -180,13 +215,15 @@ open class XLedDevice(
         refreshTokenIfNeeded()
         return get<MusicDriversSets>(
             url = "$baseUrl/music/drivers/sets",
+            clazz = MusicDriversSets::class.java
         )
     }
 
-    fun getCurrentMusicDriversSet(): CurrentMusicDriverSet? {
+    fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
         refreshTokenIfNeeded()
-        return get<CurrentMusicDriverSet>(
+        return get<CurrentMusicDriverSetResponse>(
             url = "$baseUrl/music/drivers/sets/current",
+            clazz = CurrentMusicDriverSetResponse::class.java
         )
     }
 
@@ -194,6 +231,7 @@ open class XLedDevice(
         refreshTokenIfNeeded()
         return get<Brightness>(
             url = "$baseUrl/led/out/brightness",
+            clazz = Brightness::class.java
         )
     }
 
@@ -203,8 +241,10 @@ open class XLedDevice(
             url = "$baseUrl/led/out/brightness",
             body = Brightness(value = (100 * brightness).roundToInt()).writeValueAssBytes(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
     }
 
@@ -212,6 +252,7 @@ open class XLedDevice(
         refreshTokenIfNeeded()
         return get<Saturation>(
             url = "$baseUrl/led/out/saturation",
+            clazz = Saturation::class.java
         )
     }
 
@@ -221,15 +262,17 @@ open class XLedDevice(
             url = "$baseUrl/led/out/saturation",
             body = Saturation(value = (100 * saturation).roundToInt()).writeValueAssBytes(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
     }
 
     fun getColor(): Color<*> {
         refreshTokenIfNeeded()
-        val response = get<Map<String, Any>>(
+        val response = get<Map<*,*>>(
             url = "$baseUrl/led/color",
+            clazz = Map::class.java
         )
         return if (response != null) {
             if (response["red"] as Int > 0 || response["green"] as Int > 0 || response["blue"] as Int > 0 || response["white"] as Int > 0) {
@@ -277,45 +320,65 @@ open class XLedDevice(
             url = "$baseUrl/led/color",
             body = body.toByteArray(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
     }
 
-    fun getConfig(): LedConfig? {
+    fun getLedConfig(): LedConfigResponse? {
         refreshTokenIfNeeded()
-        return get<LedConfig>(
+        return get<LedConfigResponse>(
             url = "$baseUrl/led/config",
+            clazz = LedConfigResponse::class.java
         )
     }
 
-    fun getEffects(): Effects? {
-        return get<Effects>(
+    fun getLedEffects(): LedEffectsResponse? {
+        return get<LedEffectsResponse>(
             url = "$baseUrl/led/effects",
+            clazz = LedEffectsResponse::class.java
         )
     }
 
-    fun getEffectsCurrent(): EffectsCurrent? {
-        return get<EffectsCurrent>(
+    fun getCurrentLedEffect(): CurrentLedEffectResponse? {
+        return get<CurrentLedEffectResponse>(
             url = "$baseUrl/led/effects/current",
+            clazz = CurrentLedEffectResponse::class.java
+        )
+    }
+
+    fun setCurrentLedEffect(effectId: String): JsonObject? {
+        return post<JsonObject>(
+            url = "$baseUrl/led/effects/current",
+            body = "{\"effect_id\": \"$effectId\"}".toByteArray(),
+            headers = mutableMapOf(
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
     }
 
     fun getMovies(): Movies? {
         return get<Movies>(
             url = "$baseUrl/movies",
+            clazz = Movies::class.java
         )
     }
 
     fun deleteMovies(): JsonObject? {
         return delete<JsonObject>(
             url = "$baseUrl/movies",
+            clazz = JsonObject::class.java
         )
     }
 
     fun getCurrentMovie(): CurrentMovieResponse? {
         return get<CurrentMovieResponse>(
             url = "$baseUrl/movies/current",
+            clazz = CurrentMovieResponse::class.java
         )
     }
 
@@ -324,20 +387,24 @@ open class XLedDevice(
             url = "$baseUrl/movies/current",
             body = currentMovieRequest.writeValueAssBytes(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
     }
 
     fun getPlaylist(): PlayList? {
         return get<PlayList>(
             url = "$baseUrl/playlist",
+            clazz = PlayList::class.java
         )
     }
 
     fun getPlaylistCurrent(): String? {
         return get<String>(
             url = "$baseUrl/playlist/current",
+            clazz = String::class.java
         )
     }
 
@@ -358,7 +425,7 @@ open class XLedDevice(
         fps: Int
     ) {
         setColor(RGBColor(0, 0, 0))
-        setMode(DeviceMode.color)
+        setLedMode(LedMode.color)
         deleteMovies()
 
         val numberOfFrames = sequence.size
@@ -374,7 +441,7 @@ open class XLedDevice(
         )
         uploadNewMovieToListOfMovies(sequence.toByteArray(bytesPerLed))
         setLedMovieConfig(
-            MovieConfig(
+            MovieConfigResponse(
                 frameDelay = 1000 / fps,
                 ledsNumber = bytesPerLed,
                 framesNumber = numberOfFrames,
@@ -382,7 +449,7 @@ open class XLedDevice(
         )
         setCurrentMovie(CurrentMovieRequest(id = newMovie?.id))
 
-        setMode(DeviceMode.movie)
+        setLedMode(LedMode.movie)
     }
 
     override fun showRealTimeFrame(frame: XledFrame) {
@@ -427,19 +494,22 @@ open class XLedDevice(
                 value.toByteArray()
     }
 
-    fun getLedMovieConfig(): MovieConfig? {
-        return get<MovieConfig>(
+    fun getLedMovieConfig(): MovieConfigResponse? {
+        return get<MovieConfigResponse>(
             url = "$baseUrl/led/movie/config",
+            clazz = MovieConfigResponse::class.java
         )
     }
 
-    fun setLedMovieConfig(movieConfig: MovieConfig): JsonObject? {
+    fun setLedMovieConfig(movieConfig: MovieConfigResponse): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.writeValueAssBytes(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
     }
 
@@ -448,8 +518,10 @@ open class XLedDevice(
             url = "$baseUrl/movies/new",
             body = newMovie.writeValueAssBytes(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = NewMovieResponse::class.java
         )
     }
 
@@ -463,14 +535,17 @@ open class XLedDevice(
             url = "$baseUrl/led/movie/full",
             body = bytes,
             headers = mutableMapOf(
-                CONTENT_TYPE to "application/octet-stream"
-            )
+                "Content-Type" to "application/octet-stream",
+                "Accept" to "application/json"
+            ),
+            clazz = Movie::class.java
         )
     }
 
     override fun getTimer(): Timer? {
         return get<Timer>(
-            url = "$baseUrl/timer"
+            url = "$baseUrl/timer",
+            clazz = Timer::class.java
         )
     }
 
@@ -505,8 +580,10 @@ open class XLedDevice(
             url = "$baseUrl/timer",
             body = timer.writeValueAssBytes(),
             headers = mutableMapOf(
-                CONTENT_TYPE to APPLICATION_JSON
-            )
+                "Content-Type" to "application/json",
+                "Accept" to "application/json"
+            ),
+            clazz = JsonObject::class.java
         )
         return if (result?.responseCode == ResponseCode.Ok) {
             getTimer()

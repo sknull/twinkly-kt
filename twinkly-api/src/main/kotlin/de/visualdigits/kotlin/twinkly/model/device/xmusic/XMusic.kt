@@ -1,12 +1,11 @@
 package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
+import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.Session
-import de.visualdigits.kotlin.twinkly.model.device.UDP_PORT_STREAMING
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MicEnabled
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicStats
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicMode
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MicEnabledResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicStatsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicModeResponse
 import de.visualdigits.kotlin.udp.UdpClient
 
 /**
@@ -20,42 +19,43 @@ class XMusic(
     "http://$ipAddress/xmusic/v1"
 ) {
 
-    val deviceInfo: DeviceInfo?
-
-    init {
-        // ensure we are logged in up to here to avoid unneeded requests
-        if (!tokens.containsKey(ipAddress)) login()
-        if (tokens[ipAddress]?.loggedIn == true) {
-            deviceInfo = get<DeviceInfo>("$baseUrl/gestalt")
-        } else {
-            deviceInfo = null
-        }
-    }
-
-    fun musicConfig(): MusicConfig? {
-        val response = get<MusicConfig>(
+    fun getMusicConfig(): MusicConfigResponse? {
+        val response = get<MusicConfigResponse>(
             url = "$baseUrl/music/config",
+            clazz = MusicConfigResponse::class.java
         )
         return response
     }
 
-    fun musicMode(): MusicMode? {
-        val response = get<MusicMode>(
+    fun setMusicConfig(musicConfig: MusicConfigResponse): JsonObject? {
+        val response = post<JsonObject>(
+            url = "$baseUrl/music/config",
+            body = musicConfig.writeValueAssBytes(),
+            clazz = JsonObject::class.java
+        )
+        return response
+    }
+
+    fun getMusicMode(): MusicModeResponse? {
+        val response = get<MusicModeResponse>(
             url = "$baseUrl/music/mode",
+            clazz = MusicModeResponse::class.java
         )
         return response
     }
 
-    fun musicMicEnabled(): MicEnabled? {
-        val response = get<MicEnabled>(
+    fun isMusicMicEnabled(): MicEnabledResponse? {
+        val response = get<MicEnabledResponse>(
             url = "$baseUrl/music/mic_enabled",
+            clazz = MicEnabledResponse::class.java
         )
         return response
     }
 
-    fun musicStats(): MusicStats? {
-        val response = get<MusicStats>(
+    fun getMusicStats(): MusicStatsResponse? {
+        val response = get<MusicStatsResponse>(
             url = "$baseUrl/music/stats",
+            clazz = MusicStatsResponse::class.java
         )
         return response
     }
