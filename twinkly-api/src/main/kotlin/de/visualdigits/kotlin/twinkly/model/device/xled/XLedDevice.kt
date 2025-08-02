@@ -21,7 +21,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.CurrentMovieResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.Movie
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.MovieConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.LedMovieConfigResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.Movies
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.NewMovieResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriverSetResponse
@@ -56,6 +56,7 @@ open class XLedDevice(
 ) {
 
     val ledLayout: LedLayout?
+    val ledMovieConfig: LedMovieConfigResponse?
 
     override val bytesPerLed: Int
 
@@ -64,12 +65,15 @@ open class XLedDevice(
             if (tokens[ipAddress]?.loggedIn == true) {
                 ledLayout = getLedLayoutResponse()
                 bytesPerLed = deviceInfo?.bytesPerLed?:3
+                ledMovieConfig = getLedMovieConfigResponse()
             } else {
                 ledLayout = null
+                ledMovieConfig = null
                 bytesPerLed = 0
             }
         } else {
             ledLayout = null
+            ledMovieConfig = null
             bytesPerLed = 0
         }
     }
@@ -113,13 +117,15 @@ open class XLedDevice(
     }
 
     override fun getLedLayoutResponse(): LedLayout? {
-        return get<LedLayout>("$baseUrl/led/layout/full",
+        return get<LedLayout>(
+            url = "$baseUrl/led/layout/full",
             clazz = LedLayout::class.java)
     }
 
     override fun ledReset() {
         refreshTokenIfNeeded()
-        get<String>("$baseUrl/led/reset",
+        get<String>(
+            url = "$baseUrl/led/reset",
             clazz = String::class.java)
     }
 
@@ -441,7 +447,7 @@ open class XLedDevice(
         )
         uploadNewMovieToListOfMovies(sequence.toByteArray(bytesPerLed))
         setLedMovieConfig(
-            MovieConfigResponse(
+            LedMovieConfigResponse(
                 frameDelay = 1000 / fps,
                 ledsNumber = bytesPerLed,
                 framesNumber = numberOfFrames,
@@ -494,14 +500,14 @@ open class XLedDevice(
                 value.toByteArray()
     }
 
-    fun getLedMovieConfig(): MovieConfigResponse? {
-        return get<MovieConfigResponse>(
+    fun getLedMovieConfigResponse(): LedMovieConfigResponse? {
+        return get<LedMovieConfigResponse>(
             url = "$baseUrl/led/movie/config",
-            clazz = MovieConfigResponse::class.java
+            clazz = LedMovieConfigResponse::class.java
         )
     }
 
-    fun setLedMovieConfig(movieConfig: MovieConfigResponse): JsonObject? {
+    fun setLedMovieConfig(movieConfig: LedMovieConfigResponse): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.writeValueAssBytes(),

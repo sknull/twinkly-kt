@@ -226,7 +226,7 @@ abstract class Session(
      * Returns infos about the network configuration of the device.
      */
     fun getNetworkStatus(): NetworkStatus? {
-        return get(
+        return get<NetworkStatus>(
             url = "$baseUrl/network/status",
             clazz = NetworkStatus::class.java
         )
@@ -270,7 +270,7 @@ abstract class Session(
         authToken: String? = null,
         clazz: Class<T>
     ): T? {
-        (authToken?: tokens[ipAddress]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
+        (authToken?:tokens[ipAddress]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return URL(url).post<T>(body, headers, clazz)
     }
 
@@ -280,20 +280,18 @@ abstract class Session(
     fun <T : Any> get(
         url: String,
         headers: MutableMap<String, String> = mutableMapOf<String, String>(),
-        authToken: String? = null,
         clazz: Class<T>
     ): T? {
-        (authToken?: tokens[ipAddress]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
+        tokens[ipAddress]?.authToken?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return URL(url).get<T>(headers, clazz)
     }
 
     fun <T : Any> delete(
         url: String,
         headers: MutableMap<String, String> = mutableMapOf<String, String>(),
-        authToken: String? = null,
         clazz: Class<T>
     ): T? {
-        (authToken?: tokens[ipAddress]?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
+        tokens[ipAddress]?.authToken?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
         return URL(null, url).delete<T>(headers, clazz)
     }
 }

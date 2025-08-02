@@ -47,10 +47,7 @@ class BasicTests : XledArrayTest() {
     @Disabled("only for playing")
     fun testPlayground() {
 //        println(curtain1.getEndpointRaw("http://${curtain1.ipAddress}/xled/v1/group"))
-        println(curtain1.getLedMovieConfig())
-        println(curtain2.getLedMovieConfig())
-        println(curtain3.getLedMovieConfig())
-        println(curtain4.getLedMovieConfig())
+        println(xledArray.getMasterDevice()?.ipAddress)
     }
 
     @Test

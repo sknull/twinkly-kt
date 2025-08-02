@@ -6,7 +6,7 @@ import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Sync
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.Mic
 
-class MovieConfigResponse(
+class LedMovieConfigResponse(
     code: Int? = null,
     @JsonProperty("frame_delay") val frameDelay: Int? = null,
     @JsonProperty("leds_number") val ledsNumber: Int? = null,

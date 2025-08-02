@@ -8,7 +8,9 @@ import de.visualdigits.kotlin.twinkly.model.device.xmusic.XMusic
 
 abstract class XledArrayTest {
 
-    val twinklyMusic = XMusic("192.168.178.39")
+    protected val twinklyMusic = XMusic("192.168.178.39")
+
+    protected val xledMatrix = XledMatrixDevice("192.168.178.34", 10, 50)
 
     val curtain1 = XLedDevice("192.168.178.35", 10, 21)
     val curtain2 = XLedDevice("192.168.178.58", 10, 21)
@@ -36,25 +38,23 @@ abstract class XledArrayTest {
             ),
             arrayOf(
                 curtain3,
-                XLedDevice("192.168.178.60", 10, 21)
+                curtain4
             )
         ),
         DeviceOrigin.BOTTOM_LEFT
     )
 
     protected val xledArrayLandscapeRight = XledArray(
-        arrayOf(
+        xLedDevices = arrayOf(
             arrayOf(
                 curtain1,
                 curtain2,
             ),
             arrayOf(
                 curtain3,
-                XLedDevice("192.168.178.60", 10, 21)
+                curtain4
             )
         ),
-        DeviceOrigin.TOP_RIGHT
+        deviceOrigin = DeviceOrigin.TOP_RIGHT
     )
-
-    protected val xledMatrix = XledMatrixDevice("192.168.178.34", 10, 50)
 }

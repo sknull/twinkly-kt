@@ -5,7 +5,7 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.MovieConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.LedMovieConfigResponse
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.util.TimeUtil
@@ -64,7 +64,7 @@ class XLedTest {
         println(newMovie)
         xled.uploadNewMovieToListOfMovies(XledFrame(10, 21, RGBColor(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255))))
         xled.setLedMovieConfig(
-            MovieConfigResponse(
+            LedMovieConfigResponse(
                 frameDelay = 1000 / 1,
                 ledsNumber = deviceInfo?.numberOfLed?:4,
                 framesNumber = 1,
@@ -192,7 +192,7 @@ class XLedTest {
         )
         xled.uploadNewMovieToListOfMovies(sequence.toByteArray(xled.bytesPerLed))
         xled.setLedMovieConfig(
-            MovieConfigResponse(
+            LedMovieConfigResponse(
                 frameDelay = 1000 / fps,
                 ledsNumber = xled.deviceInfo?.numberOfLed?:4,
                 framesNumber = numberOfFrames,

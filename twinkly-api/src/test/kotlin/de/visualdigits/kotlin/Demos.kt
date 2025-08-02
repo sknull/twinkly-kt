@@ -100,8 +100,8 @@ class Demos : XledArrayTest() {
      */
     @Test
     fun testClock() {
-//        val device = xledArrayLandscapeRight
-        val device = xledMatrix
+        val device = xledArray
+//        val device = xledMatrix
         val canvas = XledFrame(device.height, device.width, rotation = Rotation.LEFT)
         val bgColor = RGBColor(0, 0, 0)
         val digitColor = RGBColor(255, 0, 0)
@@ -182,8 +182,9 @@ class Demos : XledArrayTest() {
 
     @Test
     fun testText() {
-        val device = xledArrayLandscapeRight
+//        val device = xledArrayLandscapeRight
 //        val device = xledMatrix
+        val device = xledArray
         val sequence = XledSequence(
             fontName = "Only When I Do Fonts Regular.ttf",
             fontDirectory = File(ClassLoader.getSystemResource("fonts").toURI()),
@@ -213,7 +214,8 @@ class Demos : XledArrayTest() {
                 Triple("Merry ", RGBColor(0, 0, 0), RGBColor(255, 255, 255)),
                 Triple("Christmas", RGBColor(0, 0, 0), RGBColor(255, 0, 0)),
                 Triple("!", RGBColor(0, 0, 0), RGBColor(255, 255, 255))
-            )
+            ),
+//            rotation = Rotation.LEFT
         )
         sequence.play(xledArrayLandscapeRight)
     }
