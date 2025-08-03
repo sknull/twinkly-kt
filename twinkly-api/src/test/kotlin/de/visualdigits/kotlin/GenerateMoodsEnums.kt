@@ -53,7 +53,7 @@ enum class Moods(
             
 enum class Mood$moodName(
     override val index: Int,
-    val label: String
+    override val label: String
 ): MoodsEffect {
 
     Shuffle(-1, "Shuffle"),

@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
             
 enum class MoodFluo(
     override val index: Int,
-    val label: String
+    override val label: String
 ): MoodsEffect {
 
     Shuffle(-1, "Shuffle"),
