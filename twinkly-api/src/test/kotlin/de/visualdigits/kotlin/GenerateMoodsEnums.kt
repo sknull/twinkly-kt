@@ -27,12 +27,14 @@ class GenerateMoodsEnums {
 enum class Moods(
     val index: Int,
     val label: String,
+    val icon: String,
+    val color: String,
     val effects: List<MoodsEffect>
 ) {
 
     ${moods.sortedBy { mood -> mood.index }.joinToString(",\n    ") { mood ->
             val moodName = mood.name!!.replace(" ", "")
-            "$moodName(${mood.index}, \"$moodName\", Mood$moodName.entries)" 
+            "$moodName(${mood.index}, \"$moodName\", \"${mood.icon}\", \"${mood.color}\", Mood$moodName.entries)" 
     }};
     
     companion object {
