@@ -73,7 +73,10 @@ class XledArray(
     }
 
     fun getMasterDevice(): XLedDevice? {
-        return xLedDevices.flatten().find { d -> d.ledMovieConfig?.sync?.mode == SyncMode.master }
+        return xLedDevices
+            .flatten()
+            .find { d -> d.ledMovieConfig?.sync?.mode == SyncMode.master }
+            ?:xLedDevices.flatten().firstOrNull()
     }
 
     override fun ledReset() {
