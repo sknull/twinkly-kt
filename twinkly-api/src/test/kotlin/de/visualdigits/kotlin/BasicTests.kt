@@ -3,6 +3,7 @@ package de.visualdigits.kotlin
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodDance
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.MethodOrderer
@@ -46,8 +47,18 @@ class BasicTests : XledArrayTest() {
     @Test
     @Disabled("only for playing")
     fun testPlayground() {
-//        println(curtain1.getEndpointRaw("http://${curtain1.ipAddress}/xled/v1/group"))
-        println(xledArray.getMasterDevice()?.ipAddress)
+//        xledMatrix.setMusicEnabled(true)
+//        xledArray.setMusicEnabled(true)
+//        xledMatrix.setMusicEnabled(false)
+//        xledArray.setMusicEnabled(false)
+
+//        twinklyMusic.setMoodsEffect(MoodDance.Shuffle)
+
+        println(curtain1.firmwareVersion)
+//        println(xledArray.getMusicEnabled())
+//        println(twinklyMusic.getMusicMode())
+//        println(twinklyMusic.getMusicConfig())
+//        println(xledArray.getCurrentLedEffect())
     }
 
     @Test

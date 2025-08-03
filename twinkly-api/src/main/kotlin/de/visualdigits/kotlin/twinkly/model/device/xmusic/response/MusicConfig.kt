@@ -4,7 +4,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic.response
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 
-class MusicConfigResponse(
+class MusicConfig(
     code: Int? = null,
     @JsonProperty("auto_mood_mode") val autoMoodMode: Int? = null,
     @JsonProperty("mood_index") val moodIndex: Int? = null,

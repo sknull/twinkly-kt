@@ -2,10 +2,12 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.Session
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodsEffect
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MicEnabledResponse
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicStatsResponse
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicModeResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.Config
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicMode
 import de.visualdigits.kotlin.udp.UdpClient
 
 /**
@@ -19,29 +21,39 @@ class XMusic(
     "http://$ipAddress/xmusic/v1"
 ) {
 
-    fun getMusicConfig(): MusicConfigResponse? {
-        val response = get<MusicConfigResponse>(
+    fun getMusicConfig(): MusicConfig? {
+        val response = get<MusicConfig>(
             url = "$baseUrl/music/config",
-            clazz = MusicConfigResponse::class.java
+            clazz = MusicConfig::class.java
         )
         return response
     }
 
-    fun setMusicConfig(musicConfig: MusicConfigResponse): JsonObject? {
+    fun getMusicMode(): MusicMode? {
+        val response = get<MusicMode>(
+            url = "$baseUrl/music/mode",
+            clazz = MusicMode::class.java
+        )
+        return response
+    }
+
+    fun setMusicMode(musicMode: MusicMode): JsonObject? {
         val response = post<JsonObject>(
-            url = "$baseUrl/music/config",
-            body = musicConfig.writeValueAssBytes(),
+            url = "$baseUrl/music/mode",
+            body = musicMode.writeValueAssBytes(),
             clazz = JsonObject::class.java
         )
         return response
     }
 
-    fun getMusicMode(): MusicModeResponse? {
-        val response = get<MusicModeResponse>(
-            url = "$baseUrl/music/mode",
-            clazz = MusicModeResponse::class.java
-        )
-        return response
+    fun setMoodsEffect(moodsEffect: MoodsEffect): JsonObject? {
+        return setMusicMode(MusicMode(
+            mode = "v2",
+            config = Config(
+                moodIndex = moodsEffect.moodIndex(),
+                effectIndex = moodsEffect.index
+            )
+        ))
     }
 
     fun isMusicMicEnabled(): MicEnabledResponse? {

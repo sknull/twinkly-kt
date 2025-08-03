@@ -1,0 +1,62 @@
+[
+  {
+    "index": 1,
+    "uuid": {
+      "linear": "0CC63802-E559-4591-AF55-38003367EE8D",
+      "twod": "2464ED24-F356-4ECD-A205-D624D05FE2AE"
+    },
+    "name": "Classic",
+    "icon": "🎻",
+    "color": "#1E3BE1"
+  },
+  {
+    "index": 3,
+    "uuid": {
+      "linear": "01A6A37C-4CAC-4F3D-8167-583CFC6D2118",
+      "twod": "71589FBC-3B28-4345-8BAB-A054B3D7AC01"
+    },
+    "name": "Fluo",
+    "icon": "🔋",
+    "color": "#5BC0A3"
+  },
+  {
+    "index": 4,
+    "uuid": {
+      "linear": "F40138CF-9AA8-4AE4-BA72-14EE7B43845F",
+      "twod": "747D0071-90AA-4554-933C-76F2B4F3A98B"
+    },
+    "name": "Chillout",
+    "icon": "🍸",
+    "color": "#F5C54D"
+  },
+  {
+    "index": 0,
+    "uuid": {
+      "linear": "5DC91FE9-5FA3-4296-BDF4-C48856E89629",
+      "twod": "E2102F85-2F80-4822-8F07-E65CC488905B"
+    },
+    "name": "Dance",
+    "icon": "🕺",
+    "color": "#7E00B9"
+  },
+  {
+    "index": 5,
+    "uuid": {
+      "linear": "50881646-6668-41E0-8FAC-A63022E94C52",
+      "twod": "30EE91CC-892A-4173-A929-26B72C121872"
+    },
+    "name": "Pop",
+    "icon": "🎸",
+    "color": "#CC3145"
+  },
+  {
+    "index": 2,
+    "uuid": {
+      "linear": "96A7B346-F324-47C4-AD5D-000770C7956E",
+      "twod": "B8415B1B-8827-4137-82F5-F291471580A1"
+    },
+    "name": "Ambient",
+    "icon": "🌺",
+    "color": "#2291F1"
+  }
+]

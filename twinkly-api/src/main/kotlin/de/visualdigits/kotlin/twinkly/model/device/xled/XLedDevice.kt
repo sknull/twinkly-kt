@@ -31,8 +31,7 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicDriv
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEffectsResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEnabledResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicStatsResponse
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfigResponse
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicModeResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
@@ -159,10 +158,10 @@ open class XLedDevice(
         )
     }
 
-    fun getMusicConfig(): MusicConfigResponse? {
-        val response = get<MusicConfigResponse>(
+    fun getMusicConfig(): MusicConfig? {
+        val response = get<MusicConfig>(
             url = "$baseUrl/music/config",
-            clazz = MusicConfigResponse::class.java
+            clazz = MusicConfig::class.java
         )
         return response
     }
@@ -188,23 +187,6 @@ open class XLedDevice(
         return post<JsonObject>(
             url = "$baseUrl/music/enabled",
             body = "{\"enabled\":${if (enabled) 1 else 0}}".toByteArray(),
-            clazz = JsonObject::class.java
-        )
-    }
-
-    fun getMusicMode(): MusicModeResponse? {
-        val response = get<MusicModeResponse>(
-            url = "$baseUrl/music/mode",
-            clazz = MusicModeResponse::class.java
-        )
-        return response
-    }
-
-    fun setMusicMode(musicMode: String): JsonObject? {
-        refreshTokenIfNeeded()
-        return post<JsonObject>(
-            url = "$baseUrl/music/mode",
-            body = "{\"effect\":\"$musicMode\"}".toByteArray(),
             clazz = JsonObject::class.java
         )
     }

@@ -33,10 +33,22 @@ Creating a new movie did not succeed even I got an expected answer from the api.
 
 Because of that fact that I cannot get the movie features to work properly for me I insteaddo the same thing it seems all the others do - I use the realtime frame feature which utilizes the UDP protocoll to upload binary frame data to the device. This works really fast over WLAN and makes possible impressive framerates. Of course this approach has the downside that it depends on a WLAN connection and a player software. On the other hand this allows for a lot of fun stuff.
 
+The most important feature for me was support of the music modes (for which you need the Twinkly Music dongle).
+This is now possible (as of August 2025) which makes it now possible to integrate the devices in my living room setup.
+
 This project is far from feature complete, but I think it`s now good enough to see the light of the world :)
 
 == Modules
 
-- link:klanglicht-module-twinkly/Readme.adoc[klanglicht-module-twinkly]
-- link:klanglicht-module-audioprocessing/Readme.adoc[klanglicht-module-audioprocessing]
-- link:klanglicht-rest/Readme.adoc[twinkly-rest]
+- link:twinkly-api/Readme.adoc[twinkly-api]
+- link:twinkly-audioprocessing/Readme.adoc[twinkly-audioprocessing]
+- link:twinkly-games/Readme.adoc[twinkly-games]
+- link:twinkly-rest/Readme.adoc[twinkly-rest]
+
+== Inofficial API Documentation
+
+Github user scrool has invested a lot of time to bring together an inofficial API documentation
+which is still the defacto source of truth but lacks some information regarding how
+to actually use the music modes.
+
+A converted and updated version of the documentation is included link:docs/hardware/twinkly/readme.adoc[in this project]
