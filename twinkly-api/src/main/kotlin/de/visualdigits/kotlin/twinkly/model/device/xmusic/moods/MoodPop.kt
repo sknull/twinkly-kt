@@ -2,17 +2,18 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
             
 enum class MoodPop(
     override val index: Int,
-    override val label: String
+    override val label: String,
+    override val moodLabel: String
 ): MoodsEffect {
 
-    Shuffle(-1, "Shuffle"),
-    BPMHue(0, "BPM Hue"),
-    VuFreq(1, "Vu Freq"),
-    Bounce(2, "Bounce"),
-    AngelFade(3, "Angel Fade"),
-    Clockwork(5, "Clockwork"),
-    Signal(6, "Signal"),
-    Oscillator(7, "Oscillator");
+    Shuffle(-1, "Shuffle", "Pop"),
+    BPMHue(0, "BPM Hue", "Pop"),
+    VuFreq(1, "Vu Freq", "Pop"),
+    Bounce(2, "Bounce", "Pop"),
+    AngelFade(3, "Angel Fade", "Pop"),
+    Clockwork(5, "Clockwork", "Pop"),
+    Signal(6, "Signal", "Pop"),
+    Oscillator(7, "Oscillator", "Pop");
 
     companion object {
         @OptIn(ExperimentalStdlibApi::class)

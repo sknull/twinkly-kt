@@ -2,14 +2,15 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
             
 enum class MoodChillout(
     override val index: Int,
-    override val label: String
+    override val label: String,
+    override val moodLabel: String
 ): MoodsEffect {
 
-    Shuffle(-1, "Shuffle"),
-    Sparkles(0, "Sparkles"),
-    Bubbles(1, "Bubbles"),
-    PsycoSparkles(2, "Psyco Sparkles"),
-    Nova(3, "Nova");
+    Shuffle(-1, "Shuffle", "Chillout"),
+    Sparkles(0, "Sparkles", "Chillout"),
+    Bubbles(1, "Bubbles", "Chillout"),
+    PsycoSparkles(2, "Psyco Sparkles", "Chillout"),
+    Nova(3, "Nova", "Chillout");
 
     companion object {
         @OptIn(ExperimentalStdlibApi::class)

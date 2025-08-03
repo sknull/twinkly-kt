@@ -2,17 +2,18 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
             
 enum class MoodDance(
     override val index: Int,
-    override val label: String
+    override val label: String,
+    override val moodLabel: String
 ): MoodsEffect {
 
-    Shuffle(-1, "Shuffle"),
-    Nova(0, "Nova"),
-    Omega(1, "Omega"),
-    DiamondWeave(2, "Diamond Weave"),
-    Oscillator(3, "Oscillator"),
-    March(5, "March"),
-    PsycoMarch(6, "Psyco March"),
-    Chevron(7, "Chevron");
+    Shuffle(-1, "Shuffle", "Dance"),
+    Nova(0, "Nova", "Dance"),
+    Omega(1, "Omega", "Dance"),
+    DiamondWeave(2, "Diamond Weave", "Dance"),
+    Oscillator(3, "Oscillator", "Dance"),
+    March(5, "March", "Dance"),
+    PsycoMarch(6, "Psyco March", "Dance"),
+    Chevron(7, "Chevron", "Dance");
 
     companion object {
         @OptIn(ExperimentalStdlibApi::class)

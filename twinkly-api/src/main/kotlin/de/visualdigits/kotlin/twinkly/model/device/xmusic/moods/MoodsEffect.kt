@@ -6,5 +6,7 @@ interface MoodsEffect {
 
     val label: String
 
+    val moodLabel: String
+    
     fun moodIndex(): Int
 }

@@ -21,6 +21,20 @@ class GenerateMoodsEnums {
         val moodsEffects = mapper.readValue(File(ClassLoader.getSystemResource("moods/moods-effects.json").toURI()), MoodsEffects::class.java)
         val moodsEffectsNames = mapper.readValue(File(ClassLoader.getSystemResource("moods/moods-effects-names.json").toURI()), MoodsEffectsNames::class.java)
 
+        File(targetDirectory, "MoodsEffect.kt").writeText("""package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
+
+interface MoodsEffect {
+
+    val index: Int
+
+    val label: String
+
+    val moodLabel: String
+    
+    fun moodIndex(): Int
+}
+""")
+
         File(targetDirectory, "Moods.kt").writeText("""package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
             
 @OptIn(ExperimentalStdlibApi::class)
@@ -29,12 +43,12 @@ enum class Moods(
     val label: String,
     val icon: String,
     val color: String,
-    val effects: List<MoodsEffect>
+    val effects: Map<Int, MoodsEffect>
 ) {
 
     ${moods.sortedBy { mood -> mood.index }.joinToString(",\n    ") { mood ->
             val moodName = mood.name!!.replace(" ", "")
-            "$moodName(${mood.index}, \"$moodName\", \"${mood.icon}\", \"${mood.color}\", Mood$moodName.entries)" 
+            "$moodName(${mood.index}, \"$moodName\", \"${mood.icon}\", \"${mood.color}\", Mood$moodName.entries.associate { e -> Pair(e.index, e) })" 
     }};
     
     companion object {
@@ -42,6 +56,8 @@ enum class Moods(
 
         fun fromLabel(label: String) = Moods.entries.find { e -> label == e.label }
     }
+
+    fun effectFromIndex(effectIndex: Int) = effects[effectIndex]
 }""")
 
         moods.forEach { mood ->
@@ -55,11 +71,12 @@ enum class Moods(
             
 enum class Mood$moodName(
     override val index: Int,
-    override val label: String
+    override val label: String,
+    override val moodLabel: String
 ): MoodsEffect {
 
-    Shuffle(-1, "Shuffle"),
-    ${effectNames.joinToString(",\n    ") { en -> "${en.second.replace(" ", "")}(${en.first}, \"${en.second}\")" }};
+    Shuffle(-1, "Shuffle", "$moodName"),
+    ${effectNames.joinToString(",\n    ") { en -> "${en.second.replace(" ", "")}(${en.first}, \"${en.second}\", \"$moodName\")" }};
 
     companion object {
         @OptIn(ExperimentalStdlibApi::class)

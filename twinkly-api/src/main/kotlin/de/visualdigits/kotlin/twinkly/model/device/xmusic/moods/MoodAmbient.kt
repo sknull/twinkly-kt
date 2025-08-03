@@ -2,13 +2,14 @@ package de.visualdigits.kotlin.twinkly.model.device.xmusic.moods
             
 enum class MoodAmbient(
     override val index: Int,
-    override val label: String
+    override val label: String,
+    override val moodLabel: String
 ): MoodsEffect {
 
-    Shuffle(-1, "Shuffle"),
-    Sparkles(0, "Sparkles"),
-    Tranquil(1, "Tranquil"),
-    Plasma(3, "Plasma");
+    Shuffle(-1, "Shuffle", "Ambient"),
+    Sparkles(0, "Sparkles", "Ambient"),
+    Tranquil(1, "Tranquil", "Ambient"),
+    Plasma(3, "Plasma", "Ambient");
 
     companion object {
         @OptIn(ExperimentalStdlibApi::class)
