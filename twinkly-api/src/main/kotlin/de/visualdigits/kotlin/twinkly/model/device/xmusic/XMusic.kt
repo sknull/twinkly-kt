@@ -1,10 +1,11 @@
 package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.device.Session
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.LedMovieConfigResponse
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodsEffect
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MicEnabledResponse
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicStatsResponse
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.Config
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.musicmode.MusicMode
@@ -16,17 +17,17 @@ import de.visualdigits.kotlin.udp.UdpClient
  */
 class XMusic(
     ipAddress: String
-): Session(
-    ipAddress,
-    "http://$ipAddress/xmusic/v1"
+): XLedDevice(
+    ipAddress = ipAddress,
+    baseUrl = "http://$ipAddress/xmusic/v1"
 ) {
 
-    fun getMusicConfig(): MusicConfig? {
-        val response = get<MusicConfig>(
-            url = "$baseUrl/music/config",
-            clazz = MusicConfig::class.java
-        )
-        return response
+    override fun getLedLayoutResponse(): LedLayout? {
+        return null
+    }
+
+    override fun getLedMovieConfigResponse(): LedMovieConfigResponse? {
+        return null
     }
 
     fun getMusicMode(): MusicMode? {

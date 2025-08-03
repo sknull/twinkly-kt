@@ -11,12 +11,12 @@ class XledFrameTest {
     private val xledArray = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
+                XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         )
     )
@@ -24,12 +24,12 @@ class XledFrameTest {
     private val xledArrayLandscape = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
+                XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         ),
         DeviceOrigin.BOTTOM_LEFT
@@ -37,7 +37,7 @@ class XledFrameTest {
 
     @Test
     fun testSingleFrames() {
-        val curtain1 = XLedDevice("192.168.178.35", 10, 21)
+        val curtain1 = XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21)
         val frame1 = XledFrame(20, 21, RGBColor(0, 0, 0))
         frame1[0, 0] = RGBColor(255, 0, 0)
         frame1[9, 0] = RGBColor(0, 255, 0)
@@ -48,7 +48,7 @@ class XledFrameTest {
 
         frame1.play(curtain1)
 
-        val curtain2 = XLedDevice("192.168.178.52", 10, 21)
+        val curtain2 = XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21)
         val frame2 = XledFrame(20, 21, RGBColor(0, 0, 0))
         frame2[0, 0] = RGBColor(255, 0, 0)
         frame2[9, 0] = RGBColor(0, 255, 0)
@@ -60,7 +60,7 @@ class XledFrameTest {
 
         frame2.play(curtain2)
 
-        val curtain3 = XLedDevice("192.168.178.58", 10, 21)
+        val curtain3 = XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21)
         val frame3 = XledFrame(20, 21, RGBColor(0, 0, 0))
         frame3[0, 0] = RGBColor(255, 0, 0)
         frame3[9, 0] = RGBColor(0, 255, 0)
@@ -73,7 +73,7 @@ class XledFrameTest {
 
         frame3.play(curtain3)
 
-        val curtain4 = XLedDevice("192.168.178.60", 10, 21)
+        val curtain4 = XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
         val frame4 = XledFrame(20, 21, RGBColor(0, 0, 0))
         frame4[0, 0] = RGBColor(255, 0, 0)
         frame4[9, 0] = RGBColor(0, 255, 0)

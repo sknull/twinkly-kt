@@ -4,9 +4,13 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
 class XledMatrixDevice(
     ipAddress: String = "",
-    override var width: Int = 0,
-    override var height: Int = 0
-): XLedDevice(ipAddress, width, height, { frame ->
+    width: Int = 0,
+    height: Int = 0
+): XLedDevice(
+    ipAddress = ipAddress,
+    width = width,
+    height = height,
+    transformation = { frame ->
     val transformed = XledFrame(frame.width, frame.height)
 
     for (y in 0 until frame.height) {

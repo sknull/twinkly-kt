@@ -2,11 +2,11 @@ package de.visualdigits.kotlin.twinkly.model.playable.effects
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import kotlin.random.Random
 
 class SparkleEffect(
-    xled: XLed,
+    xled: XLedDevice,
     initialColor: Color<*> = RGBColor(0, 0, 0)
 ): XledEffect("Sparkle Effect", xled, initialColor = initialColor) {
 

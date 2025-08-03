@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.playable
 
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
 
@@ -10,7 +10,7 @@ interface Playable {
     var running: Boolean
 
     fun playAsync(
-        xled: XLed,
+        xled: XLedDevice,
         loop: Int = -1,
         randomSequence: Boolean = false,
         transitionType: TransitionType = TransitionType.STRAIGHT,
@@ -35,7 +35,7 @@ interface Playable {
 
     private class LoopRunner(
         private val playable: Playable,
-        private val xled: XLed,
+        private val xled: XLedDevice,
         private val loop: Int = -1,
         private val randomSequence: Boolean = false,
         private val transitionType: TransitionType = TransitionType.STRAIGHT,
@@ -60,7 +60,7 @@ interface Playable {
     }
 
     fun play(
-        xled: XLed,
+        xled: XLedDevice,
         loop: Int = 1, // One shot
         transitionType: TransitionType = TransitionType.STRAIGHT,
         randomSequence: Boolean = false,

@@ -9,12 +9,12 @@ abstract class XledArrayTest {
     protected val xledArray = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
+                XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         )
     )
@@ -22,12 +22,12 @@ abstract class XledArrayTest {
     protected val xledArrayLandscapeLeft = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
+                XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         ),
         DeviceOrigin.BOTTOM_LEFT
@@ -36,12 +36,12 @@ abstract class XledArrayTest {
     protected val xledArrayLandscapeRight = XledArray(
         arrayOf(
             arrayOf(
-                XLedDevice("192.168.178.35", 10, 21),
-                XLedDevice("192.168.178.58", 10, 21),
+                XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
             arrayOf(
-                XLedDevice("192.168.178.52", 10, 21),
-                XLedDevice("192.168.178.60", 10, 21)
+                XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         ),
         DeviceOrigin.TOP_RIGHT

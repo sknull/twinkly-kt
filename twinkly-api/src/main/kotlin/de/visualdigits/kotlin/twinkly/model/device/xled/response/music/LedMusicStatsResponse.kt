@@ -4,7 +4,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xled.response.music
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 
-class MusicStatsResponse(
+class LedMusicStatsResponse(
     code: Int? = null,
 
     @JsonProperty("total_skipped") val totalSkipped: Int? = null,

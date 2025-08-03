@@ -1,12 +1,12 @@
 package de.visualdigits.kotlin.twinkly.model.playable
 
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.playable.effects.XledEffect
 import org.slf4j.LoggerFactory
 
 class XledRepeater(
     val effectName: String,
-    val xled: XLed,
+    val xled: XLedDevice,
     val effect: XledEffect,
     val frameDelay: Long = 1000 / 12
 ) : Thread("Xled Repeater - $effectName") {

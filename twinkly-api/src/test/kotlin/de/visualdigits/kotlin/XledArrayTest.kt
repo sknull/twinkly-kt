@@ -12,10 +12,10 @@ abstract class XledArrayTest {
 
     protected val xledMatrix = XledMatrixDevice("192.168.178.34", 10, 50)
 
-    val curtain1 = XLedDevice("192.168.178.35", 10, 21)
-    val curtain2 = XLedDevice("192.168.178.58", 10, 21)
-    val curtain3 = XLedDevice("192.168.178.52", 10, 21)
-    val curtain4 = XLedDevice("192.168.178.60", 10, 21)
+    val curtain1 = XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21)
+    val curtain2 = XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21)
+    val curtain3 = XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21)
+    val curtain4 = XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
 
     protected val xledArray = XledArray(
         arrayOf(

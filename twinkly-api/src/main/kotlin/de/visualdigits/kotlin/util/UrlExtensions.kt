@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
-import de.visualdigits.kotlin.twinkly.model.device.Session
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
@@ -30,8 +30,8 @@ fun <T : Any> URL.post(
 ): T? {
     val connection = (openConnection() as HttpURLConnection)
     connection.requestMethod = "POST"
-    connection.connectTimeout = Session.CONNECTION_TIMEOUT
-    connection.readTimeout = Session.CONNECTION_TIMEOUT
+    connection.connectTimeout = XLedDevice.CONNECTION_TIMEOUT
+    connection.readTimeout = XLedDevice.CONNECTION_TIMEOUT
     headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
     connection.doOutput = true
     connection.outputStream.use { os ->
@@ -107,7 +107,7 @@ private fun URL.createConnection(
 ): HttpURLConnection {
     val connection = (openConnection() as HttpURLConnection)
     connection.requestMethod = method
-    connection.connectTimeout = Session.CONNECTION_TIMEOUT
+    connection.connectTimeout = XLedDevice.CONNECTION_TIMEOUT
     headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
     if (doOutput) {
         connection.doOutput = true

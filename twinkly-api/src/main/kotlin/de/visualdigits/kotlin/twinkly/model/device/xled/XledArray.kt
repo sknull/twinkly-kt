@@ -1,9 +1,12 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
+import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.CurrentLedEffectResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedEffectsResponse
@@ -14,10 +17,10 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.SyncMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriverSetResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriversResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicEffectResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.LedMusicStatsResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicDriversSets
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEffectsResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEnabledResponse
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicStatsResponse
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import java.time.OffsetDateTime
@@ -27,14 +30,19 @@ private const val NO_DEVICE = "No device"
 class XledArray(
     var xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
     val deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
-    override var width: Int = 0,
-    override var height: Int = 0,
-    override val transformation:  ((XledFrame) -> XledFrame)? = null
-) : XLed {
+    width: Int = 0,
+    height: Int = 0,
+    transformation:  ((XledFrame) -> XledFrame)? = null
+) : XLedDevice(
+    ipAddress = "",
+    baseUrl = "",
+    width = width,
+    height = height,
+    transformation = transformation
+) {
 
     val columns = xLedDevices.size
     val rows = if (xLedDevices.isNotEmpty()) xLedDevices.minOf { column -> column.size } else 0
-    override val bytesPerLed: Int = getMasterDevice()?.bytesPerLed?:0
 
     init {
         initalize()
@@ -52,7 +60,7 @@ class XledArray(
         }
     }
 
-    fun isLoggedIn(): Boolean = xLedDevices.all { column -> column.all { device -> device.isLoggedIn() } }
+    override fun isLoggedIn(): Boolean = xLedDevices.all { column -> column.all { device -> device.isLoggedIn() } }
 
     operator fun set(x: Int, y: Int, device: XLedDevice) {
         xLedDevices[x][y] = device
@@ -65,11 +73,11 @@ class XledArray(
     }
 
     override fun powerOn() {
-        getMasterDevice()?.powerOn()
+        xLedDevices.flatten().forEach { it.powerOn() }
     }
 
     override fun powerOff() {
-        getMasterDevice()?.powerOff()
+        xLedDevices.flatten().forEach { it.powerOff() }
     }
 
     fun getMasterDevice(): XLedDevice? {
@@ -83,6 +91,10 @@ class XledArray(
         xLedDevices.flatten().forEach { it.ledReset() }
     }
 
+    override fun getBrightness(): Brightness? {
+        return getMasterDevice()?.getBrightness()
+    }
+
     override fun getMode(): Mode? {
         return getMasterDevice()?.getMode()
     }
@@ -92,72 +104,74 @@ class XledArray(
     }
 
     override fun setLedMode(mode: LedMode): JsonObject? {
-        return getMasterDevice()?.setLedMode(mode)
+        return xLedDevices.flatten().map { it.setLedMode(mode) }.firstOrNull()
     }
 
-    fun getLedEffects(): LedEffectsResponse? {
+    override fun getLedEffects(): LedEffectsResponse? {
         return getMasterDevice()?.getLedEffects()
     }
 
-    fun getCurrentLedEffect(): CurrentLedEffectResponse? {
+    override fun getCurrentLedEffect(): CurrentLedEffectResponse? {
         return getMasterDevice()?.getCurrentLedEffect()
     }
 
-    fun setCurrentLedEffect(effectId: String): JsonObject? {
-        return getMasterDevice()?.setCurrentLedEffect(effectId)
+    override fun setCurrentLedEffect(effectId: String): JsonObject? {
+        return xLedDevices.flatten()
+            .map { it.setCurrentLedEffect(effectId) }
+            .firstOrNull()
     }
 
 
-    fun getMusicEffects(): MusicEffectsResponse? {
+    override fun getMusicEffects(): MusicEffectsResponse? {
         return getMasterDevice()?.getMusicEffects()
     }
 
-    fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
+    override fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
         return getMasterDevice()?.getCurrentMusicEffect()
     }
 
-    fun setCurrentMusicEffect(effectId: String): JsonObject? {
+    override fun setCurrentMusicEffect(effectId: String): JsonObject? {
         return getMasterDevice()?.setCurrentMusicEffect(effectId)
     }
 
-    fun getMusicConfig(): MusicConfig? {
+    override fun getMusicConfig(): MusicConfig? {
         return getMasterDevice()?.getMusicConfig()
     }
 
-    fun getMusicStats(): MusicStatsResponse? {
-        return getMasterDevice()?.getMusicStats()
+    override fun getLedMusicStats(): LedMusicStatsResponse? {
+        return getMasterDevice()?.getLedMusicStats()
     }
 
-    fun getMusicEnabled(): MusicEnabledResponse? {
+    override fun getMusicEnabled(): MusicEnabledResponse? {
         return getMasterDevice()?.getMusicEnabled()
     }
 
-    fun setMusicEnabled(enabled: Boolean): JsonObject? {
+    override fun setMusicEnabled(enabled: Boolean): JsonObject? {
         return getMasterDevice()?.setMusicEnabled(enabled)
     }
 
-    fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
+    override fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
         return getMasterDevice()?.getMusicDriversCurrent()
     }
 
-    fun getMusicDriversSets(): MusicDriversSets? {
+    override fun getMusicDriversSets(): MusicDriversSets? {
         return getMasterDevice()?.getMusicDriversSets()
     }
 
-    fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
+    override fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
         return getMasterDevice()?.getCurrentMusicDriversSet()
     }
 
 
-    fun getDeviceInfoResponse(): DeviceInfo? {
+    override fun getDeviceInfoResponse(): DeviceInfo? {
         return getMasterDevice()?.getDeviceInfoResponse()
     }
 
-    fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
+    override fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
         return getMasterDevice()?.getFirmwareVersionResponse()
     }
 
-    fun determineDeviceGeneration(): Int {
+    override fun determineDeviceGeneration(): Int {
         return getMasterDevice()?.determineDeviceGeneration()?:0
     }
 
@@ -170,8 +184,16 @@ class XledArray(
         xLedDevices.flatten().forEach { it.setBrightness(brightness) }
     }
 
+    override fun getSaturation(): Saturation? {
+        return getMasterDevice()?.getSaturation()
+    }
+
     override fun setSaturation(saturation: Float) {
         xLedDevices.flatten().forEach { it.setSaturation(saturation) }
+    }
+
+    override fun getColor(): Color<*> {
+        return getMasterDevice()?.getColor()?: RGBColor(0, 0, 0)
     }
 
     override fun setColor(color: Color<*>) {
@@ -184,15 +206,15 @@ class XledArray(
     }
 
     override fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer {
-        return getMasterDevice()?.setTimer(timeOn, timeOff)?:error(NO_DEVICE)
+        return xLedDevices.flatten().firstOrNull()?.setTimer(timeOn, timeOff)?:error(NO_DEVICE)
     }
 
     override fun setTimer(timer: Timer): Timer {
-        return getMasterDevice()?.setTimer(timer)?:error(NO_DEVICE)
+        return xLedDevices.flatten().firstOrNull()?.setTimer(timer)?:error(NO_DEVICE)
     }
 
     override fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer {
-        return getMasterDevice()?.setTimer(timeOnHour, timeOnMinute, timeOffHour, timeOffMinute)?:error(
+        return xLedDevices.flatten().firstOrNull()?.setTimer(timeOnHour, timeOnMinute, timeOffHour, timeOffMinute)?:error(
             NO_DEVICE
         )
     }
