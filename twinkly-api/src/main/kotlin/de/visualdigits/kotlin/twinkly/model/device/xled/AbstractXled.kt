@@ -25,7 +25,7 @@ import java.util.Base64
 import kotlin.random.Random
 
 abstract class AbstractXled(
-    val ipAddress: String,
+    private val ipAddress: String,
     val baseUrl: String,
     val transformation: ((XledFrame) -> XledFrame)? = null
 ) {
@@ -35,7 +35,7 @@ abstract class AbstractXled(
     val deviceInfo: DeviceInfo?
     val firmwareVersion: Version
     val deviceGeneration: Int
-    val ledMovieConfig: LedMovieConfigResponse?
+    private val ledMovieConfig: LedMovieConfigResponse?
     val bytesPerLed: Int
     val ledLayout: LedLayout?
 
@@ -75,6 +75,11 @@ abstract class AbstractXled(
             ledMovieConfig = null
         }
     }
+
+    fun getIpAddress(): String = ipAddress
+
+    fun getLedMovieConfig(): LedMovieConfigResponse? = ledMovieConfig
+
 
     private fun getDeviceInfoResponse(): DeviceInfo? {
         // do not rename to avoid name clash with above attribute
@@ -251,24 +256,6 @@ abstract class AbstractXled(
                     }
                     datagram?.also { d -> udpClient.send(d) }
                 }
-        }
-    }
-
-    open fun showRealTimeSequence(
-        frameSequence: XledSequence,
-        loop: Int
-    ) {
-        val frames = frameSequence
-            .filter { it is XledFrame }
-            .map { it as XledFrame }
-
-        var loopCount = loop
-        while (loopCount == -1 || loopCount > 0) {
-            frames.forEach { frame ->
-                showRealTimeFrame(frame)
-                Thread.sleep(frameSequence.frameDelay)
-            }
-            if (loopCount != -1) loopCount--
         }
     }
 

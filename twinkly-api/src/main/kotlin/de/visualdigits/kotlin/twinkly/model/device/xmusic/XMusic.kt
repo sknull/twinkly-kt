@@ -85,7 +85,7 @@ class XMusic private constructor(
     }
 
     fun readData(): String {
-        val bytes = UdpClient(ipAddress, UDP_PORT_STREAMING).use { udpClient ->
+        val bytes = UdpClient(getIpAddress(), UDP_PORT_STREAMING).use { udpClient ->
             udpClient.read(1)
         }
         return String(bytes)

@@ -1,16 +1,38 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
+import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.common.networkstatus.NetworkStatus
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
+import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
+import de.visualdigits.kotlin.twinkly.model.device.xled.request.NewMovieRequest
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.PlayList
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.CurrentLedEffectResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedEffectsResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.CurrentMovieResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.LedMovieConfigResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.Movie
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.Movies
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.NewMovieResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriverSetResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicDriversResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.CurrentMusicEffectResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.LedMusicStatsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicDriversSets
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEffectsResponse
+import de.visualdigits.kotlin.twinkly.model.device.xled.response.music.MusicEnabledResponse
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.response.MusicConfig
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
+import java.time.OffsetDateTime
 
 /**
  * Base class for specific twinkly devices.
@@ -62,9 +84,9 @@ interface XLed {
         }
     }
 
-    fun getLedLayoutResponse(): LedLayout?
+    fun getIpAddress(): String
 
-    fun getLedMovieConfigResponse(): LedMovieConfigResponse?
+    fun getLedMovieConfig(): LedMovieConfigResponse?
 
     /**
      * Performs the challenge response sequence needed to actually log in to the device.
@@ -87,27 +109,126 @@ interface XLed {
      */
     fun logout()
 
+    fun powerOn()
+
+    fun powerOff()
+
+    fun getMode(): Mode?
+
     fun getLedMode(): LedMode?
 
     fun setLedMode(ledMode: LedMode): JsonObject?
+
+    fun ledReset()
+
+    fun getMusicEffects(): MusicEffectsResponse?
+
+    fun getCurrentMusicEffect(): CurrentMusicEffectResponse?
+
+    fun setCurrentMusicEffect(effectId: String): JsonObject?
+
+    fun getMusicConfig(): MusicConfig?
+
+    fun getLedMusicStats(): LedMusicStatsResponse?
+
+    fun getMusicEnabled(): MusicEnabledResponse?
+
+    fun setMusicEnabled(enabled: Boolean): JsonObject?
+
+    fun getMusicDriversCurrent(): CurrentMusicDriversResponse?
+
+    fun getMusicDriversSets(): MusicDriversSets?
+
+    fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse?
+
+    fun getBrightness(): Brightness?
+
+    fun setBrightness(brightness: Float)
+
+    fun getSaturation(): Saturation?
+
+    fun setSaturation(saturation: Float)
+
+    fun getColor(): Color<*>
+
+    fun setColor(color: Color<*>)
+
+    fun getLedConfig(): LedConfigResponse?
+
+    fun getLedEffects(): LedEffectsResponse?
+
+    fun getCurrentLedEffect(): CurrentLedEffectResponse?
+
+    fun setCurrentLedEffect(effectId: String): JsonObject?
+
+    fun getMovies(): Movies?
+
+    fun deleteMovies(): JsonObject?
+
+    fun getCurrentMovie(): CurrentMovieResponse?
+
+    fun setCurrentMovie(currentMovieRequest: CurrentMovieRequest): JsonObject?
+
+    fun getPlaylist(): PlayList?
+
+    fun getCurrentPlaylist(): String?
+
+    fun showFrame(
+        name: String,
+        frame: XledFrame
+    )
+
+    /**
+     * Experimental code which tries to upload a new movie and plays it in device.
+     * Seems to overwrite the current sequence which is active in the device.
+     */
+    fun showSequence(
+        name: String,
+        sequence: XledSequence,
+        fps: Int
+    )
 
     fun showRealTimeFrame(frame: XledFrame)
 
     fun showRealTimeSequence(
         frameSequence: XledSequence,
         loop: Int
-    )
-    /**
-     * Returns the devices current status.
-     */
-    fun getStatus(): JsonObject?
+    ) {
+        val frames = frameSequence
+            .filter { it is XledFrame }
+            .map { it as XledFrame }
 
-    /**
-     * Returns infos about the network configuration of the device.
-     */
-    fun getNetworkStatus(): NetworkStatus?
+        var loopCount = loop
+        while (loopCount == -1 || loopCount > 0) {
+            frames.forEach { frame ->
+                showRealTimeFrame(frame)
+                Thread.sleep(frameSequence.frameDelay)
+            }
+            if (loopCount != -1) loopCount--
+        }
+    }
 
-    fun getEndpoint(uri: String): String?
+    fun setLedMovieConfig(movieConfig: LedMovieConfigResponse): JsonObject?
 
-    fun getEndpointRaw(uri: String): String?
+    fun uploadNewMovie(newMovie: NewMovieRequest): NewMovieResponse?
+
+    fun uploadNewMovieToListOfMovies(frame: XledFrame): Movie?
+
+    fun uploadNewMovieToListOfMovies(bytes: ByteArray): Movie?
+
+    fun getTimer(): Timer?
+
+    fun setTimer(
+        timeOn: OffsetDateTime,
+        timeOff: OffsetDateTime
+    ): Timer?
+
+    fun setTimer(
+        timeOnHour: Int,
+        timeOnMinute: Int,
+        timeOffHour: Int,
+        timeOffMinute: Int
+    ): Timer?
+
+    fun setTimer(timer: Timer): Timer?
 }

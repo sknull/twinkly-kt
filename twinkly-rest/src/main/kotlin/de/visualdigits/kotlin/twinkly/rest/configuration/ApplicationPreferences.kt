@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.rest.configuration
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedArray
 import de.visualdigits.kotlin.twinkly.model.twinkly.TwinklyConfiguration
 import jakarta.annotation.PostConstruct
 import org.slf4j.Logger
@@ -24,7 +24,7 @@ class ApplicationPreferences {
     var theme: String = ""
     var twinkly: List<TwinklyConfiguration> = listOf()
     var twinklyMap: Map<String, TwinklyConfiguration> = mapOf()
-    var xledArrays: Map<String, XledArray> = mapOf()
+    var xledArrays: Map<String, XLedArray> = mapOf()
     var xledDevices: Map<String, XLedDevice> = mapOf()
 
     @PostConstruct
@@ -44,9 +44,9 @@ class ApplicationPreferences {
 
     fun getXledDevice(id: String): XLedDevice? = xledDevices[id]
 
-    fun getXledArray(id: String): XledArray? = xledArrays[id]
+    fun getXledArray(id: String): XLedArray? = xledArrays[id]
 
-    fun getXledArrays(): List<XledArray> = xledArrays.values.toList()
+    fun getXledArrays(): List<XLedArray> = xledArrays.values.toList()
 
     fun getAbsoluteResource(relativeResourePath: String): File {
         return Paths.get(twinklyDirectory.absolutePath, "resources", relativeResourePath).toFile()

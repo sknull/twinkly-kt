@@ -6,6 +6,7 @@ import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodDance
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodFluo
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -17,6 +18,11 @@ import kotlin.random.Random
 @Disabled("only for local testing")
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class BasicTests : XledArrayTest() {
+
+    @AfterEach
+    fun delay() {
+        Thread.sleep(2000)
+    }
 
 //    @Test
 //    fun testRunningPixel() {

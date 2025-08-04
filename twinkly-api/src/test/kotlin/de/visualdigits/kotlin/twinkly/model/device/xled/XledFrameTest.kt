@@ -8,26 +8,26 @@ import org.junit.jupiter.api.Test
 @Disabled("only for local testing")
 class XledFrameTest {
 
-    private val xledArray = XledArray.instance(
-        arrayOf(
-            arrayOf(
+    private val xledArray = XLedArray.instance(
+        mutableListOf(
+            mutableListOf(
                 XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
-            arrayOf(
+            mutableListOf(
                 XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         )
     )
 
-    private val xledArrayLandscape = XledArray.instance(
-        arrayOf(
-            arrayOf(
+    private val xledArrayLandscape = XLedArray.instance(
+        mutableListOf(
+            mutableListOf(
                 XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
             ),
-            arrayOf(
+            mutableListOf(
                 XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.60", width = 10, height = 21)
             )

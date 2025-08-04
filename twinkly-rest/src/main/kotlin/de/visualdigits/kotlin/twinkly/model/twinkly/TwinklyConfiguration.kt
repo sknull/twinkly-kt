@@ -1,30 +1,33 @@
 package de.visualdigits.kotlin.twinkly.model.twinkly
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
-import de.visualdigits.kotlin.twinkly.model.device.xled.XledArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedArray
+import kotlin.collections.MutableList
 
 class TwinklyConfiguration(
     val name: String,
     val deviceOrigin: String,
     val gain: Double,
-    val array: Array<Array<XledDeviceConfiguration>>
+    val array: List<List<XledDeviceConfiguration>>
 ) {
 
-    val xledArray: XledArray
+    val xledArray: XLedArray
 
     init {
-        xledArray = XledArray.instance(
-            deviceOrigin = DeviceOrigin.valueOf(deviceOrigin),
-            xLedDevices = array.map { column ->
-                column.map { config ->
-                    XLedDevice.instance(
-                        ipAddress = config.ipAddress,
-                        width = config.width,
-                        height = config.height
-                    )
-                }.toTypedArray()
-            }.toTypedArray()
+        val xLedDevices = array.map { column ->
+            column.map { config ->
+                XLedDevice.instance(
+                    ipAddress = config.ipAddress,
+                    width = config.width,
+                    height = config.height
+                )
+            }.toMutableList()
+        }.toMutableList()
+        xledArray = XLedArray.instance(
+            xLedDevices = xLedDevices as MutableList<MutableList<XLed>>,
+            deviceOrigin = DeviceOrigin.valueOf(deviceOrigin)
         )
     }
 }

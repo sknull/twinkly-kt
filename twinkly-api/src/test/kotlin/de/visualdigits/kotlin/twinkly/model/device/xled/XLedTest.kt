@@ -74,7 +74,7 @@ class XLedTest {
         println(xled.getMovies())
         println(xled.getCurrentMovie())
         println(xled.getPlaylist())
-        println(xled.getPlaylistCurrent())
+        println(xled.getCurrentPlaylist())
         println(xled.getLedEffects())
         println(xled.getCurrentLedEffect())
     }

@@ -73,19 +73,19 @@ open class XLedDevice protected constructor(
         }
     }
 
-    fun powerOn() {
+    override fun powerOn() {
         refreshTokenIfNeeded()
         // try modes until it works...
         listOf(LedMode.playlist, LedMode.movie, LedMode.effect)
             .find { mode -> setLedMode(mode)?.responseCode == ResponseCode.Ok }
     }
 
-    fun powerOff() {
+    override fun powerOff() {
         refreshTokenIfNeeded()
         setLedMode(LedMode.off)
     }
 
-    fun getMode(): Mode? {
+    override fun getMode(): Mode? {
         refreshTokenIfNeeded()
         return get<Mode>(
             url = "$baseUrl/led/mode",
@@ -100,9 +100,9 @@ open class XLedDevice protected constructor(
     override fun setLedMode(ledMode: LedMode): JsonObject? {
         refreshTokenIfNeeded()
         val body = "{\"mode\":\"${ledMode.name}\"}"
-        log.debug("Setting mode for device '$ipAddress' to ${ledMode.name}...")
+        log.debug("Setting mode for device '${getIpAddress()}' to ${ledMode.name}...")
         return post<Mode>(
-            url = "http://$ipAddress/xled/v1/led/mode",
+            url = "http://${getIpAddress()}/xled/v1/led/mode",
             body = body.toByteArray(),
             headers = mutableMapOf(
                 "Content-Type" to "application/json"
@@ -111,28 +111,28 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun ledReset() {
+    override fun ledReset() {
         refreshTokenIfNeeded()
         get<String>(
             url = "$baseUrl/led/reset",
             clazz = String::class.java)
     }
 
-    fun getMusicEffects(): MusicEffectsResponse? {
+    override fun getMusicEffects(): MusicEffectsResponse? {
         return get<MusicEffectsResponse>(
             url = "$baseUrl/music/effects",
             clazz = MusicEffectsResponse::class.java
         )
     }
 
-    fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
+    override fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
         return get<CurrentMusicEffectResponse>(
             url = "$baseUrl/music/effects/current",
             clazz = CurrentMusicEffectResponse::class.java
         )
     }
 
-    fun setCurrentMusicEffect(effectId: String): JsonObject? {
+    override fun setCurrentMusicEffect(effectId: String): JsonObject? {
         return post<JsonObject>(
             url = "/$baseUrl/music/effects/current",
             body = ("{\n" +
@@ -148,7 +148,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getMusicConfig(): MusicConfig? {
+    override fun getMusicConfig(): MusicConfig? {
         val response = get<MusicConfig>(
             url = "$baseUrl/music/config",
             clazz = MusicConfig::class.java
@@ -156,7 +156,7 @@ open class XLedDevice protected constructor(
         return response
     }
 
-    fun getLedMusicStats(): LedMusicStatsResponse? {
+    override fun getLedMusicStats(): LedMusicStatsResponse? {
         refreshTokenIfNeeded()
         return get<LedMusicStatsResponse>(
             url = "$baseUrl/music/stats",
@@ -164,7 +164,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getMusicEnabled(): MusicEnabledResponse? {
+    override fun getMusicEnabled(): MusicEnabledResponse? {
         refreshTokenIfNeeded()
         return get<MusicEnabledResponse>(
             url = "$baseUrl/music/enabled",
@@ -172,7 +172,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun setMusicEnabled(enabled: Boolean): JsonObject? {
+    override fun setMusicEnabled(enabled: Boolean): JsonObject? {
         refreshTokenIfNeeded()
         return post<JsonObject>(
             url = "$baseUrl/music/enabled",
@@ -181,7 +181,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
+    override fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
         refreshTokenIfNeeded()
         return get<CurrentMusicDriversResponse>(
             url = "$baseUrl/music/drivers/current",
@@ -189,7 +189,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getMusicDriversSets(): MusicDriversSets? {
+    override fun getMusicDriversSets(): MusicDriversSets? {
         refreshTokenIfNeeded()
         return get<MusicDriversSets>(
             url = "$baseUrl/music/drivers/sets",
@@ -197,7 +197,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
+    override fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
         refreshTokenIfNeeded()
         return get<CurrentMusicDriverSetResponse>(
             url = "$baseUrl/music/drivers/sets/current",
@@ -205,7 +205,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getBrightness(): Brightness? {
+    override fun getBrightness(): Brightness? {
         refreshTokenIfNeeded()
         return get<Brightness>(
             url = "$baseUrl/led/out/brightness",
@@ -213,7 +213,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun setBrightness(brightness: Float) {
+    override fun setBrightness(brightness: Float) {
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/brightness",
@@ -226,7 +226,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getSaturation(): Saturation? {
+    override fun getSaturation(): Saturation? {
         refreshTokenIfNeeded()
         return get<Saturation>(
             url = "$baseUrl/led/out/saturation",
@@ -234,7 +234,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun setSaturation(saturation: Float) {
+    override fun setSaturation(saturation: Float) {
         refreshTokenIfNeeded()
         post<JsonObject>(
             url = "$baseUrl/led/out/saturation",
@@ -246,7 +246,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getColor(): Color<*> {
+    override fun getColor(): Color<*> {
         refreshTokenIfNeeded()
         val response = get<Map<*,*>>(
             url = "$baseUrl/led/color",
@@ -282,7 +282,7 @@ open class XLedDevice protected constructor(
         }
     }
 
-    fun setColor(color: Color<*>) {
+    override fun setColor(color: Color<*>) {
         refreshTokenIfNeeded()
         val body = when (color) {
             is RGBColor -> "{\"red\":${color.red},\"green\":${color.green},\"blue\":${color.blue}}"
@@ -305,7 +305,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getLedConfig(): LedConfigResponse? {
+    override fun getLedConfig(): LedConfigResponse? {
         refreshTokenIfNeeded()
         return get<LedConfigResponse>(
             url = "$baseUrl/led/config",
@@ -313,21 +313,21 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getLedEffects(): LedEffectsResponse? {
+    override fun getLedEffects(): LedEffectsResponse? {
         return get<LedEffectsResponse>(
             url = "$baseUrl/led/effects",
             clazz = LedEffectsResponse::class.java
         )
     }
 
-    fun getCurrentLedEffect(): CurrentLedEffectResponse? {
+    override fun getCurrentLedEffect(): CurrentLedEffectResponse? {
         return get<CurrentLedEffectResponse>(
             url = "$baseUrl/led/effects/current",
             clazz = CurrentLedEffectResponse::class.java
         )
     }
 
-    fun setCurrentLedEffect(effectId: String): JsonObject? {
+    override fun setCurrentLedEffect(effectId: String): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/led/effects/current",
             body = "{\"effect_id\": \"$effectId\"}".toByteArray(),
@@ -339,28 +339,28 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getMovies(): Movies? {
+    override fun getMovies(): Movies? {
         return get<Movies>(
             url = "$baseUrl/movies",
             clazz = Movies::class.java
         )
     }
 
-    fun deleteMovies(): JsonObject? {
+    override fun deleteMovies(): JsonObject? {
         return delete<JsonObject>(
             url = "$baseUrl/movies",
             clazz = JsonObject::class.java
         )
     }
 
-    fun getCurrentMovie(): CurrentMovieResponse? {
+    override fun getCurrentMovie(): CurrentMovieResponse? {
         return get<CurrentMovieResponse>(
             url = "$baseUrl/movies/current",
             clazz = CurrentMovieResponse::class.java
         )
     }
 
-    fun setCurrentMovie(currentMovieRequest: CurrentMovieRequest): JsonObject? {
+    override fun setCurrentMovie(currentMovieRequest: CurrentMovieRequest): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/movies/current",
             body = currentMovieRequest.writeValueAssBytes(),
@@ -372,21 +372,21 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getPlaylist(): PlayList? {
+    override fun getPlaylist(): PlayList? {
         return get<PlayList>(
             url = "$baseUrl/playlist",
             clazz = PlayList::class.java
         )
     }
 
-    fun getPlaylistCurrent(): String? {
+    override fun getCurrentPlaylist(): String? {
         return get<String>(
             url = "$baseUrl/playlist/current",
             clazz = String::class.java
         )
     }
 
-    fun showFrame(
+    override fun showFrame(
         name: String,
         frame: XledFrame
     ) {
@@ -397,7 +397,7 @@ open class XLedDevice protected constructor(
      * Experimental code which tries to upload a new movie and plays it in device.
      * Seems to overwrite the current sequence which is active in the device.
      */
-    fun showSequence(
+    override fun showSequence(
         name: String,
         sequence: XledSequence,
         fps: Int
@@ -430,7 +430,7 @@ open class XLedDevice protected constructor(
         setLedMode(LedMode.movie)
     }
 
-    fun setLedMovieConfig(movieConfig: LedMovieConfigResponse): JsonObject? {
+    override fun setLedMovieConfig(movieConfig: LedMovieConfigResponse): JsonObject? {
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.writeValueAssBytes(),
@@ -442,7 +442,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun uploadNewMovie(newMovie: NewMovieRequest): NewMovieResponse? {
+    override fun uploadNewMovie(newMovie: NewMovieRequest): NewMovieResponse? {
         return post<NewMovieResponse>(
             url = "$baseUrl/movies/new",
             body = newMovie.writeValueAssBytes(),
@@ -454,12 +454,12 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun uploadNewMovieToListOfMovies(frame: XledFrame): Movie? {
+    override fun uploadNewMovieToListOfMovies(frame: XledFrame): Movie? {
         val bytes = frame.toByteArray(bytesPerLed)
         return uploadNewMovieToListOfMovies(bytes)
     }
 
-    fun uploadNewMovieToListOfMovies(bytes: ByteArray): Movie? {
+    override fun uploadNewMovieToListOfMovies(bytes: ByteArray): Movie? {
         return post<Movie>(
             url = "$baseUrl/led/movie/full",
             body = bytes,
@@ -471,14 +471,14 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun getTimer(): Timer? {
+    override fun getTimer(): Timer? {
         return get<Timer>(
             url = "$baseUrl/timer",
             clazz = Timer::class.java
         )
     }
 
-    fun setTimer(
+    override fun setTimer(
         timeOn: OffsetDateTime,
         timeOff: OffsetDateTime
     ): Timer? {
@@ -490,7 +490,7 @@ open class XLedDevice protected constructor(
         )
     }
 
-    fun setTimer(
+    override fun setTimer(
         timeOnHour: Int,
         timeOnMinute: Int,
         timeOffHour: Int,
@@ -504,7 +504,7 @@ open class XLedDevice protected constructor(
         return setTimer(timer)
     }
 
-    fun setTimer(timer: Timer): Timer? {
+    override fun setTimer(timer: Timer): Timer? {
         val result = post<JsonObject>(
             url = "$baseUrl/timer",
             body = timer.writeValueAssBytes(),
