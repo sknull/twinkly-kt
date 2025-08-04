@@ -5,7 +5,7 @@ import de.visualdigits.kotlin.minim.audio.AudioInputType
 import de.visualdigits.kotlin.minim.fft.BeatDetect
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.ceil
@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
 class Oscilloscope(
     private val color: Color<*> = RGBColor(255, 0, 0),
     private val colorBeat: Color<*> = RGBColor(255, 255, 255),
-    private val xled: XLedDevice
+    private val xled: XLed
 ) {
 
     fun run() {

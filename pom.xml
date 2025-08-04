@@ -17,7 +17,7 @@
   </modules>
 
   <properties>
-    <revision>0.0.3-SNAPSHOT</revision>
+    <revision>0.0.4-SNAPSHOT</revision>
 
     <java-version>17</java-version>
     <compilerVersion>17</compilerVersion>

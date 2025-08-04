@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.model.device.xmusic
 
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.AbstractXled
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.LedMovieConfigResponse
 import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodsEffect
@@ -15,12 +15,23 @@ import de.visualdigits.kotlin.udp.UdpClient
  * Specific session for the twinkly music device which is used
  * as networked microfone for audio input.
  */
-class XMusic(
+class XMusic private constructor(
     ipAddress: String
-): XLedDevice(
+): AbstractXled(
     ipAddress = ipAddress,
     baseUrl = "http://$ipAddress/xmusic/v1"
 ) {
+
+    companion object {
+
+        private val cache = mutableMapOf<String, XMusic>()
+
+        fun instance(
+            ipAddress: String
+        ): XMusic {
+            return cache.computeIfAbsent(ipAddress) { XMusic(ipAddress) }
+        }
+    }
 
     override fun getLedLayoutResponse(): LedLayout? {
         return null

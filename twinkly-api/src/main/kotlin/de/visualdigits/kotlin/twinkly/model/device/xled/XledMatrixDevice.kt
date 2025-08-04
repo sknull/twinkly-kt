@@ -2,7 +2,7 @@ package de.visualdigits.kotlin.twinkly.model.device.xled
 
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
-class XledMatrixDevice(
+class XledMatrixDevice private constructor(
     ipAddress: String = "",
     width: Int = 0,
     height: Int = 0
@@ -25,6 +25,22 @@ class XledMatrixDevice(
 }) {
 
     companion object {
+
+        private val cache = mutableMapOf<String, XledMatrixDevice>()
+
+        fun instance(
+            ipAddress: String,
+            width: Int,
+            height: Int
+        ): XledMatrixDevice {
+            return cache.computeIfAbsent(ipAddress) {
+                XledMatrixDevice(
+                    ipAddress,
+                    width,
+                    height
+                )
+            }
+        }
 
         private val transformationMatrix = arrayOf(
             arrayOf(Pair( 4,  0), Pair( 3, 49), Pair( 2,  0), Pair( 1, 49), Pair( 0,  0), Pair( 5,  0), Pair( 6, 49), Pair( 7,  0), Pair( 8, 49), Pair( 9,  0)),

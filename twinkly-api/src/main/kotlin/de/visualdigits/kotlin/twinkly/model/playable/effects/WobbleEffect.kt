@@ -3,10 +3,10 @@ package de.visualdigits.kotlin.twinkly.model.playable.effects
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 
 class WobbleEffect(
-    xled: XLedDevice,
+    xled: XLed,
     val duration: Long = 2000,
     val grid: Int = 20,
     initialColor: Color<*> = RGBColor(0, 0, 0)

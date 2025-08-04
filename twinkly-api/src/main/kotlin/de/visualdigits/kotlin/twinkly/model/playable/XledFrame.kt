@@ -6,6 +6,7 @@ import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
@@ -237,7 +238,7 @@ open class XledFrame(
     }
 
     override fun play(
-        xled: XLedDevice,
+        xled: XLed,
         loop: Int,
         transitionType: TransitionType,
         randomSequence: Boolean,

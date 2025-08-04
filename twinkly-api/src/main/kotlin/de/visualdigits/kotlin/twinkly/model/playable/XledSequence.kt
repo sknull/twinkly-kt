@@ -5,7 +5,7 @@ import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.Rotation
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionDirection
 import de.visualdigits.kotlin.twinkly.model.playable.transition.TransitionType
@@ -130,7 +130,7 @@ class XledSequence(
     }
 
     override fun play(
-        xled: XLedDevice,
+        xled: XLed,
         loop: Int,
         transitionType: TransitionType,
         randomSequence: Boolean,
@@ -222,7 +222,7 @@ class XledSequence(
     }
 
     private fun showTransition(
-        xled: XLedDevice,
+        xled: XLed,
         source: Playable,
         target: Playable,
         transitionType: TransitionType,
@@ -242,7 +242,7 @@ class XledSequence(
     }
 
     private fun showPlayable(
-        xled: XLedDevice,
+        xled: XLed,
         playable: Playable,
         repetitions: Long
     ) {

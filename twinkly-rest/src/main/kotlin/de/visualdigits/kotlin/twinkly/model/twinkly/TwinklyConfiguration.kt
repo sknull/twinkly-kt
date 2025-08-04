@@ -14,11 +14,11 @@ class TwinklyConfiguration(
     val xledArray: XledArray
 
     init {
-        xledArray = XledArray(
+        xledArray = XledArray.instance(
             deviceOrigin = DeviceOrigin.valueOf(deviceOrigin),
             xLedDevices = array.map { column ->
                 column.map { config ->
-                    XLedDevice(
+                    XLedDevice.instance(
                         ipAddress = config.ipAddress,
                         width = config.width,
                         height = config.height

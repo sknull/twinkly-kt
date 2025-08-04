@@ -3,6 +3,8 @@ package de.visualdigits.kotlin
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodDance
+import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodFluo
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.MethodOrderer
@@ -51,7 +53,7 @@ class BasicTests : XledArrayTest() {
         xledMatrix.setMusicEnabled(false)
         xledArray.setMusicEnabled(false)
 
-//        twinklyMusic.setMoodsEffect(MoodDance.Shuffle)
+//        twinklyMusic.setMoodsEffect(MoodFluo.Shuffle)
 
 //        println(curtain1.firmwareVersion)
 //        println(xledArray.getMusicEnabled())
@@ -103,7 +105,6 @@ class BasicTests : XledArrayTest() {
                 frame[x, y] = RGBColor(255, 255, 255)
             }
             frame.play(xledArray)
-            Thread.sleep(30)
         }
 
         // horizontal
@@ -113,7 +114,6 @@ class BasicTests : XledArrayTest() {
                 frame[x, y] = RGBColor(255, 255, 255)
             }
             frame.play(xledArray)
-            Thread.sleep(30)
         }
     }
 

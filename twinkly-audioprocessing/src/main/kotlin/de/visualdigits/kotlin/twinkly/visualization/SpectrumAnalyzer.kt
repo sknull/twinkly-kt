@@ -7,7 +7,7 @@ import de.visualdigits.kotlin.minim.fft.DetectMode
 import de.visualdigits.kotlin.minim.fft.FFT
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
@@ -25,7 +25,7 @@ class SpectrumAnalyzer(
     private val colorMeter: Color<*> = RGBColor(0, 255, 64, 0),
     private val colorMid: Color<*> = RGBColor(255, 255, 0, 0),
     private val colorMax: Color<*> = RGBColor(255, 64, 32, 0),
-    private val xled: XLedDevice
+    private val xled: XLed
 ) {
 
     fun run() {

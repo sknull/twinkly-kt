@@ -5,18 +5,19 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
-object UrlExtensions {
-    val log: Logger = LoggerFactory.getLogger(javaClass)
-}
+object UrlExtensions
 
-val mapper: JsonMapper = jacksonMapperBuilder()
+val log: Logger = LoggerFactory.getLogger(UrlExtensions.javaClass)
+
+private const val CONNECTION_TIMEOUT = 5000
+
+private val mapper: JsonMapper = jacksonMapperBuilder()
     .disable(SerializationFeature.INDENT_OUTPUT)
     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     .addModule(JavaTimeModule())
@@ -30,8 +31,8 @@ fun <T : Any> URL.post(
 ): T? {
     val connection = (openConnection() as HttpURLConnection)
     connection.requestMethod = "POST"
-    connection.connectTimeout = XLedDevice.CONNECTION_TIMEOUT
-    connection.readTimeout = XLedDevice.CONNECTION_TIMEOUT
+    connection.connectTimeout = CONNECTION_TIMEOUT
+    connection.readTimeout = CONNECTION_TIMEOUT
     headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
     connection.doOutput = true
     connection.outputStream.use { os ->
@@ -107,7 +108,7 @@ private fun URL.createConnection(
 ): HttpURLConnection {
     val connection = (openConnection() as HttpURLConnection)
     connection.requestMethod = method
-    connection.connectTimeout = XLedDevice.CONNECTION_TIMEOUT
+    connection.connectTimeout = CONNECTION_TIMEOUT
     headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
     if (doOutput) {
         connection.doOutput = true

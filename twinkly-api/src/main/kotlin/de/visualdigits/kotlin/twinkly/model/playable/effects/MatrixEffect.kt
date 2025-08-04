@@ -2,14 +2,14 @@ package de.visualdigits.kotlin.twinkly.model.playable.effects
 
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
 class MatrixEffect(
-    xled: XLedDevice,
+    xled: XLed,
     val color: RGBColor = RGBColor(0, 255, 0),
     val interval: Int = 3,
     initialColor: Color<*> = RGBColor(0, 0, 0)

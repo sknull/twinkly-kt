@@ -8,16 +8,16 @@ import de.visualdigits.kotlin.twinkly.model.device.xmusic.XMusic
 
 abstract class XledArrayTest {
 
-    protected val twinklyMusic = XMusic("192.168.178.39")
+    protected val twinklyMusic = XMusic.instance("192.168.178.39")
 
-    protected val xledMatrix = XledMatrixDevice("192.168.178.34", 10, 50)
+    protected val xledMatrix = XledMatrixDevice.instance("192.168.178.34", 10, 50)
 
-    val curtain1 = XLedDevice(ipAddress = "192.168.178.35", width = 10, height = 21)
-    val curtain2 = XLedDevice(ipAddress = "192.168.178.58", width = 10, height = 21)
-    val curtain3 = XLedDevice(ipAddress = "192.168.178.52", width = 10, height = 21)
-    val curtain4 = XLedDevice(ipAddress = "192.168.178.60", width = 10, height = 21)
+    val curtain1 = XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 21)
+    val curtain2 = XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21)
+    val curtain3 = XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21)
+    val curtain4 = XLedDevice.instance(ipAddress = "192.168.178.60", width = 10, height = 21)
 
-    protected val xledArray = XledArray(
+    protected val xledArray = XledArray.instance(
         arrayOf(
             arrayOf(
                 curtain1,
@@ -30,7 +30,7 @@ abstract class XledArrayTest {
         )
     )
 
-    protected val xledArrayLandscapeLeft = XledArray(
+    protected val xledArrayLandscapeLeft = XledArray.instance(
         arrayOf(
             arrayOf(
                 curtain1,
@@ -44,7 +44,7 @@ abstract class XledArrayTest {
         DeviceOrigin.BOTTOM_LEFT
     )
 
-    protected val xledArrayLandscapeRight = XledArray(
+    protected val xledArrayLandscapeRight = XledArray.instance(
         xLedDevices = arrayOf(
             arrayOf(
                 curtain1,

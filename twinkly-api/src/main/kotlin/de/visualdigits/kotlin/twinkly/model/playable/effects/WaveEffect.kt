@@ -3,14 +3,14 @@ package de.visualdigits.kotlin.twinkly.model.playable.effects
 import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
 import kotlin.math.PI
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class WaveEffect(
     val intensity: Double,
-    xled: XLedDevice,
+    xled: XLed,
     initialColor: Color<*> = RGBColor(0, 0, 0)
 ): XledEffect("Plasma Effect", xled, initialColor = initialColor) {
 

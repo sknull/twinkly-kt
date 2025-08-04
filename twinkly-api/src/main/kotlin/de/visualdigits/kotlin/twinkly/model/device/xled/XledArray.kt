@@ -4,13 +4,10 @@ import de.visualdigits.kotlin.twinkly.model.color.Color
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.common.JsonObject
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Brightness
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.DeviceInfo
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.FirmwareVersionResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Saturation
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.Timer
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.CurrentLedEffectResponse
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedEffectsResponse
-import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.LedMode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.Mode
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.mode.SyncMode
@@ -27,35 +24,57 @@ import java.time.OffsetDateTime
 
 private const val NO_DEVICE = "No device"
 
-class XledArray(
+class XledArray private constructor(
     var xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
     val deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
-    width: Int = 0,
-    height: Int = 0,
-    transformation:  ((XledFrame) -> XledFrame)? = null
-) : XLedDevice(
+    override var width: Int = 0,
+    override var height: Int = 0,
+    transformation: ((XledFrame) -> XledFrame)? = null
+) : AbstractXled(
     ipAddress = "",
     baseUrl = "",
-    width = width,
-    height = height,
-    transformation = transformation
-) {
+    transformation
+), XLed {
 
     val columns = xLedDevices.size
     val rows = if (xLedDevices.isNotEmpty()) xLedDevices.minOf { column -> column.size } else 0
 
-    init {
-        initalize()
+    companion object {
+
+        private val cache = mutableMapOf<List<String>, XledArray>()
+
+        fun instance(
+            xLedDevices: Array<Array<XLedDevice>> = arrayOf(),
+            deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
+            width: Int = 0,
+            height: Int = 0,
+            transformation: ((XledFrame) -> XledFrame)? = null
+        ): XledArray {
+            val key = xLedDevices.flatMap { c -> c.map { r -> r.ipAddress } }
+            return cache.computeIfAbsent(key) {
+                XledArray(
+                    xLedDevices,
+                    deviceOrigin,
+                    width,
+                    height,
+                    transformation
+                )
+            }
+        }
     }
 
-    private fun initalize() {
+    init {
+        initialize()
+    }
+
+    private fun initialize() {
         if (xLedDevices.isNotEmpty()) {
-            if(deviceOrigin.isPortrait()) {
-                width = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
-                height = (0 until columns ).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
+            if (deviceOrigin.isPortrait()) {
+                width = (0 until rows).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+                height = (0 until columns).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
             } else {
-                width = (0 until columns ).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
-                height = (0 until rows ).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+                width = (0 until columns).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
+                height = (0 until rows).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
             }
         }
     }
@@ -72,11 +91,11 @@ class XledArray(
         xLedDevices.flatten().forEach { it.logout() }
     }
 
-    override fun powerOn() {
+    fun powerOn() {
         xLedDevices.flatten().forEach { it.powerOn() }
     }
 
-    override fun powerOff() {
+    fun powerOff() {
         xLedDevices.flatten().forEach { it.powerOff() }
     }
 
@@ -87,133 +106,116 @@ class XledArray(
             ?:xLedDevices.flatten().firstOrNull()
     }
 
-    override fun ledReset() {
+    fun ledReset() {
         xLedDevices.flatten().forEach { it.ledReset() }
     }
 
-    override fun getBrightness(): Brightness? {
+    fun getBrightness(): Brightness? {
         return getMasterDevice()?.getBrightness()
     }
 
-    override fun getMode(): Mode? {
+    fun getMode(): Mode? {
         return getMasterDevice()?.getMode()
     }
 
-    override fun getDeviceMode(): LedMode? {
-        return getMasterDevice()?.getDeviceMode()
+    override fun getLedMode(): LedMode? {
+        return getMasterDevice()?.getLedMode()
     }
 
     override fun setLedMode(mode: LedMode): JsonObject? {
         return xLedDevices.flatten().map { it.setLedMode(mode) }.firstOrNull()
     }
 
-    override fun getLedEffects(): LedEffectsResponse? {
+    fun getLedEffects(): LedEffectsResponse? {
         return getMasterDevice()?.getLedEffects()
     }
 
-    override fun getCurrentLedEffect(): CurrentLedEffectResponse? {
+    fun getCurrentLedEffect(): CurrentLedEffectResponse? {
         return getMasterDevice()?.getCurrentLedEffect()
     }
 
-    override fun setCurrentLedEffect(effectId: String): JsonObject? {
+    fun setCurrentLedEffect(effectId: String): JsonObject? {
         return xLedDevices.flatten()
             .map { it.setCurrentLedEffect(effectId) }
             .firstOrNull()
     }
 
 
-    override fun getMusicEffects(): MusicEffectsResponse? {
+    fun getMusicEffects(): MusicEffectsResponse? {
         return getMasterDevice()?.getMusicEffects()
     }
 
-    override fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
+    fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
         return getMasterDevice()?.getCurrentMusicEffect()
     }
 
-    override fun setCurrentMusicEffect(effectId: String): JsonObject? {
+    fun setCurrentMusicEffect(effectId: String): JsonObject? {
         return getMasterDevice()?.setCurrentMusicEffect(effectId)
     }
 
-    override fun getMusicConfig(): MusicConfig? {
+    fun getMusicConfig(): MusicConfig? {
         return getMasterDevice()?.getMusicConfig()
     }
 
-    override fun getLedMusicStats(): LedMusicStatsResponse? {
+    fun getLedMusicStats(): LedMusicStatsResponse? {
         return getMasterDevice()?.getLedMusicStats()
     }
 
-    override fun getMusicEnabled(): MusicEnabledResponse? {
+    fun getMusicEnabled(): MusicEnabledResponse? {
         return getMasterDevice()?.getMusicEnabled()
     }
 
-    override fun setMusicEnabled(enabled: Boolean): JsonObject? {
+    fun setMusicEnabled(enabled: Boolean): JsonObject? {
         return getMasterDevice()?.setMusicEnabled(enabled)
     }
 
-    override fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
+    fun getMusicDriversCurrent(): CurrentMusicDriversResponse? {
         return getMasterDevice()?.getMusicDriversCurrent()
     }
 
-    override fun getMusicDriversSets(): MusicDriversSets? {
+    fun getMusicDriversSets(): MusicDriversSets? {
         return getMasterDevice()?.getMusicDriversSets()
     }
 
-    override fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
+    fun getCurrentMusicDriversSet(): CurrentMusicDriverSetResponse? {
         return getMasterDevice()?.getCurrentMusicDriversSet()
     }
 
 
-    override fun getDeviceInfoResponse(): DeviceInfo? {
-        return getMasterDevice()?.getDeviceInfoResponse()
-    }
-
-    override fun getFirmwareVersionResponse(): FirmwareVersionResponse? {
-        return getMasterDevice()?.getFirmwareVersionResponse()
-    }
-
-    override fun determineDeviceGeneration(): Int {
-        return getMasterDevice()?.determineDeviceGeneration()?:0
-    }
-
-    override fun getLedLayoutResponse(): LedLayout? {
-        return getMasterDevice()?.getLedLayoutResponse()
-    }
-
-
-    override fun setBrightness(brightness: Float) {
+    fun setBrightness(brightness: Float) {
         xLedDevices.flatten().forEach { it.setBrightness(brightness) }
     }
 
-    override fun getSaturation(): Saturation? {
+    fun getSaturation(): Saturation? {
         return getMasterDevice()?.getSaturation()
     }
 
-    override fun setSaturation(saturation: Float) {
+    fun setSaturation(saturation: Float) {
         xLedDevices.flatten().forEach { it.setSaturation(saturation) }
     }
 
-    override fun getColor(): Color<*> {
+    fun getColor(): Color<*> {
         return getMasterDevice()?.getColor()?: RGBColor(0, 0, 0)
     }
 
-    override fun setColor(color: Color<*>) {
+    fun setColor(color: Color<*>) {
         xLedDevices.flatten().forEach { it.setColor(color) }
     }
 
 
-    override fun getTimer(): Timer {
+    fun getTimer(): Timer {
         return getMasterDevice()?.getTimer()?:error(NO_DEVICE)
     }
 
-    override fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer {
+    fun setTimer(timeOn: OffsetDateTime, timeOff: OffsetDateTime): Timer {
         return xLedDevices.flatten().firstOrNull()?.setTimer(timeOn, timeOff)?:error(NO_DEVICE)
     }
 
-    override fun setTimer(timer: Timer): Timer {
+    fun setTimer(timer: Timer): Timer {
         return xLedDevices.flatten().firstOrNull()?.setTimer(timer)?:error(NO_DEVICE)
     }
 
-    override fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer {
+    fun setTimer(timeOnHour: Int, timeOnMinute: Int, timeOffHour: Int, timeOffMinute: Int): Timer {
         return xLedDevices.flatten().firstOrNull()?.setTimer(timeOnHour, timeOnMinute, timeOffHour, timeOffMinute)?:error(
             NO_DEVICE
         )
@@ -226,7 +228,7 @@ class XledArray(
                 newArray[y, columns - x - 1] = this[x, y]
             }
         }
-        newArray.initalize()
+        newArray.initialize()
 
         return newArray
     }
@@ -238,7 +240,7 @@ class XledArray(
                 newArray[rows - y - 1, x] = this[x, y]
             }
         }
-        newArray.initalize()
+        newArray.initialize()
 
         return newArray
     }
@@ -250,7 +252,7 @@ class XledArray(
                 newArray[columns - x - 1, rows - y - 1] = this[x, y]
             }
         }
-        newArray.initalize()
+        newArray.initialize()
 
         return newArray
     }
