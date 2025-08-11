@@ -126,8 +126,7 @@ abstract class AbstractXled(
     fun login() {
         if (!isLoggedIn()) { // avoid additional attempts from other instances if we already know that we cannot talk to the host
             log.debug("#### Logging into device at ip address $ipAddress...")
-            val challenge =
-                Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
+            val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
             post<Map<*, *>>(
                 url = "$baseUrl/login",
                 body = "{\"challenge\":\"$challenge\"}".toByteArray(),

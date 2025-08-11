@@ -54,10 +54,16 @@ class BasicTests : XledArrayTest() {
     @Test
     @Disabled("only for playing")
     fun testPlayground() {
+        println(xledMatrix.deviceInfo)
+
+
 //        xledMatrix.setMusicEnabled(true)
 //        xledArray.setMusicEnabled(true)
-        xledMatrix.setMusicEnabled(false)
-        xledArray.setMusicEnabled(false)
+//        xledMatrix.setMusicEnabled(false)
+//        xledArray.setMusicEnabled(false)
+
+//        println(xledArray.getMovies())
+//        println(xledArray.getLedMovieConfig())
 
 //        twinklyMusic.setMoodsEffect(MoodFluo.Shuffle)
 

@@ -35,15 +35,20 @@ fun <T : Any> URL.post(
     connection.readTimeout = CONNECTION_TIMEOUT
     headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
     connection.doOutput = true
-    connection.outputStream.use { os ->
-        os.write(body, 0, body.size)
-    }
-    val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
-        ins.readAllBytes()
-    }
-    return when (clazz) {
-        String::class.java -> String(response) as T
-        else -> mapper.readValue(response, clazz)
+    return try {
+        connection.outputStream.use { os ->
+            os.write(body, 0, body.size)
+        }
+        val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
+            ins.readAllBytes()
+        }
+        when (clazz) {
+            String::class.java -> String(response) as T
+            else -> mapper.readValue(response, clazz)
+        }
+    } catch (e: Exception) {
+        log.warn("Could not connect to device $this")
+        null
     }
 }
 
@@ -54,16 +59,22 @@ fun <T : Any> URL.put(
     clazz: Class<T>
 ): T? {
     val connection = createConnection("PUT", headers, true)
-    connection.outputStream.use { os ->
-        os.write(body, 0, body.size)
-    }
-    val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
-        ins.readAllBytes()
-    }
-    val res = String(response)
-    return when (clazz) {
-        String::class.java -> res as T
-        else -> mapper.readValue(res, clazz)
+    return try {
+        connection.outputStream.use { os ->
+            os.write(body, 0, body.size)
+        }
+        val response =
+            (if (connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
+                ins.readAllBytes()
+            }
+        val res = String(response)
+        when (clazz) {
+            String::class.java -> res as T
+            else -> mapper.readValue(res, clazz)
+        }
+    } catch (e: Exception) {
+        log.warn("Could not connect to device $this")
+        null
     }
 }
 
@@ -73,15 +84,20 @@ fun <T : Any> URL.get(
     clazz: Class<T>
 ): T? {
     val connection = createConnection("GET", headers)
-    val response =
-        (if (connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream)
-            .use { ins ->
-                ins.readAllBytes()
-            }
-    val res = String(response)
-    return when (clazz) {
-        String::class.java -> res as T
-        else -> mapper.readValue<T>(res, clazz)
+    return try {
+        val response =
+            (if (connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream)
+                .use { ins ->
+                    ins.readAllBytes()
+                }
+        val res = String(response)
+        when (clazz) {
+            String::class.java -> res as T
+            else -> mapper.readValue<T>(res, clazz)
+        }
+    } catch (e: Exception) {
+        log.warn("Could not connect to device $this")
+        null
     }
 }
 
@@ -91,13 +107,19 @@ fun <T : Any> URL.delete(
     clazz: Class<T>
 ): T? {
     val connection = createConnection("DELETE", headers)
-    val response = (if(connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
-        ins.readAllBytes()
-    }
-    val res = String(response)
-    return when (clazz) {
-        String::class.java -> res as T
-        else -> mapper.readValue(res, clazz)
+    return try {
+        val response =
+            (if (connection.contentEncoding == "gzip") GZIPInputStream(connection.inputStream) else connection.inputStream).use { ins ->
+                ins.readAllBytes()
+            }
+        val res = String(response)
+        when (clazz) {
+            String::class.java -> res as T
+            else -> mapper.readValue(res, clazz)
+        }
+    } catch (e: Exception) {
+        log.warn("Could not connect to device $this")
+        null
     }
 }
 
