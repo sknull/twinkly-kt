@@ -43,13 +43,14 @@ import kotlin.math.roundToInt
  */
 open class XLedDevice protected constructor(
     ipAddress: String,
+    override var name: String,
     override var width: Int = 0,
     override var height: Int = 0,
     transformation: ((XledFrame) -> XledFrame)? = null
 ) : AbstractXled(
-    ipAddress,
+    ipAddress = ipAddress,
     baseUrl = "http://$ipAddress/xled/v1",
-    transformation
+    transformation = transformation
 ), XLed {
 
     companion object {
@@ -58,6 +59,7 @@ open class XLedDevice protected constructor(
 
         fun instance(
             ipAddress: String,
+            name: String = "",
             width: Int = 0,
             height: Int = 0,
             transformation: ((XledFrame) -> XledFrame)? = null
@@ -65,6 +67,7 @@ open class XLedDevice protected constructor(
             return cache.computeIfAbsent(ipAddress) {
                 XLedDevice(
                     ipAddress,
+                    name,
                     width,
                     height,
                     transformation
@@ -94,6 +97,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getLedMode(): LedMode? {
+        refreshTokenIfNeeded()
         return getMode()?.ledMode
     }
 
@@ -119,6 +123,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getMusicEffects(): MusicEffectsResponse? {
+        refreshTokenIfNeeded()
         return get<MusicEffectsResponse>(
             url = "$baseUrl/music/effects",
             clazz = MusicEffectsResponse::class.java
@@ -126,6 +131,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getCurrentMusicEffect(): CurrentMusicEffectResponse? {
+        refreshTokenIfNeeded()
         return get<CurrentMusicEffectResponse>(
             url = "$baseUrl/music/effects/current",
             clazz = CurrentMusicEffectResponse::class.java
@@ -133,6 +139,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun setCurrentMusicEffect(effectId: String): JsonObject? {
+        refreshTokenIfNeeded()
         return post<JsonObject>(
             url = "/$baseUrl/music/effects/current",
             body = ("{\n" +
@@ -149,6 +156,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getMusicConfig(): MusicConfig? {
+        refreshTokenIfNeeded()
         val response = get<MusicConfig>(
             url = "$baseUrl/music/config",
             clazz = MusicConfig::class.java
@@ -314,6 +322,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getLedEffects(): LedEffectsResponse? {
+        refreshTokenIfNeeded()
         return get<LedEffectsResponse>(
             url = "$baseUrl/led/effects",
             clazz = LedEffectsResponse::class.java
@@ -321,6 +330,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getCurrentLedEffect(): CurrentLedEffectResponse? {
+        refreshTokenIfNeeded()
         return get<CurrentLedEffectResponse>(
             url = "$baseUrl/led/effects/current",
             clazz = CurrentLedEffectResponse::class.java
@@ -328,6 +338,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun setCurrentLedEffect(effectId: String): JsonObject? {
+        refreshTokenIfNeeded()
         return post<JsonObject>(
             url = "$baseUrl/led/effects/current",
             body = "{\"effect_id\": \"$effectId\"}".toByteArray(),
@@ -340,6 +351,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getMovies(): Movies? {
+        refreshTokenIfNeeded()
         return get<Movies>(
             url = "$baseUrl/movies",
             clazz = Movies::class.java
@@ -347,6 +359,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun deleteMovies(): JsonObject? {
+        refreshTokenIfNeeded()
         return delete<JsonObject>(
             url = "$baseUrl/movies",
             clazz = JsonObject::class.java
@@ -354,6 +367,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getCurrentMovie(): CurrentMovieResponse? {
+        refreshTokenIfNeeded()
         return get<CurrentMovieResponse>(
             url = "$baseUrl/movies/current",
             clazz = CurrentMovieResponse::class.java
@@ -361,6 +375,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun setCurrentMovie(currentMovieRequest: CurrentMovieRequest): JsonObject? {
+        refreshTokenIfNeeded()
         return post<JsonObject>(
             url = "$baseUrl/movies/current",
             body = currentMovieRequest.writeValueAssBytes(),
@@ -373,6 +388,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getPlaylist(): PlayList? {
+        refreshTokenIfNeeded()
         return get<PlayList>(
             url = "$baseUrl/playlist",
             clazz = PlayList::class.java
@@ -380,6 +396,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getCurrentPlaylist(): String? {
+        refreshTokenIfNeeded()
         return get<String>(
             url = "$baseUrl/playlist/current",
             clazz = String::class.java
@@ -431,6 +448,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun setLedMovieConfig(movieConfig: LedMovieConfigResponse): JsonObject? {
+        refreshTokenIfNeeded()
         return post<JsonObject>(
             url = "$baseUrl/led/movie/config",
             body = movieConfig.writeValueAssBytes(),
@@ -443,6 +461,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun uploadNewMovie(newMovie: NewMovieRequest): NewMovieResponse? {
+        refreshTokenIfNeeded()
         return post<NewMovieResponse>(
             url = "$baseUrl/movies/new",
             body = newMovie.writeValueAssBytes(),
@@ -455,11 +474,13 @@ open class XLedDevice protected constructor(
     }
 
     override fun uploadNewMovieToListOfMovies(frame: XledFrame): Movie? {
+        refreshTokenIfNeeded()
         val bytes = frame.toByteArray(bytesPerLed)
         return uploadNewMovieToListOfMovies(bytes)
     }
 
     override fun uploadNewMovieToListOfMovies(bytes: ByteArray): Movie? {
+        refreshTokenIfNeeded()
         return post<Movie>(
             url = "$baseUrl/led/movie/full",
             body = bytes,
@@ -472,6 +493,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun getTimer(): Timer? {
+        refreshTokenIfNeeded()
         return get<Timer>(
             url = "$baseUrl/timer",
             clazz = Timer::class.java
@@ -482,6 +504,7 @@ open class XLedDevice protected constructor(
         timeOn: OffsetDateTime,
         timeOff: OffsetDateTime
     ): Timer? {
+        refreshTokenIfNeeded()
         return setTimer(
             timeOnHour = timeOn.hour,
             timeOnMinute = timeOn.minute,
@@ -505,6 +528,7 @@ open class XLedDevice protected constructor(
     }
 
     override fun setTimer(timer: Timer): Timer? {
+        refreshTokenIfNeeded()
         val result = post<JsonObject>(
             url = "$baseUrl/timer",
             body = timer.writeValueAssBytes(),
@@ -526,6 +550,7 @@ open class XLedDevice protected constructor(
      * Returns the devices group infos.
      */
     fun getGroupStatus(): String? {
+        refreshTokenIfNeeded()
         return get<String>(
             url = "$baseUrl/group/status",
             clazz = String::class.java

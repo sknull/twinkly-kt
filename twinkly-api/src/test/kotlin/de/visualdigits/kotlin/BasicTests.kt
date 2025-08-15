@@ -116,7 +116,9 @@ class BasicTests : XledArrayTest() {
             for (x in 0 until xledArray.width) {
                 frame[x, y] = RGBColor(255, 255, 255)
             }
+            println(frame)
             frame.play(xledArray)
+            println()
         }
 
         // horizontal

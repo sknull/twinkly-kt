@@ -157,7 +157,7 @@ class Demos : XledArrayTest() {
 
     @Test
     fun testScene() {
-        val frame = XledFrame(File(ClassLoader.getSystemResource("images/christmas-scenes/14_Lights/frame_001.png").toURI()))
+        val frame = XledFrame(File(ClassLoader.getSystemResource("images/test-pattern.png").toURI()))
         frame.play(xled = xledArray)
     }
 

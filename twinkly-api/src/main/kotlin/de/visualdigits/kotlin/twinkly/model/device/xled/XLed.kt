@@ -40,6 +40,7 @@ import java.time.OffsetDateTime
  */
 interface XLed {
 
+    var name: String
     var width: Int
     var height: Int
 
@@ -91,7 +92,7 @@ interface XLed {
     /**
      * Performs the challenge response sequence needed to actually log in to the device.
      */
-    fun login()
+    fun login(expireInSeconds: Int? = null)
 
     /**
      * The current token expires after a device chosen time and has then to be refreshed.

@@ -17,9 +17,9 @@ import kotlin.random.Random.Default.nextInt
 @Disabled("only for local testing")
 class XLedTest {
 
-    private val xled = XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 50)
+    private val xled = XLedDevice.instance(ipAddress = "192.168.178.38", name = "xled", width = 10, height = 50)
 
-    protected val xledMatrix = XledMatrixDevice.instance("192.168.178.34", 10, 50)
+    protected val xledMatrix = XledMatrixDevice.instance("192.168.178.39", name = "matrix", 10, 50)
 
     @Test
     fun testDeviceInfo() {

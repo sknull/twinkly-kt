@@ -35,15 +35,16 @@ import java.time.OffsetDateTime
 private const val NO_DEVICE = "No device"
 
 class XLedArray private constructor(
-    var xLedDevices: MutableList<MutableList<XLed>> = mutableListOf(),
+    private var xLedDevices: MutableList<MutableList<XLed>> = mutableListOf(),
     val deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
+    override var name: String = "",
     override var width: Int = 0,
     override var height: Int = 0,
     transformation: ((XledFrame) -> XledFrame)? = null
 ) : AbstractXled(
     ipAddress = "",
     baseUrl = "",
-    transformation
+    transformation = transformation
 ), XLed {
 
     val columns = xLedDevices.size
@@ -56,6 +57,7 @@ class XLedArray private constructor(
         fun instance(
             xLedDevices: MutableList<MutableList<XLed>> = mutableListOf(),
             deviceOrigin: DeviceOrigin = DeviceOrigin.TOP_LEFT,
+            name: String = "",
             width: Int = 0,
             height: Int = 0,
             transformation: ((XledFrame) -> XledFrame)? = null
@@ -65,6 +67,7 @@ class XLedArray private constructor(
                 XLedArray(
                     xLedDevices,
                     deviceOrigin,
+                    name = name,
                     width,
                     height,
                     transformation
@@ -80,11 +83,11 @@ class XLedArray private constructor(
     private fun initialize() {
         if (xLedDevices.isNotEmpty()) {
             if (deviceOrigin.isPortrait()) {
-                width = (0 until rows).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+                width = (0 until rows).maxOf { y -> (0 until columns).sumOf { x -> this[x, y].width } }
                 height = (0 until columns).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
             } else {
                 width = (0 until columns).maxOf { x -> xLedDevices[x].sumOf { row -> row.height } }
-                height = (0 until rows).maxOf { y -> (0 until columns).sumOf { x -> xLedDevices[x][y].width } }
+                height = (0 until rows).maxOf { y -> (0 until columns).sumOf { x -> this[x, y].width } }
             }
         }
     }
@@ -92,10 +95,12 @@ class XLedArray private constructor(
     override fun isLoggedIn(): Boolean = xLedDevices.all { column -> column.all { device -> device.isLoggedIn() } }
 
     operator fun set(x: Int, y: Int, device: XLed) {
-        xLedDevices[x][y] = device
+        xLedDevices[y][x] = device
     }
 
-    operator fun get(x: Int, y: Int): XLed = xLedDevices[x][y]
+    operator fun get(x: Int, y: Int): XLed {
+        return xLedDevices[y][x]
+    }
 
     override fun logout() {
         xLedDevices.flatten().forEach { it.logout() }
@@ -336,12 +341,12 @@ class XLedArray private constructor(
             DeviceOrigin.BOTTOM_RIGHT -> rotate180()
             else -> this
         }
-        val firstDevice = translatedArray.xLedDevices[0][0]
+        val firstDevice = translatedArray[0, 0]
         val offsetX = firstDevice.width
         val offsetY = firstDevice.height
         for (x in 0 until columns) {
             for (y in 0 until rows) {
-                val xledDevice = translatedArray.xLedDevices[x][y]
+                val xledDevice = translatedArray[x, y]
                 val offsetX1 = x * offsetX
                 val offsetY1 = y * offsetY
                 if (offsetX1 < frame.width && offsetY1 < frame.height) {
@@ -362,12 +367,12 @@ class XLedArray private constructor(
             DeviceOrigin.BOTTOM_LEFT -> rotateRight()
             else -> this
         }
-        val firstDevice = translatedArray.xLedDevices[0][0]
+        val firstDevice = translatedArray[0, 0]
         val offsetX = firstDevice.height
         val offsetY = firstDevice.width
         for (x in 0 until rows) {
             for (y in 0 until columns) {
-                val xledDevice = translatedArray.xLedDevices[x][y]
+                val xledDevice = translatedArray[x, y]
                 val subFrame = frame.subFrame(x * offsetX, y * offsetY, xledDevice.height, xledDevice.width)
                 val translatedFrame = when (deviceOrigin) {
                     DeviceOrigin.TOP_RIGHT -> subFrame.rotateLeft()

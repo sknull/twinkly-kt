@@ -9,11 +9,11 @@ abstract class XledArrayTest {
     protected val xledArray = XLedArray.instance(
         mutableListOf(
             mutableListOf(
-                XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 21),
-                XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.38", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
             ),
             mutableListOf(
-                XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         )
@@ -22,11 +22,11 @@ abstract class XledArrayTest {
     protected val xledArrayLandscapeLeft = XLedArray.instance(
         mutableListOf(
             mutableListOf(
-                XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 21),
-                XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.38", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
             ),
             mutableListOf(
-                XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         ),
@@ -36,11 +36,11 @@ abstract class XledArrayTest {
     protected val xledArrayLandscapeRight = XLedArray.instance(
         mutableListOf(
             mutableListOf(
-                XLedDevice.instance(ipAddress = "192.168.178.35", width = 10, height = 21),
-                XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.38", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
             ),
             mutableListOf(
-                XLedDevice.instance(ipAddress = "192.168.178.52", width = 10, height = 21),
+                XLedDevice.instance(ipAddress = "192.168.178.58", width = 10, height = 21),
                 XLedDevice.instance(ipAddress = "192.168.178.60", width = 10, height = 21)
             )
         ),

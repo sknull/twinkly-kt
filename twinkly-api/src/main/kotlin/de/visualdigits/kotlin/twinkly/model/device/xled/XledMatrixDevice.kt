@@ -4,10 +4,12 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 
 class XledMatrixDevice private constructor(
     ipAddress: String = "",
+    name: String = "",
     width: Int = 0,
     height: Int = 0
 ): XLedDevice(
     ipAddress = ipAddress,
+    name = name,
     width = width,
     height = height,
     transformation = { frame ->
@@ -30,12 +32,14 @@ class XledMatrixDevice private constructor(
 
         fun instance(
             ipAddress: String,
+            name: String,
             width: Int,
             height: Int
         ): XledMatrixDevice {
             return cache.computeIfAbsent(ipAddress) {
                 XledMatrixDevice(
                     ipAddress,
+                    name,
                     width,
                     height
                 )

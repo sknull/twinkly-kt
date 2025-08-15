@@ -10,7 +10,6 @@ import de.visualdigits.kotlin.twinkly.model.device.xled.response.Version
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.led.LedLayout
 import de.visualdigits.kotlin.twinkly.model.device.xled.response.movie.LedMovieConfigResponse
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
-import de.visualdigits.kotlin.twinkly.model.playable.XledSequence
 import de.visualdigits.kotlin.udp.UdpClient
 import de.visualdigits.kotlin.util.delete
 import de.visualdigits.kotlin.util.get
@@ -27,6 +26,7 @@ import kotlin.random.Random
 abstract class AbstractXled(
     private val ipAddress: String,
     val baseUrl: String,
+    val expireInSeconds: Int? = null,
     val transformation: ((XledFrame) -> XledFrame)? = null
 ) {
 
@@ -50,7 +50,7 @@ abstract class AbstractXled(
     init {
         if (ipAddress.isNotEmpty()) {
             // ensure we are logged in up to here to avoid unneeded requests
-            if (authToken == null) login()
+            if (authToken == null) login(expireInSeconds)
             if (authToken?.loggedIn == true) {
                 deviceInfo = getDeviceInfoResponse()
                 firmwareVersion = getFirmwareVersionResponse()?.versionParts ?: Version.Companion.UNKNOWN
@@ -123,7 +123,7 @@ abstract class AbstractXled(
     /**
      * Performs the challenge response sequence needed to actually log in to the device.
      */
-    fun login() {
+    fun login(expireInSeconds: Int?) {
         if (!isLoggedIn()) { // avoid additional attempts from other instances if we already know that we cannot talk to the host
             log.debug("#### Logging into device at ip address $ipAddress...")
             val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
@@ -137,7 +137,7 @@ abstract class AbstractXled(
                 clazz = Map::class.java
             )?.also { response ->
                 val token = response["authentication_token"] as String
-                val expireInSeconds = (response["authentication_token_expires_in"] as Int)
+                val expireInSeconds = expireInSeconds?:(response["authentication_token_expires_in"] as Int)
                 val responseVerify = verify((response["challenge-response"] as String), token)
                 if (responseVerify?.responseCode != ResponseCode.Ok) {
                     log.warn("Could not login to device at ip address '$ipAddress'")
@@ -234,9 +234,9 @@ abstract class AbstractXled(
      */
     fun refreshTokenIfNeeded() {
         if (System.currentTimeMillis() > (authToken?.tokenExpires ?: 0)) {
-            log.debug("Refreshing token for device at ip address '$ipAddress'...")
+            log.info("Refreshing token for device at ip address '$ipAddress'...")
             authToken = null
-            login()
+            login(expireInSeconds)
         }
     }
 

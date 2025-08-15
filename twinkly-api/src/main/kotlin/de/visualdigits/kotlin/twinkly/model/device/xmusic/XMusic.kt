@@ -19,7 +19,8 @@ class XMusic private constructor(
     ipAddress: String
 ): AbstractXled(
     ipAddress = ipAddress,
-    baseUrl = "http://$ipAddress/xmusic/v1"
+    baseUrl = "http://$ipAddress/xmusic/v1",
+    expireInSeconds = 5 * 60
 ) {
 
     companion object {
@@ -27,7 +28,7 @@ class XMusic private constructor(
         private val cache = mutableMapOf<String, XMusic>()
 
         fun instance(
-            ipAddress: String
+            ipAddress: String,
         ): XMusic {
             return cache.computeIfAbsent(ipAddress) { XMusic(ipAddress) }
         }
@@ -42,6 +43,7 @@ class XMusic private constructor(
     }
 
     fun getMusicMode(): MusicMode? {
+        refreshTokenIfNeeded()
         val response = get<MusicMode>(
             url = "$baseUrl/music/mode",
             clazz = MusicMode::class.java
@@ -50,6 +52,7 @@ class XMusic private constructor(
     }
 
     fun setMusicMode(musicMode: MusicMode): JsonObject? {
+        refreshTokenIfNeeded()
         val response = post<JsonObject>(
             url = "$baseUrl/music/mode",
             body = musicMode.writeValueAssBytes(),
@@ -59,6 +62,7 @@ class XMusic private constructor(
     }
 
     fun setMoodsEffect(moodsEffect: MoodsEffect): JsonObject? {
+        refreshTokenIfNeeded()
         return setMusicMode(MusicMode(
             mode = "v2",
             config = Config(
@@ -69,6 +73,7 @@ class XMusic private constructor(
     }
 
     fun isMusicMicEnabled(): MicEnabledResponse? {
+        refreshTokenIfNeeded()
         val response = get<MicEnabledResponse>(
             url = "$baseUrl/music/mic_enabled",
             clazz = MicEnabledResponse::class.java
@@ -77,6 +82,7 @@ class XMusic private constructor(
     }
 
     fun getMusicStats(): MusicStatsResponse? {
+        refreshTokenIfNeeded()
         val response = get<MusicStatsResponse>(
             url = "$baseUrl/music/stats",
             clazz = MusicStatsResponse::class.java
@@ -85,6 +91,7 @@ class XMusic private constructor(
     }
 
     fun readData(): String {
+        refreshTokenIfNeeded()
         val bytes = UdpClient(getIpAddress(), UDP_PORT_STREAMING).use { udpClient ->
             udpClient.read(1)
         }
