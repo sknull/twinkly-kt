@@ -29,7 +29,7 @@ class RGBAColor(
     )
 
     constructor(hex: String, normalize: Boolean = false) : this(
-        rgb = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
+        rgb = decode((hex.replace("0x", "#").let { h -> if (!h.startsWith("#")) "#$h" else h }).let { h -> if (h.length < 9) "${h}00" else h }),
         normalize = normalize
     )
 
