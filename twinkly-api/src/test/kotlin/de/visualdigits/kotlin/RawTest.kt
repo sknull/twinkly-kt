@@ -10,6 +10,7 @@ import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import de.visualdigits.kotlin.util.post
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
+import java.net.URI
 import java.net.URL
 import java.util.Base64
 import kotlin.random.Random
@@ -64,7 +65,7 @@ class RawTest {
 
         val challenge = Base64.getEncoder().encode(Random(System.currentTimeMillis()).nextBytes(32)).decodeToString()
 
-        val response = URL("$baseUrl/login").post(
+        val response = URI("$baseUrl/login").toURL().post(
             body = "{\"challenge\":\"$challenge\"}".toByteArray(),
             headers =  mutableMapOf(
                 "Content-Type" to "application/json",

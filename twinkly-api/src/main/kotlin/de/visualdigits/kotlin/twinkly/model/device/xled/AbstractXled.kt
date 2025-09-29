@@ -15,6 +15,7 @@ import de.visualdigits.kotlin.util.delete
 import de.visualdigits.kotlin.util.get
 import de.visualdigits.kotlin.util.post
 import org.slf4j.LoggerFactory
+import java.net.URI
 import java.net.URL
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -292,7 +293,7 @@ abstract class AbstractXled(
     ): T? {
         (authToken ?: this.authToken?.authToken)?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
 
-        return URL(url).post<T>(body, headers, clazz)
+        return URI(url).toURL().post<T>(body, headers, clazz)
     }
 
     /**
@@ -304,7 +305,7 @@ abstract class AbstractXled(
         clazz: Class<T>
     ): T? {
         authToken?.authToken?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
-        return URL(url).get<T>(headers, clazz)
+        return URI(url).toURL().get<T>(headers, clazz)
     }
 
     fun <T : Any> delete(
@@ -313,6 +314,6 @@ abstract class AbstractXled(
         clazz: Class<T>
     ): T? {
         authToken?.authToken?.let { at -> headers[HEADER_X_AUTH_TOKEN] = at }
-        return URL(null, url).delete<T>(headers, clazz)
+        return URI(url).toURL().delete<T>(headers, clazz)
     }
 }

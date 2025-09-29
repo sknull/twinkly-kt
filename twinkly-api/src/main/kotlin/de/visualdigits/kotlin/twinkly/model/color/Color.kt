@@ -16,10 +16,6 @@ interface Color<T : Color<T>> : Parameter<T> {
 
     fun toHsvColor(): HSVColor
 
-    fun toRgbwColor(): RGBWColor
-
-    fun toRgbaColor(): RGBAColor
-
     fun toAwtColor(): java.awt.Color
 
     /**

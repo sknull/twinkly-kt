@@ -7,6 +7,10 @@
 :toc-title: Contents
 :toclevels: 5
 
+== Status
+
+https://github.com/sknull/twinkly-kt/actions/workflows/github-ci.yml[image:https://github.com/sknull/twinkly-kt/actions/workflows/github-ci.yml/badge.svg[Klanglicht Kt]]
+
 == Description
 
 This my attempt to bring control of twinkly devices to the kotlin world.
