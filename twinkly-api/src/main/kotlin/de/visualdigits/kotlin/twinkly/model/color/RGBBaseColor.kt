@@ -12,17 +12,17 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     var green: Int = 0,
     var blue: Int = 0,
     var alpha: Int = 255,
-    val normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
+    val normalizeMode: NormalizeMode = NormalizeMode.NONE /** Determines if the white is extracted from the other values or not. */
 ) : Color<T> {
 
-    constructor(value: Long, normalize: Boolean = false) : this(
+    constructor(value: Long, normalize: NormalizeMode = NormalizeMode.NONE) : this(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
         green = min(a = 255, b = (value and 0x0000ff00L shr 8).toInt()),
         blue = min(a = 255, b = (value and 0x000000ffL).toInt()),
-        normalize = normalize
+        normalizeMode = normalize
     )
 
-    constructor(hex: String, normalize: Boolean = false) : this(
+    constructor(hex: String, normalize: NormalizeMode = NormalizeMode.NONE) : this(
         value = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
         normalize = normalize
     )
@@ -125,36 +125,57 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
     }
 
     override fun toRgbwColor(): RGBWColor {
-        return if (normalize) {
-            val white = min(red, min(green, blue))
-            RGBWColor(
-                red = red - white,
-                green = green - white,
-                blue = blue - white,
-                white = white,
-                alpha = alpha,
-                normalize = normalize
-            )
-        } else {
-            val hsv = toHsvColor()
-            if (hsv.s == 0) {
+        return when (normalizeMode) {
+            NormalizeMode.STANDARD -> {
+                val white = min(red, min(green, blue))
                 RGBWColor(
-                    red = red,
-                    green = green,
-                    blue = blue,
-                    white = min(red, min(green, blue)) / 2,
-                    alpha = alpha,
-                    normalize = normalize
+                    red = red - white,
+                    green = green - white,
+                    blue = blue - white,
+                    white = white,
+                    alpha = alpha
                 )
-            } else {
-                RGBWColor(
-                    red = red,
-                    green = green,
-                    blue = blue,
-                    white = 0,
-                    alpha = alpha,
-                    normalize = normalize
-                )
+            }
+            NormalizeMode.FULL_ONLY -> {
+                if (red == 255 && green == 255 && blue == 255) {
+                    RGBWColor(
+                        red = 0,
+                        green = 0,
+                        blue = 0,
+                        white = 255,
+                        alpha = alpha
+                    )
+                } else {
+                    RGBWColor(
+                        red = red,
+                        green = green,
+                        blue = blue,
+                        white = 255,
+                        alpha = alpha
+                    )
+                }
+            }
+            else -> {
+                val hsv = toHsvColor()
+                if (hsv.s == 0) {
+                    RGBWColor(
+                        red = red,
+                        green = green,
+                        blue = blue,
+                        white = min(red, min(green, blue)) / 2,
+                        alpha = alpha,
+                        normalizeMode = normalizeMode
+                    )
+                } else {
+                    RGBWColor(
+                        red = red,
+                        green = green,
+                        blue = blue,
+                        white = 0,
+                        alpha = alpha,
+                        normalizeMode = normalizeMode
+                    )
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.device.xled
 
+import de.visualdigits.kotlin.twinkly.model.color.NormalizeMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 import de.visualdigits.kotlin.twinkly.model.device.xled.request.CurrentMovieRequest
@@ -155,7 +156,7 @@ class XLedTest {
 
         val sequence = XledSequence()
 
-        var frame = XledFrame(xled.width, xled.height, RGBWColor(255, 255, 255, 128, normalize = false))
+        var frame = XledFrame(xled.width, xled.height, RGBWColor(255, 255, 255, 128, normalizeMode = NormalizeMode.FULL_ONLY))
 //        playable.setImage(File(ClassLoader.getSystemResource("images/tetris/teris-0.jpg").toURI()))
         sequence.add(frame)
 //        playable = XledFrame(columns, rows, bytesPerLed, RGBColor(0, 0, 0))

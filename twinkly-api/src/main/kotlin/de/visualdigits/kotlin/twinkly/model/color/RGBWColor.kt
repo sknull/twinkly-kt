@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.color
 
+import de.visualdigits.kotlin.util.ensureHexLength
 import java.lang.Long.decode
 import kotlin.math.max
 import kotlin.math.min
@@ -11,28 +12,39 @@ class RGBWColor(
     blue: Int = 0,
     var white: Int = 0,
     alpha: Int = 255,
-    normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
-) : RGBBaseColor<RGBWColor>(red, green, blue, alpha, normalize) {
+    normalizeMode: NormalizeMode = NormalizeMode.NONE /** Determines if the white is extracted from the other values or not. */
+) : RGBBaseColor<RGBWColor>(red, green, blue, alpha, normalizeMode) {
 
-    constructor(rgb: Long, normalize: Boolean = false) : this(
+    constructor(rgb: Long, normalizeMode: NormalizeMode = NormalizeMode.NONE) : this(
         red = min(a = 255, b = (rgb and 0xff000000L shr 24).toInt()),
         green = min(a = 255, b = (rgb and 0x00ff0000L shr 16).toInt()),
         blue = min(a = 255, b = (rgb and 0x0000ff00L shr 8).toInt()),
         white = min(a = 255, b = (rgb and 0x000000ffL).toInt()),
-        normalize = normalize
+        normalizeMode = normalizeMode
     )
 
-    constructor(hex: String, normalize: Boolean = false) : this(
-        rgb = decode((hex.replace("0x", "#").let { h -> if (!h.startsWith("#")) "#$h" else h }).let { h -> if (h.length < 9) "${h}00" else h }),
-        normalize = normalize
+    constructor(hex: String, normalizeMode: NormalizeMode = NormalizeMode.NONE) : this(
+        rgb = decode(hex.ensureHexLength(4)),
+        normalizeMode = normalizeMode
     )
 
     init {
-        if (normalize && white == 0) {
-            white = min(red, min(green, blue))
-            super.red -= white
-            super.green -= white
-            super.blue -= white
+        when (normalizeMode) {
+            NormalizeMode.STANDARD -> {
+                white = min(255, white + min(red, min(green, blue)))
+                super.red -= white
+                super.green -= white
+                super.blue -= white
+            }
+            NormalizeMode.FULL_ONLY -> {
+                if (red == 255 && green == 255 && blue == 255) {
+                    white = 255
+                    super.red -= 0
+                    super.green -= 0
+                    super.blue -= 0
+                }
+            }
+            else -> {}
         }
     }
 
@@ -44,7 +56,7 @@ class RGBWColor(
         return "RGBColor(hex='${web()}', r=$red, g=$green , b=$blue, w=$white)"
     }
 
-    override fun clone(): RGBWColor = RGBWColor(red, green, blue, white, alpha, normalize)
+    override fun clone(): RGBWColor = RGBWColor(red, green, blue, white, alpha, normalizeMode)
 
     override fun parameterMap(): Map<String, Int> = mapOf(
         "Red" to red,

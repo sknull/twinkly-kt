@@ -3,8 +3,6 @@ package de.visualdigits.kotlin
 import de.visualdigits.kotlin.twinkly.model.color.HSVColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodDance
-import de.visualdigits.kotlin.twinkly.model.device.xmusic.moods.MoodFluo
 import de.visualdigits.kotlin.twinkly.model.playable.XledFrame
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Disabled

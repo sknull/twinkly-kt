@@ -1,5 +1,6 @@
 package de.visualdigits.kotlin.twinkly.model.color
 
+import de.visualdigits.kotlin.util.ensureHexLength
 import java.lang.Long.decode
 import java.lang.Long.toHexString
 import kotlin.math.min
@@ -12,37 +13,23 @@ class RGBWAColor(
     var white: Int = 0,
     var amber: Int = 0,
     alpha: Int = 255,
-    normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
+    normalizeMode: NormalizeMode = NormalizeMode.NONE /** Determines if the white is extracted from the other values or not. */
 
 ) : RGBBaseColor<RGBWAColor>(red, green, blue, alpha) {
 
-    constructor(rgb: Long, normalize: Boolean = false) : this(
+    constructor(rgb: Long, normalizeMode: NormalizeMode = NormalizeMode.NONE) : this(
         red = min(a = 255, b = (rgb and 0xff00000000L shr 32).toInt()),
         green = min(a = 255, b = (rgb and 0x00ff000000L shr 24).toInt()),
         blue = min(a = 255, b = (rgb and 0x0000ff0000L shr 16).toInt()),
         white = min(a = 255, b = (rgb and 0x000000ff00L shr 8).toInt()),
         amber = min(a = 255, b = (rgb and 0x00000000ffL).toInt()),
-        normalize = normalize
+        normalizeMode = normalizeMode
     )
 
-    constructor(hex: String, normalize: Boolean = false) : this(
-        rgb = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
-        normalize = normalize
+    constructor(hex: String, normalizeMode: NormalizeMode = NormalizeMode.NONE) : this(
+        rgb = decode(hex.ensureHexLength(5)),
+        normalizeMode = normalizeMode
     )
-
-    init {
-        if (normalize && white == 0) {
-            white = min(red, min(green, blue))
-            super.red -= white
-            super.green -= white
-            super.blue -= white
-        }
-        if (normalize && amber == 0) {
-            amber = min(red, green)
-            super.red -= amber
-            super.green -= amber
-        }
-    }
 
     override fun toString(): String {
         return "[" +listOf(red, green, blue, white, amber).joinToString(", ") + "]"

@@ -11,22 +11,22 @@ class RGBColor(
    green: Int = 0,
    blue: Int = 0,
    alpha: Int = 255,
-   normalize: Boolean = false /** Determines if the white is extracted from the other values or not. */
-) : RGBBaseColor<RGBColor>(red, green, blue, alpha, normalize) {
+   normalizeMode: NormalizeMode = NormalizeMode.NONE /** Determines if the white is extracted from the other values or not. */
+) : RGBBaseColor<RGBColor>(red, green, blue, alpha, normalizeMode) {
 
-    constructor(value: Long, normalize: Boolean = false) : this(
+    constructor(value: Long, normalizeMode: NormalizeMode = NormalizeMode.NONE) : this(
         red = min(a = 255, b = (value and 0x00ff0000L shr 16).toInt()),
         green = min(a = 255, b = (value and 0x0000ff00L shr 8).toInt()),
         blue = min(a = 255, b = (value and 0x000000ffL).toInt()),
-        normalize = normalize
+        normalizeMode = normalizeMode
     )
 
-    constructor(hex: String, normalize: Boolean = false) : this(
+    constructor(hex: String, normalizeMode: NormalizeMode = NormalizeMode.NONE) : this(
         value = decode(if (hex.startsWith("#") || hex.startsWith("0x")) hex else "#$hex"),
-        normalize = normalize
+        normalizeMode = normalizeMode
     )
 
-    override fun clone(): RGBColor = RGBColor(red, green, blue, alpha, normalize)
+    override fun clone(): RGBColor = RGBColor(red, green, blue, alpha, normalizeMode)
 
     override fun parameterMap(): Map<String, Int> = mapOf(
         "Red" to red,
