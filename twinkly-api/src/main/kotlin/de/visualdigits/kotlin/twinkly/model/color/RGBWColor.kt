@@ -39,9 +39,9 @@ class RGBWColor(
             NormalizeMode.FULL_ONLY -> {
                 if (red == 255 && green == 255 && blue == 255) {
                     white = 255
-                    super.red -= 0
-                    super.green -= 0
-                    super.blue -= 0
+                    super.red = 0
+                    super.green = 0
+                    super.blue = 0
                 }
             }
             else -> {}
