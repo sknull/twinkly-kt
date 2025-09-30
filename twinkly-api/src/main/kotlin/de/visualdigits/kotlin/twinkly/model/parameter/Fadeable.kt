@@ -12,6 +12,8 @@ interface Fadeable<T : Fadeable<T>> {
 
     fun getId(): String = ""
 
+    fun hex(): String
+
     fun toRgbColor(): RGBColor
 
     fun toRgbwColor(): RGBWColor

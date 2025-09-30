@@ -8,8 +8,6 @@ interface Color<T : Color<T>> : Parameter<T> {
 
     fun isBlack(): Boolean
 
-    fun hex(): String
-
     fun web(): String
 
     fun ansiColor(): String
