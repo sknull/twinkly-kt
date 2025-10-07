@@ -104,7 +104,8 @@ class Demos : XledArrayTest() {
 //        val device = xledMatrix
         val canvas = XledFrame(device.height, device.width, rotation = Rotation.LEFT)
         val bgColor = RGBColor(0, 0, 0)
-        val digitColor = RGBColor(255, 0, 0)
+        val digitColorTime = RGBColor(255, 0, 0)
+        val digitColorDate = RGBColor(0, 200, 255)
         val doubleColonColor = RGBColor(0, 0, 128)
         val separatorTime = ":"
         val separatorDate = "."
@@ -114,33 +115,33 @@ class Demos : XledArrayTest() {
             val frameTime = XledFrame(
                 fontName = "xttyb",
                 texts = listOf(
-                    Triple(now.format(DateTimeFormatter.ofPattern("HH")), bgColor, digitColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("HH")), bgColor, digitColorTime),
                     Triple(separatorTime, bgColor, doubleColonColor),
-                    Triple(now.format(DateTimeFormatter.ofPattern("mm")), bgColor, digitColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("mm")), bgColor, digitColorTime),
                     Triple(separatorTime, bgColor, doubleColonColor),
-                    Triple(now.format(DateTimeFormatter.ofPattern("ss")), bgColor, digitColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("ss")), bgColor, digitColorTime),
                 )
             )
             val frameDate = XledFrame(
                 fontName = "xtty",
                 texts = listOf(
-                    Triple(now.format(DateTimeFormatter.ofPattern("dd")), bgColor, digitColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("dd")), bgColor, digitColorDate),
                     Triple(separatorDate, bgColor, doubleColonColor),
-                    Triple(now.format(DateTimeFormatter.ofPattern("MM")), bgColor, digitColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("MM")), bgColor, digitColorDate),
                     Triple(separatorDate, bgColor, doubleColonColor),
-                    Triple(now.format(DateTimeFormatter.ofPattern("yy")), bgColor, digitColor),
+                    Triple(now.format(DateTimeFormatter.ofPattern("yy")), bgColor, digitColorDate),
                 )
             )
 //            if (separator == ":") separator = " " else separator = ":"
             canvas.replaceSubFrame(frameTime)
-            canvas.replaceSubFrame(frameDate, 0 , device.height / 2)
-            val dayMarker = (now.hour / 24.0 * device.width).roundToInt()
+            canvas.replaceSubFrame(frameDate, 0 , device.width / 2)
+            val dayMarker = (now.hour / 24.0 * device.height).roundToInt()
             for (x in 0 until dayMarker) {
                 canvas[x, 0] = RGBColor(0, 255, 0)
             }
-            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * device.width).roundToInt()
+            val yearMarker = (OffsetDateTime.now().dayOfYear / 365.0 * device.height).roundToInt()
             for (x in 0 until yearMarker) {
-                canvas[x, device.height - 1] = RGBColor(255, 255, 0)
+                canvas[x, device.width - 1] = RGBColor(255, 255, 0)
             }
             canvas.play(device)
 
