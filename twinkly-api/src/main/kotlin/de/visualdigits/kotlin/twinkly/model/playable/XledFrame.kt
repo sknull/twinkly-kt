@@ -16,6 +16,8 @@ import de.visualdigits.kotlin.util.SystemUtils
 import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
+import java.awt.image.DataBufferByte
+import java.awt.image.DataBufferInt
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -71,11 +73,7 @@ open class XledFrame(
         initialColor = initialColor,
         rotation = rotation
     ) {
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                frame[x][y] = RGBColor(image.getRGB(x, y).toLong())
-            }
-        }
+        frame = getImageRaster(image, initialColor)
     }
 
     /**
@@ -169,6 +167,90 @@ open class XledFrame(
         })
     }
 
+    companion object {
+
+        fun getImageRaster(image: BufferedImage, initialColor: Color<*>): Array<Array<Color<*>>> {
+            val frame: Array<Array<Color<*>>> = Array(image.width) { Array(image.height) { initialColor } }
+            val hasAlphaChannel = image.alphaRaster != null
+            (image.raster.getDataBuffer() as DataBufferByte)
+                .getData()
+                .asSequence()
+                .chunked(if (hasAlphaChannel) 4 else 3) // create chunks for each pixel
+                .chunked(image.width) // create chunks for each row
+                .forEachIndexed { y, row ->
+                    row.forEachIndexed { x, chunk ->
+                        var (index, argb) = if (hasAlphaChannel) {
+                            Pair(1, ((chunk[0].toInt() and 0xff) shl 24))
+                        } else {
+                            Pair(0, -16777216)
+                        }
+                        argb += (chunk[index++].toInt() and 0xff) // blue value
+                        argb += ((chunk[index++].toInt() and 0xff) shl 8) // green value
+                        argb += ((chunk[index].toInt() and 0xff) shl 16) // red value
+
+                        frame[x][y] = RGBColor(argb.toLong())
+                    }
+                }
+
+            return frame
+        }
+    }
+
+    fun toBufferedImage(): BufferedImage {
+        val image = BufferedImage(width,  height, BufferedImage.TYPE_INT_RGB)
+        val dataBuffer = image.raster.getDataBuffer() as DataBufferInt
+        var index = 0
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                dataBuffer.setElem(index++, frame[x][y].toRgbColor().value().toInt())
+            }
+        }
+
+        return image
+    }
+
+    override fun toByteArray(bytesPerLed: Int): ByteArray {
+        return ByteArrayOutputStream().use { baos ->
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    baos.write(toLedPixel(frame[x][y], bytesPerLed))
+                }
+            }
+            baos.toByteArray()
+        }
+    }
+
+    private fun toLedPixel(color: Color<*>, bytesPerLed: Int): ByteArray {
+        return if (bytesPerLed == 4) {
+            when (color) {
+                is RGBColor -> color.toRgbwColor()
+                is HSVColor -> color.toRgbwColor()
+                is RGBWColor -> color
+                else -> null
+            }?.let { c ->
+                byteArrayOf(
+                    c.white.toByte(),
+                    c.red.toByte(),
+                    c.green.toByte(),
+                    c.blue.toByte()
+                )
+            }?:byteArrayOf()
+        } else {
+            when (color) {
+                is RGBColor -> color
+                is HSVColor -> color.toRgbColor()
+                is RGBWColor -> color.toRgbColor()
+                else -> null
+            }?.let { c ->
+                byteArrayOf(
+                    c.red.toByte(),
+                    c.green.toByte(),
+                    c.blue.toByte()
+                )
+            }?:byteArrayOf()
+        }
+    }
+
     private fun XledFrame.join(frames: List<XledFrame>) {
         val first = frames.first()
         initialize(width = first.width, height = first.height, initialColor = initialColor)
@@ -206,17 +288,6 @@ open class XledFrame(
             sb.append('\n')
         }
         return sb.toString()
-    }
-
-    fun toBufferedImage(): BufferedImage {
-        val image = BufferedImage(width,  height, BufferedImage.TYPE_INT_RGB)
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                image.setRGB(x, y, frame[x][y].toRgbColor().value().toInt())
-            }
-        }
-
-        return image
     }
 
     fun clone(): XledFrame {
@@ -553,78 +624,6 @@ open class XledFrame(
         }
 
         return newFrame
-    }
-
-    override fun toByteArray(bytesPerLed: Int): ByteArray {
-        val baos = ByteArrayOutputStream()
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                baos.write(toLedPixel(frame[x][y], bytesPerLed))
-            }
-        }
-
-        return baos.toByteArray()
-    }
-
-    private fun toLedPixel(color: Color<*>, bytesPerLed: Int): ByteArray {
-        return when (color) {
-            is RGBWColor -> {
-                if (bytesPerLed == 4) {
-                    byteArrayOf(
-                        color.white.toByte(),
-                        color.red.toByte(),
-                        color.green.toByte(),
-                        color.blue.toByte()
-                    )
-                }
-                else {
-                    val rgbColor = color.toRgbColor()
-                    byteArrayOf(
-                        rgbColor.red.toByte(),
-                        rgbColor.green.toByte(),
-                        rgbColor.blue.toByte()
-                    )
-                }
-            }
-            is RGBColor -> {
-                if (bytesPerLed == 4) {
-                    val rgbwColor = color.toRgbwColor()
-                    byteArrayOf(
-                        rgbwColor.white.toByte(),
-                        rgbwColor.red.toByte(),
-                        rgbwColor.green.toByte(),
-                        rgbwColor.blue.toByte()
-                    )
-                }
-                else {
-                    byteArrayOf(
-                        color.red.toByte(),
-                        color.green.toByte(),
-                        color.blue.toByte()
-                    )
-                }
-            }
-            is HSVColor -> {
-                if (bytesPerLed == 4) {
-                    val rgbwColor = color.toRgbwColor()
-                    byteArrayOf(
-                        rgbwColor.white.toByte(),
-                        rgbwColor.red.toByte(),
-                        rgbwColor.green.toByte(),
-                        rgbwColor.blue.toByte()
-                    )
-                }
-                else {
-                    val rgbColor = color.toRgbColor()
-                    byteArrayOf(
-                        rgbColor.red.toByte(),
-                        rgbColor.green.toByte(),
-                        rgbColor.blue.toByte()
-                    )
-                }
-            }
-            else -> byteArrayOf()
-        }
     }
 
     override fun frames(): List<Playable> = listOf(this)
