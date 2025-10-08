@@ -52,7 +52,7 @@ class BasicTests : XledArrayTest() {
     @Test
     @Disabled("only for playing")
     fun testPlayground() {
-        println(xledMatrix.deviceInfo)
+//        println(xledMatrix.deviceInfo)
 
 
 //        xledMatrix.setMusicEnabled(true)
@@ -114,9 +114,9 @@ class BasicTests : XledArrayTest() {
             for (x in 0 until xledArray.width) {
                 frame[x, y] = RGBColor(255, 255, 255)
             }
-            println(frame)
+//            println(frame)
             frame.play(xledArray)
-            println()
+//            println()
         }
 
         // horizontal

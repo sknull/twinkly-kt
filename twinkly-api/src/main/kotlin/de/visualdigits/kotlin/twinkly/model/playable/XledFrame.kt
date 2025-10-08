@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
 import java.awt.image.DataBufferInt
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import javax.imageio.ImageIO
@@ -43,8 +42,8 @@ open class XledFrame(
 
     override var running: Boolean = false
 
-    private var frame: Array<Array<Color<*>>> = Array(width) { Array(height) { initialColor } }
-
+    private var frame: Array<Color<*>> = Array(width * height) { initialColor }
+    
     constructor(
         bytes: ByteArray,
         initialColor: Color<*> = RGBColor(0, 0, 0),
@@ -169,27 +168,24 @@ open class XledFrame(
 
     companion object {
 
-        fun getImageRaster(image: BufferedImage, initialColor: Color<*>): Array<Array<Color<*>>> {
-            val frame: Array<Array<Color<*>>> = Array(image.width) { Array(image.height) { initialColor } }
+        fun getImageRaster(image: BufferedImage, initialColor: Color<*>): Array<Color<*>> {
+            val frame: Array<Color<*>> = Array(image.width * image.height) { initialColor }
             val hasAlphaChannel = image.alphaRaster != null
             (image.raster.getDataBuffer() as DataBufferByte)
                 .getData()
                 .asSequence()
                 .chunked(if (hasAlphaChannel) 4 else 3) // create chunks for each pixel
-                .chunked(image.width) // create chunks for each row
-                .forEachIndexed { y, row ->
-                    row.forEachIndexed { x, chunk ->
-                        var (index, argb) = if (hasAlphaChannel) {
-                            Pair(1, ((chunk[0].toInt() and 0xff) shl 24))
-                        } else {
-                            Pair(0, -16777216)
-                        }
-                        argb += (chunk[index++].toInt() and 0xff) // blue value
-                        argb += ((chunk[index++].toInt() and 0xff) shl 8) // green value
-                        argb += ((chunk[index].toInt() and 0xff) shl 16) // red value
-
-                        frame[x][y] = RGBColor(argb.toLong())
+                .forEachIndexed { index, chunk ->
+                    var (i, argb) = if (hasAlphaChannel) {
+                        Pair(1, ((chunk[0].toInt() and 0xff) shl 24))
+                    } else {
+                        Pair(0, -16777216)
                     }
+                    argb += (chunk[i++].toInt() and 0xff) // blue value
+                    argb += ((chunk[i++].toInt() and 0xff) shl 8) // green value
+                    argb += ((chunk[i].toInt() and 0xff) shl 16) // red value
+
+                    frame[index] = RGBColor(argb.toLong())
                 }
 
             return frame
@@ -199,25 +195,24 @@ open class XledFrame(
     fun toBufferedImage(): BufferedImage {
         val image = BufferedImage(width,  height, BufferedImage.TYPE_INT_RGB)
         val dataBuffer = image.raster.getDataBuffer() as DataBufferInt
-        var index = 0
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                dataBuffer.setElem(index++, frame[x][y].toRgbColor().value().toInt())
-            }
+        frame.forEachIndexed { index, color ->
+            dataBuffer.setElem(index, color.toRgbColor().value().toInt())
         }
 
         return image
     }
 
     override fun toByteArray(bytesPerLed: Int): ByteArray {
-        return ByteArrayOutputStream().use { baos ->
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    baos.write(toLedPixel(frame[x][y], bytesPerLed))
-                }
+        val bytes = ByteArray(width * height * bytesPerLed) { 0 }
+        var index = 0
+        // !! attention - twinkly byte array is organized in a sequence of columns - not rows !!
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                toLedPixel(this[x, y], bytesPerLed).copyInto(bytes, index)
+                index += bytesPerLed
             }
-            baos.toByteArray()
         }
+        return bytes
     }
 
     private fun toLedPixel(color: Color<*>, bytesPerLed: Int): ByteArray {
@@ -261,50 +256,47 @@ open class XledFrame(
     private fun initialize(width: Int, height: Int, initialColor: Color<*> = RGBColor(0, 0, 0)) {
         this.width = width
         this.height = height
-        this.frame = Array(width) { Array(height) { initialColor } }
+        this.frame = Array(width * height) { initialColor }
     }
 
     operator fun set(x: Int, y: Int, color: Color<*>) {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            frame[x][y] = color
+        if (x in 0..<width && y >= 0 && y < height) {
+            frame[width * y + x] = color
         }
     }
 
     operator fun get(x: Int, y: Int): Color<*> {
-        return if (x >= 0 && x < width && y >= 0 && y < height) {
-            frame[x][y]
+        return if (x in 0..<width && y >= 0 && y < height) {
+            frame[width * y + x]
         } else {
             RGBColor(0, 0, 0)
         }
     }
 
     override fun toString(): String {
-        val sb = StringBuilder()
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val pixel = frame[x][y].ansiColor()
-                sb.append(pixel).append(pixel)
+        return frame
+            .asSequence()
+            .chunked(width)
+            .joinToString("\n") { row ->
+                row.joinToString("") { color ->
+                    color.ansiColor().repeat(2)
+                }
             }
-            sb.append('\n')
-        }
-        return sb.toString()
     }
 
     fun clone(): XledFrame {
         val clone = XledFrame(width, height, initialColor)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                clone[x, y] = frame[x][y].clone()
+                clone[x, y] = this[x, y].clone()
             }
         }
         return clone
     }
 
     fun setColor(color: Color<*>) {
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                frame[x][y] = color.clone()
-            }
+        frame.forEachIndexed { index, _ ->
+            frame[index] = color.clone()
         }
     }
 
@@ -332,7 +324,7 @@ open class XledFrame(
         var loopCount = loop
         var t = System.currentTimeMillis()
         while (loopCount == -1 || loopCount > 0) {
-            for (j in 0 until n) {
+            (0 until n).forEach { _ ->
                 xled.showRealTimeFrame(rotated)
                 if (loopCount != -1) loopCount--
                 if (loopCount > 0) Thread.sleep(min(5000, frameDelay))
@@ -355,10 +347,8 @@ open class XledFrame(
         for (f in 0 until 256) {
             xled.showRealTimeFrame(this)
             delay(max(0, delay))
-            for (y in 0 until height) {
-                for (x in 0 until width) {
-                    frame[x][y] = oldFrame[x, y].fade(color, f / 256.0, BlendMode.AVERAGE)
-                }
+            oldFrame.frame.forEachIndexed { index, oldColor ->
+                frame[index] = oldColor.fade(color, f / 256.0, BlendMode.AVERAGE)
             }
         }
     }
@@ -375,7 +365,7 @@ open class XledFrame(
         val subFrame = XledFrame(width, height)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                subFrame[x, y] = frame[x + offsetX][y + offsetY].clone()
+                subFrame[x, y] = this[x + offsetX, y + offsetY].clone()
             }
         }
 
@@ -393,7 +383,7 @@ open class XledFrame(
 
         for (y in yStart until min(subFrame.height, height - offsetY)) {
             for (x in xStart until min(subFrame.width, width - offsetX)) {
-                frame[x + offsetX][y + offsetY] = frame[x + offsetX][y + offsetY].blend(subFrame[x, y], blendMode)
+                this[x + offsetX, y + offsetY] = this[x + offsetX, y + offsetY].blend(subFrame[x, y], blendMode)
             }
         }
 
@@ -544,6 +534,7 @@ open class XledFrame(
         drawLine(x1, y0, x1, y1, color)
         drawLine(x1, y1, x0, y1, color)
         drawLine(x0, y1, x0, y0, color)
+
         return this
     }
 
@@ -551,6 +542,7 @@ open class XledFrame(
         for (x in x0 .. x1) {
             drawLine(x, y1, x, y0, color)
         }
+
         return this
     }
 
@@ -584,7 +576,7 @@ open class XledFrame(
         var d = 2 * dy - dx
         var y = y0
         for (x in x0 .. x1) {
-            frame[x][y] = color.clone()
+            this[x, y] = color.clone()
             if (d > 0) {
                 y += yi
                 d += 2 * (dy - dx)
@@ -605,7 +597,7 @@ open class XledFrame(
         var d = 2 * dx - dy
         var x = x0
         for (y in y0 .. y1) {
-            frame[x][y] = color.clone()
+            this[x, y] = color.clone()
             if (d > 0) {
                 x += xi
                 d += 2 * (dx - dy)
@@ -619,7 +611,7 @@ open class XledFrame(
         val newFrame = XledFrame(width, height, initialColor, frameDelay)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                newFrame[x, y] = frame[x][y].fade(other[x, y], factor, blendMode)
+                newFrame[x, y] = this[x, y].fade(other[x, y], factor, blendMode)
             }
         }
 
