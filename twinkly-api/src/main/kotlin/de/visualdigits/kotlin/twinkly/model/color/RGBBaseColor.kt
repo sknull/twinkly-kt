@@ -67,7 +67,7 @@ abstract class RGBBaseColor<T : RGBBaseColor<T>>(
 
     override fun web(): String = "#${hex()}"
 
-    override fun ansiColor(): String = "\u001B[39m\u001B[48;2;$red;$green;${blue}m \u001B[0m"
+    override fun ansiColor(): String = "\u001B[39m\u001B[48;2;$red;$green;${blue}m  \u001B[0m"
 
     inline fun <reified T : Color<T>> convert(): T {
         return when (T::class) {

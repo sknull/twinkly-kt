@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 @Disabled("only for local testing")
 class XMusicTest {
 
-    private val xmusic = XMusic.instance("192.168.178.43")
+    private val xmusic = XMusic.instance("192.168.178.41")
     private val deviceInfo = xmusic.deviceInfo
 
     @Test
