@@ -53,7 +53,8 @@ class RGBAColor(
             }
 
             else -> {
-            // nothing to do
+                // nothing to do
+            }
         }
     }
 
