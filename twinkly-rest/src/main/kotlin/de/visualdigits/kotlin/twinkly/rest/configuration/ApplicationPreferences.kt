@@ -1,7 +1,7 @@
 package de.visualdigits.kotlin.twinkly.rest.configuration
 
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.twinkly.TwinklyConfiguration
 import jakarta.annotation.PostConstruct
 import org.slf4j.Logger

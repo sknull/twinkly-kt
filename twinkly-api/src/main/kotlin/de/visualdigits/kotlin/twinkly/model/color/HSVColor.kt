@@ -1,6 +1,8 @@
 package de.visualdigits.kotlin.twinkly.model.color
 
 import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 class HSVColor(
@@ -49,6 +51,11 @@ class HSVColor(
         return if (other is HSVColor) {
             other.toRgbColor().fade(other.toRgbColor(), factor, blendMode).toHsvColor()
         } else throw IllegalArgumentException("Cannot not fade another type")
+    }
+
+    override fun multiply(factor: Double): HSVColor {
+        val v1 = max(0, min(100, (factor * v).roundToInt()))
+        return HSVColor(h, s, v1, alpha)
     }
 
     override fun toRgbColor(): RGBColor {

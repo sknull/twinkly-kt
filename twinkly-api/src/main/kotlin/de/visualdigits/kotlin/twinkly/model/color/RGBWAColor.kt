@@ -3,6 +3,7 @@ package de.visualdigits.kotlin.twinkly.model.color
 import de.visualdigits.kotlin.util.ensureHexLength
 import java.lang.Long.decode
 import java.lang.Long.toHexString
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -63,6 +64,15 @@ class RGBWAColor(
                 amber =  min(255, (amber + factor * (other.amber - amber)).roundToInt())
             )
         } else throw IllegalArgumentException("Cannot not fade another type")
+    }
+
+    override fun multiply(factor: Double): RGBWAColor {
+        val r = max(0, min(255, (factor * red).roundToInt()))
+        val g = max(0, min(255, (factor * green).roundToInt()))
+        val b = max(0, min(255, (factor * blue).roundToInt()))
+        val w = max(0, min(255, (factor * white).roundToInt()))
+        val a = max(0, min(255, (factor * amber).roundToInt()))
+        return RGBWAColor(r, g, b, w, a, alpha, normalizeMode)
     }
 
     override fun value(): Long = (red.toLong() shl 32) or (green.toLong() shl 24) or (blue.toLong() shl 16) or (white.toLong() shl 8) or amber.toLong()

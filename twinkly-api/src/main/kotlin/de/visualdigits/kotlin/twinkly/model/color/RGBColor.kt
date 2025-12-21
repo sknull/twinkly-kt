@@ -40,6 +40,13 @@ class RGBColor(
         } else throw IllegalArgumentException("Cannot not fade another type")
     }
 
+    override fun multiply(factor: Double): RGBColor {
+        val r = max(0, min(255, (factor * red).roundToInt()))
+        val g = max(0, min(255, (factor * green).roundToInt()))
+        val b = max(0, min(255, (factor * blue).roundToInt()))
+        return RGBColor(r, g, b, alpha, normalizeMode)
+    }
+
     override fun fade(other: Any, factor: Double, blendMode: BlendMode): RGBColor {
         return if (other is RGBColor) {
             when (blendMode) {

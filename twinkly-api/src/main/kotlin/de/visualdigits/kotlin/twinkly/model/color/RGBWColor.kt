@@ -44,7 +44,9 @@ class RGBWColor(
                     super.blue = 0
                 }
             }
-            else -> {}
+            else -> {
+                // nothing to do
+            }
         }
     }
 
@@ -109,6 +111,14 @@ class RGBWColor(
             }
 
         } else throw IllegalArgumentException("Cannot not fade another type")
+    }
+
+    override fun multiply(factor: Double): RGBWColor {
+        val r = max(0, min(255, (factor * red).roundToInt()))
+        val g = max(0, min(255, (factor * green).roundToInt()))
+        val b = max(0, min(255, (factor * blue).roundToInt()))
+        val w = max(0, min(255, (factor * white).roundToInt()))
+        return RGBWColor(r, g, b, w, alpha, normalizeMode)
     }
 
     override fun value(): Long = (red.toLong() shl 24) or (green.toLong() shl 16) or (blue.toLong() shl 8) or white.toLong()

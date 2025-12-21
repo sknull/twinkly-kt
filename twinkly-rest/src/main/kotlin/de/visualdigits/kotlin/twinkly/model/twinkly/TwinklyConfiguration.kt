@@ -2,9 +2,8 @@ package de.visualdigits.kotlin.twinkly.model.twinkly
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLed
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedArray
-import kotlin.collections.MutableList
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 
 class TwinklyConfiguration(
     val name: String,

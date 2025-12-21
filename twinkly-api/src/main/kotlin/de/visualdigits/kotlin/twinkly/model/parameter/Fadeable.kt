@@ -3,7 +3,6 @@ package de.visualdigits.kotlin.twinkly.model.parameter
 import de.visualdigits.kotlin.twinkly.model.color.BlendMode
 import de.visualdigits.kotlin.twinkly.model.color.RGBAColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBColor
-import de.visualdigits.kotlin.twinkly.model.color.RGBWAColor
 import de.visualdigits.kotlin.twinkly.model.color.RGBWColor
 
 interface Fadeable<T : Fadeable<T>> {

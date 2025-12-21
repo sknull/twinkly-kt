@@ -20,4 +20,6 @@ interface Color<T : Color<T>> : Parameter<T> {
      * Blends this color towards the given color according to its alpha value of the given color.
      */
     fun blend(other: Any, blendMode: BlendMode): T
+
+    fun multiply(factor: Double): T
 }

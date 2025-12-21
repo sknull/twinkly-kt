@@ -1,8 +1,8 @@
 package de.visualdigits.kotlin
 
 import de.visualdigits.kotlin.twinkly.model.device.xled.DeviceOrigin
-import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 import de.visualdigits.kotlin.twinkly.model.device.xled.XLedArray
+import de.visualdigits.kotlin.twinkly.model.device.xled.XLedDevice
 
 abstract class XledArrayTest {
 

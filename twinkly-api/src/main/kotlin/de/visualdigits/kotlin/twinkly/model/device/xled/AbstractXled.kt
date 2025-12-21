@@ -16,7 +16,6 @@ import de.visualdigits.kotlin.util.get
 import de.visualdigits.kotlin.util.post
 import org.slf4j.LoggerFactory
 import java.net.URI
-import java.net.URL
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
